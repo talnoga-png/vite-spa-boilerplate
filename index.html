@@ -2,12 +2,503 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/flavorlab-icon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <meta name="description" content="FlavorLab — Discover scientifically-backed flavor pairings based on molecular compounds. For foodies, home cooks, and professional chefs." />
+    <title>FlavorLab™ — The Science of Perfect Flavor Pairings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+
+      <!-- ===== NAV ===== -->
+      <nav id="main-nav" class="nav">
+        <div class="nav-inner container-wide">
+          <a href="#" class="nav-logo">
+            <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18 4h12v16l10 18H8L18 20V4z" fill="#1B4332" opacity="0.2" stroke="#1B4332" stroke-width="2.5" stroke-linejoin="round"/>
+              <path d="M10 34h28l2 6H8l2-6z" fill="#C8663B"/>
+              <circle cx="17" cy="39" r="1.4" fill="white" opacity="0.8"/>
+              <circle cx="24" cy="38" r="1.8" fill="white" opacity="0.8"/>
+              <circle cx="31" cy="39" r="1.4" fill="white" opacity="0.8"/>
+              <line x1="15" y1="4" x2="33" y2="4" stroke="#1B4332" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+            <span class="nav-logo-text">FlavorLab<sup>™</sup></span>
+          </a>
+          <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+            <span></span><span></span><span></span>
+          </button>
+          <ul class="nav-links" id="nav-links" role="list">
+            <li><a href="#about">About</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#blog">Blog</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#try" class="nav-cta-btn">Try FlavorLab</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- ===== HERO ===== -->
+      <section class="hero" id="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content container">
+          <p class="hero-eyebrow">FLAVOR SCIENCE &nbsp;·&nbsp; MARCH 21, 2026 &nbsp;·&nbsp; 6 MIN READ</p>
+          <h1 class="hero-title">The Art and Science of Flavor Pairings Made Accessible</h1>
+          <p class="hero-sub">
+            Discover why some combinations taste extraordinary while others fall flat — FlavorLab brings molecular gastronomy research to every kitchen, from curious home cooks to Michelin-starred chefs.
+          </p>
+          <div class="hero-actions">
+            <a href="#how-it-works" class="btn btn-accent">Explore Pairings</a>
+            <a href="#about" class="btn btn-ghost">Learn the Science ↓</a>
+          </div>
+        </div>
+        <div class="hero-molecule" aria-hidden="true">
+          <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" opacity="0.12">
+            <circle cx="150" cy="150" r="18" fill="white"/>
+            <circle cx="80" cy="100" r="12" fill="white"/>
+            <circle cx="220" cy="100" r="12" fill="white"/>
+            <circle cx="80" cy="200" r="12" fill="white"/>
+            <circle cx="220" cy="200" r="12" fill="white"/>
+            <circle cx="40" cy="150" r="8" fill="white"/>
+            <circle cx="260" cy="150" r="8" fill="white"/>
+            <circle cx="150" cy="50" r="8" fill="white"/>
+            <circle cx="150" cy="250" r="8" fill="white"/>
+            <line x1="150" y1="150" x2="80" y2="100" stroke="white" stroke-width="2"/>
+            <line x1="150" y1="150" x2="220" y2="100" stroke="white" stroke-width="2"/>
+            <line x1="150" y1="150" x2="80" y2="200" stroke="white" stroke-width="2"/>
+            <line x1="150" y1="150" x2="220" y2="200" stroke="white" stroke-width="2"/>
+            <line x1="80" y1="100" x2="40" y2="150" stroke="white" stroke-width="1.5"/>
+            <line x1="80" y1="200" x2="40" y2="150" stroke="white" stroke-width="1.5"/>
+            <line x1="220" y1="100" x2="260" y2="150" stroke="white" stroke-width="1.5"/>
+            <line x1="220" y1="200" x2="260" y2="150" stroke="white" stroke-width="1.5"/>
+            <line x1="80" y1="100" x2="150" y2="50" stroke="white" stroke-width="1.5"/>
+            <line x1="220" y1="100" x2="150" y2="50" stroke="white" stroke-width="1.5"/>
+            <line x1="80" y1="200" x2="150" y2="250" stroke="white" stroke-width="1.5"/>
+            <line x1="220" y1="200" x2="150" y2="250" stroke="white" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </section>
+
+      <!-- ===== INTRO ===== -->
+      <section class="intro-section" id="about">
+        <div class="container container-narrow">
+          <p class="intro-lead">
+            Ever wondered why some food and flavor pairings are unforgettable while others fall flat?
+          </p>
+          <p>
+            The perfect pairing is both an art and a science — a delicate balance of flavors, aromas, and textures. But understanding this craft has traditionally been reserved for sommeliers, chefs, and seasoned food enthusiasts. FlavorLab changes that. Our platform analyzes the chemical compounds in ingredients and reveals which combinations share key aromatic molecules — turning guesswork into informed, delicious decisions.
+          </p>
+          <p>
+            Whether you're planning a dinner party, experimenting in the kitchen, or building a restaurant menu, FlavorLab gives you the scientific confidence to pair boldly and taste brilliantly.
+          </p>
+          <a href="#how-it-works" class="text-link">Here's how FlavorLab works ↓</a>
+        </div>
+      </section>
+
+      <!-- ===== WHY FLAVOR PAIRING MATTERS ===== -->
+      <section class="content-section alt-bg" id="why">
+        <div class="container">
+          <div class="section-header">
+            <h2>Why Flavor Pairings Matter</h2>
+          </div>
+          <div class="two-col">
+            <div class="two-col-text">
+              <p>
+                Food and flavor pairings aren't just for show — they enhance the entire dining experience and make meals more memorable. The goal is harmony: a meeting of ingredients that amplifies each other's best qualities through the cleverness of chemistry.
+              </p>
+              <h3>The Traditional Route</h3>
+              <p>
+                Traditionally, achieving this balance required deep knowledge of flavor profiles, complementary combinations, and years spent tasting and experimenting. Pairing fish with Chardonnay or dark chocolate with espresso wasn't just taste — it was informed intuition built over decades.
+              </p>
+              <h3>For Everyone</h3>
+              <p>
+                For most of us, the pairing process involves guesswork, mediocre online searches, and dietary restrictions navigating global cuisines and diverse knowledge gaps. It's no wonder many people default to "safe wine with safe food" when they want their plate to shine. FlavorLab changes all of that.
+              </p>
+            </div>
+            <div class="two-col-visual">
+              <div class="compound-card">
+                <div class="compound-tag">VOLATILE COMPOUND</div>
+                <div class="compound-name">Linalool</div>
+                <div class="compound-pairs">
+                  <span class="pair-badge">Lavender</span>
+                  <span class="pair-badge">Coriander</span>
+                  <span class="pair-badge">Bergamot</span>
+                  <span class="pair-badge">Rose</span>
+                  <span class="pair-badge">Earl Grey</span>
+                </div>
+                <p class="compound-desc">These ingredients share linalool — a floral, slightly spicy terpene alcohol. Their shared chemistry means they harmonize beautifully on the palate.</p>
+              </div>
+              <div class="compound-card">
+                <div class="compound-tag">VOLATILE COMPOUND</div>
+                <div class="compound-name">Pyrazines</div>
+                <div class="compound-pairs">
+                  <span class="pair-badge accent">Dark Chocolate</span>
+                  <span class="pair-badge accent">Coffee</span>
+                  <span class="pair-badge accent">Bell Pepper</span>
+                  <span class="pair-badge accent">Roasted Nuts</span>
+                </div>
+                <p class="compound-desc">Pyrazines give roasted foods their characteristic depth. Ingredients sharing these compounds create rich, complex layers together.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== HOW IT WORKS ===== -->
+      <section class="how-section" id="how-it-works">
+        <div class="container">
+          <div class="section-header centered">
+            <p class="section-eyebrow">THE PLATFORM</p>
+            <h2>How FlavorLab is Revolutionizing Flavor Discovery</h2>
+            <p class="section-lead">FlavorLab is stepping in to simplify and modernize the age-old art of flavor pairing. It uses molecular science and extensive culinary research to reveal connections that would otherwise take years of expertise to uncover.</p>
+          </div>
+          <div class="how-it-works-intro">
+            <div class="how-feature">
+              <strong>Flavor Profiles:</strong> Sweet, sour, salty, umami, bitter — FlavorLab evaluates these complex relationships through a database of over 10,000 analyzed ingredients and profiles.
+            </div>
+            <div class="how-feature">
+              <strong>User Preferences:</strong> Your favorite dishes, dietary needs, and cultural preferences are woven into every recommendation.
+            </div>
+            <div class="how-feature">
+              <strong>Culinary Rules:</strong> Classic pairing principles are woven into the FlavorLab logic to provide suggestions that are both bold and true.
+            </div>
+            <div class="how-feature">
+              <strong>Data-Driven Insights:</strong> FlavorLab learns from thousands of curated culinary sources to offer suggestions that feel fresh and effective as consulting an expert.
+            </div>
+          </div>
+          <div class="steps-grid">
+            <div class="step-card">
+              <div class="step-number">01</div>
+              <div class="step-icon">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/>
+                  <path d="M16 24h16M24 16v16" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <h3>Choose an Ingredient</h3>
+              <p>Start with any ingredient from our database of thousands — from common pantry staples to rare culinary finds from around the world.</p>
+            </div>
+            <div class="step-card">
+              <div class="step-number">02</div>
+              <div class="step-icon">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="24" cy="24" r="6" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="10" cy="14" r="4" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="38" cy="14" r="4" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="10" cy="34" r="4" stroke="currentColor" stroke-width="2"/>
+                  <circle cx="38" cy="34" r="4" stroke="currentColor" stroke-width="2"/>
+                  <line x1="18" y1="20" x2="14" y2="17" stroke="currentColor" stroke-width="1.5"/>
+                  <line x1="30" y1="20" x2="34" y2="17" stroke="currentColor" stroke-width="1.5"/>
+                  <line x1="18" y1="28" x2="14" y2="31" stroke="currentColor" stroke-width="1.5"/>
+                  <line x1="30" y1="28" x2="34" y2="31" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+              </div>
+              <h3>Discover Compounds</h3>
+              <p>FlavorLab analyzes the volatile aromatic compounds — the molecular fingerprints — that define each ingredient's unique flavor character.</p>
+            </div>
+            <div class="step-card">
+              <div class="step-number">03</div>
+              <div class="step-icon">
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 36l8-10 8 6 8-14 8 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <circle cx="40" cy="12" r="4" stroke="currentColor" stroke-width="2"/>
+                  <path d="M38 10l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <h3>Get Perfect Pairings</h3>
+              <p>Receive ranked pairing suggestions with explanations of why they work — grounded in science, refined by culinary expertise, and tailored to your preferences.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== BENEFITS ===== -->
+      <section class="benefits-section alt-bg" id="benefits">
+        <div class="container">
+          <div class="section-header centered">
+            <p class="section-eyebrow">WHY FLAVORLAB</p>
+            <h2>Benefits of Using AI-Powered Flavor Science</h2>
+          </div>
+          <div class="benefits-grid">
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 32 32" fill="none"><path d="M16 3l2.4 7.4H26l-6.3 4.6 2.4 7.4L16 18l-6.1 4.4 2.4-7.4L6 10.4h7.6L16 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+              </div>
+              <h3>Unlock Creativity</h3>
+              <p>Forget scouring the internet or thumbing through cookbooks. FlavorLab makes recommendations instantly, so you can focus on creating.</p>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 32 32" fill="none"><path d="M26 16A10 10 0 116 16a10 10 0 0120 0z" stroke="currentColor" stroke-width="1.8"/><path d="M16 10v6l4 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <h3>Save Time</h3>
+              <p>Come and go without the hours of assembly research. Perfect pairings come instantly, giving you more time to cook and less time searching.</p>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="1.8"/><path d="M16 10v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="16" cy="20" r="1.2" fill="currentColor"/></svg>
+              </div>
+              <h3>Personalized Suggestions</h3>
+              <p>FlavorLab matches your ingredient, dietary requirements, and flavor preferences before making a single recommendation — gluten-free, vegan, bold, or delicate.</p>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 32 32" fill="none"><path d="M4 28V10l12-7 12 7v18" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><rect x="11" y="18" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.8"/></svg>
+              </div>
+              <h3>Confidence Booster</h3>
+              <p>No second-guessing. FlavorLab provides pairings that look and taste like they came from a restaurant kitchen — because they're backed by real culinary science.</p>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 32 32" fill="none"><path d="M16 4c6.627 0 12 5.373 12 12S22.627 28 16 28 4 22.627 4 16 9.373 4 16 4z" stroke="currentColor" stroke-width="1.8"/><path d="M16 10c-.5 2-3 4-3 6s2 4 3 4 3-2 3-4-2.5-4-3-6z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+              </div>
+              <h3>Ingredient Deep Dives</h3>
+              <p>Explore the full aromatic profile and flavor compound breakdown of any ingredient — learn <em>why</em> a pairing works, not just that it does.</p>
+            </div>
+            <div class="benefit-card">
+              <div class="benefit-icon">
+                <svg viewBox="0 0 32 32" fill="none"><path d="M6 22l5-5 5 4 5-7 5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 8h24v18H4z" stroke="currentColor" stroke-width="1.8" rx="2"/></svg>
+              </div>
+              <h3>Cultural Context</h3>
+              <p>Discover how different culinary traditions use the same compound relationships — from Japanese yuzu pairings to Moroccan spice harmonics.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== REAL-WORLD EXAMPLES ===== -->
+      <section class="examples-section dark-bg" id="examples">
+        <div class="container">
+          <div class="section-header centered">
+            <p class="section-eyebrow light">IN THE KITCHEN</p>
+            <h2 class="light">Real-Life FlavorLab Pairings in Action</h2>
+            <p class="section-lead light">FlavorLab's pairing power isn't just theoretical — it's grounded in practical, flavorful results.</p>
+          </div>
+          <div class="examples-grid">
+            <div class="example-card">
+              <div class="example-label">Scenario A</div>
+              <h3>Crafting the Perfect Dinner Party</h3>
+              <p>You're serving herb-crusted lamb chops and want a sauce that complements rather than competes. FlavorLab recommends a rosemary-blackcurrant reduction — both share <em>alpha-terpineol</em>, creating a floral, complex harmony that wows guests and elevates every bite.</p>
+              <div class="example-compounds">
+                <span>alpha-terpineol</span>
+                <span>borneol</span>
+                <span>linalool</span>
+              </div>
+            </div>
+            <div class="example-card">
+              <div class="example-label">Scenario B</div>
+              <h3>An Unexpected Dessert Discovery</h3>
+              <p>For dessert, a dark chocolate mousse paired with a strawberry and black pepper coulis. The pepper's <em>rotundone</em> compound mirrors aromatic notes in the chocolate, while the berry's brightness cuts through the richness — achieving an impressive 87/100 pairing score.</p>
+              <div class="example-compounds">
+                <span>rotundone</span>
+                <span>methyl anthranilate</span>
+                <span>linalool oxide</span>
+              </div>
+            </div>
+            <div class="example-card">
+              <div class="example-label">Scenario C</div>
+              <h3>Unconventional Pantry Pairings</h3>
+              <p>FlavorLab introduces bold soft-brie pairings like a spicy IPA to crispy buffalo wings. The wing's tangy spice profiles harmonize with the IPA's bitter hops and malt character — both contain <em>myrcene</em>, creating an unexpectedly cohesive experience.</p>
+              <div class="example-compounds">
+                <span>myrcene</span>
+                <span>beta-caryophyllene</span>
+                <span>capsaicin derivatives</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== AUDIENCE ===== -->
+      <section class="audience-section alt-bg" id="for-everyone">
+        <div class="container">
+          <div class="section-header centered">
+            <p class="section-eyebrow">FOR EVERYONE</p>
+            <h2>Making Flavor Science Accessible for Everyone</h2>
+            <p class="section-lead">Pairing great food and drinks no longer needs to feel exclusive. FlavorLab democratizes access to what was once the privileged domain of professional chefs and sommeliers.</p>
+          </div>
+          <div class="audience-grid">
+            <div class="audience-card">
+              <div class="audience-icon">🍳</div>
+              <h3>For Home Cooks &amp; Foodies</h3>
+              <p>FlavorLab is your user-friendly culinary companion. Whether you're making a quick weeknight dinner or organizing a weekend feast, FlavorLab helps you evaluate every ingredient choice to restaurant quality — simply, intelligently, deliciously.</p>
+            </div>
+            <div class="audience-card featured">
+              <div class="audience-icon">👨‍🍳</div>
+              <h3>For Professional Chefs</h3>
+              <p>FlavorLab bridges the gap between tradition and innovation, helping chefs and restaurants make more informed menu designs that cater to wider audiences. Imagine a digital sommelier assisting restaurant guests directly from their smartphones.</p>
+            </div>
+            <div class="audience-card">
+              <div class="audience-icon">🔬</div>
+              <h3>For Food Scientists &amp; Researchers</h3>
+              <p>FlavorLab is a food scientist's dream: rich, compound-level, and data-driven. The platform adheres to culinary principles while also encouraging bold experimentation — a future-forward approach that respects the wisdom of the past.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SHARE + ARTICLES ===== -->
+      <section class="articles-section" id="blog">
+        <div class="container">
+          <div class="share-bar">
+            <p class="share-label">Liked what you read? Share it!</p>
+            <div class="share-icons">
+              <a href="#" class="share-icon" aria-label="Share on Facebook">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+              </a>
+              <a href="#" class="share-icon" aria-label="Share on X (Twitter)">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              </a>
+              <a href="#" class="share-icon" aria-label="Share on LinkedIn">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2" fill="currentColor"/></svg>
+              </a>
+              <a href="#" class="share-icon" aria-label="Share on Instagram">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+              </a>
+            </div>
+          </div>
+          <a href="#" class="read-more-cta">READ MORE</a>
+
+          <div class="articles-header">
+            <h2>Explore Our Latest Articles</h2>
+          </div>
+          <div class="articles-grid">
+            <article class="article-card">
+              <a href="#" class="article-img-link">
+                <div class="article-img" style="background: linear-gradient(135deg, #3D1C02 0%, #6B3A1F 50%, #2C1503 100%);">
+                  <span class="article-img-label">Chocolate &amp; Coffee</span>
+                </div>
+              </a>
+              <div class="article-body">
+                <p class="article-category">FLAVOR SCIENCE</p>
+                <h3><a href="#">The Chocolate-Coffee Connection: Why These Two Always Belong Together</a></h3>
+                <p>Both contain roasted pyrazines — the shared volatile compounds that explain why mocha became a culinary classic. Here's the science behind the indulgence.</p>
+                <a href="#" class="article-read-link">Read Article →</a>
+              </div>
+            </article>
+            <article class="article-card">
+              <a href="#" class="article-img-link">
+                <div class="article-img" style="background: linear-gradient(135deg, #5C1A1A 0%, #A0394E 50%, #3D0C1A 100%);">
+                  <span class="article-img-label">Strawberry &amp; Pepper</span>
+                </div>
+              </a>
+              <div class="article-body">
+                <p class="article-category">UNEXPECTED PAIRINGS</p>
+                <h3><a href="#">Strawberry &amp; Black Pepper: An Unlikely Romance Backed by Science</a></h3>
+                <p>Their shared aromatic rotundone creates a surprisingly harmonious pairing. Discover why this combination appears across dessert menus worldwide.</p>
+                <a href="#" class="article-read-link">Read Article →</a>
+              </div>
+            </article>
+            <article class="article-card">
+              <a href="#" class="article-img-link">
+                <div class="article-img" style="background: linear-gradient(135deg, #1A3D1A 0%, #3D6B2A 50%, #0D2610 100%);">
+                  <span class="article-img-label">Umami &amp; Mushrooms</span>
+                </div>
+              </a>
+              <div class="article-body">
+                <p class="article-category">UMAMI SCIENCE</p>
+                <h3><a href="#">The Umami Effect: Why Parmesan and Mushrooms Make Everything Better</a></h3>
+                <p>Glutamates amplify savory perception — and when two umami-rich ingredients combine, the result is a flavor synergy far greater than the sum of its parts.</p>
+                <a href="#" class="article-read-link">Read Article →</a>
+              </div>
+            </article>
+            <article class="article-card">
+              <a href="#" class="article-img-link">
+                <div class="article-img" style="background: linear-gradient(135deg, #1A3D2A 0%, #C8663B 80%, #7A3A1A 100%);">
+                  <span class="article-img-label">Citrus &amp; Herbs</span>
+                </div>
+              </a>
+              <div class="article-body">
+                <p class="article-category">TERPENE CONNECTIONS</p>
+                <h3><a href="#">Citrus and Fresh Herbs: The Terpene Link You Didn't Know About</a></h3>
+                <p>Limonene bridges basil, thyme, lemon, and juniper into a surprisingly cohesive family of ingredients — the molecular key behind Mediterranean cuisine's refreshing character.</p>
+                <a href="#" class="article-read-link">Read Article →</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== EXPLORE MORE ===== -->
+      <section class="explore-section dark-bg" id="explore">
+        <div class="container">
+          <h2 class="light">Explore More</h2>
+          <div class="explore-pills">
+            <a href="#" class="pill">Flavor Science 101</a>
+            <a href="#" class="pill">Perfect Pairings</a>
+            <a href="#" class="pill">Recipes</a>
+            <a href="#" class="pill">Compound Library</a>
+            <a href="#" class="pill">Wine &amp; Food</a>
+            <a href="#" class="pill">Vegan Pairings</a>
+            <a href="#" class="pill">Spice Profiles</a>
+            <a href="#" class="pill">Fermentation</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== FOOTER ===== -->
+      <footer class="footer dark-bg" id="contact">
+        <div class="container container-wide">
+          <div class="footer-top">
+            <div class="footer-brand">
+              <a href="#" class="footer-logo">
+                <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M18 4h12v16l10 18H8L18 20V4z" fill="white" opacity="0.15" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
+                  <path d="M10 34h28l2 6H8l2-6z" fill="#C8663B"/>
+                  <circle cx="17" cy="39" r="1.4" fill="white" opacity="0.8"/>
+                  <circle cx="24" cy="38" r="1.8" fill="white" opacity="0.8"/>
+                  <circle cx="31" cy="39" r="1.4" fill="white" opacity="0.8"/>
+                  <line x1="15" y1="4" x2="33" y2="4" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+                <span>FlavorLab™</span>
+              </a>
+              <p class="footer-tagline">The science of perfect flavor pairings — for every kitchen, every cook, every curious palate.</p>
+            </div>
+            <div class="footer-social-wrap">
+              <p class="footer-social-label">Follow us</p>
+              <div class="footer-social">
+                <a href="#" class="footer-social-link" aria-label="Facebook">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+                  <span>Facebook</span>
+                </a>
+                <a href="#" class="footer-social-link" aria-label="Instagram">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+                  <span>Instagram</span>
+                </a>
+                <a href="#" class="footer-social-link" aria-label="LinkedIn">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-4 0v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+                  <span>LinkedIn</span>
+                </a>
+              </div>
+            </div>
+            <div class="footer-app">
+              <p class="footer-app-label">Get the app</p>
+              <a href="#" class="app-store-btn" id="try" aria-label="Download on the App Store">
+                <svg viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="120" height="40" rx="6" fill="white"/>
+                  <text x="38" y="14" font-size="7" fill="#1A1A1A" font-family="Inter, sans-serif">Download on the</text>
+                  <text x="32" y="28" font-size="13" fill="#1A1A1A" font-family="Inter, sans-serif" font-weight="600">App Store</text>
+                  <path d="M16 8c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4zm0 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-4 10h8l-1 6H13l-1-6z" fill="#1A1A1A" opacity="0.7"/>
+                </svg>
+              </a>
+            </div>
+          </div>
+          <div class="footer-bottom">
+            <div class="footer-links">
+              <a href="#contact">Contact</a>
+              <a href="#">Download</a>
+              <a href="#">Terms of Use</a>
+              <a href="#">Privacy</a>
+              <a href="#">Policy</a>
+            </div>
+            <p class="footer-copy">© 2026 FlavorLab. All rights reserved. Built with science and a love of food.</p>
+          </div>
+        </div>
+      </footer>
+
+    </div><!-- /#app -->
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

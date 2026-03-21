@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(GH_CONFIG_DIR=\"/c/Users/noyha/AppData/Roaming/GitHub CLI\" gh auth status)",
+      "Bash(npm install:*)",
+      "Bash(npm:*)",
+      "Bash(\"/c/Program Files/nodejs/npm\" -v)",
+      "Bash(export PATH=\"/c/Program Files/nodejs:$PATH\")",
+      "Skill(update-config)",
+      "Bash(git --version)",
+      "Bash(git:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "git add -A && git diff --cached --quiet || (git commit -m \"chore: auto-save changes\" && git push origin HEAD) || true",
+            "statusMessage": "Committing and pushing changes..."
+          }
+        ]
+      }
+    ]
+  }
+}
