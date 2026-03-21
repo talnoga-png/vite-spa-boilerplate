@@ -8,7 +8,7 @@
     <title>FlavorLab™ — The Science of Perfect Flavor Pairings</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Space+Grotesk:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
   </head>
   <body>
     <div id="app">
@@ -18,12 +18,12 @@
         <div class="nav-inner container-wide">
           <a href="#" class="nav-logo">
             <svg width="28" height="28" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18 4h12v16l10 18H8L18 20V4z" fill="#1B4332" opacity="0.2" stroke="#1B4332" stroke-width="2.5" stroke-linejoin="round"/>
-              <path d="M10 34h28l2 6H8l2-6z" fill="#C8663B"/>
+              <path d="M18 4h12v16l10 18H8L18 20V4z" fill="#C8A45A" opacity="0.2" stroke="#C8A45A" stroke-width="2.5" stroke-linejoin="round"/>
+              <path d="M10 34h28l2 6H8l2-6z" fill="#4DD9D0"/>
               <circle cx="17" cy="39" r="1.4" fill="white" opacity="0.8"/>
               <circle cx="24" cy="38" r="1.8" fill="white" opacity="0.8"/>
               <circle cx="31" cy="39" r="1.4" fill="white" opacity="0.8"/>
-              <line x1="15" y1="4" x2="33" y2="4" stroke="#1B4332" stroke-width="2.5" stroke-linecap="round"/>
+              <line x1="15" y1="4" x2="33" y2="4" stroke="#C8A45A" stroke-width="2.5" stroke-linecap="round"/>
             </svg>
             <span class="nav-logo-text">FlavorLab<sup>™</sup></span>
           </a>
@@ -35,19 +35,20 @@
             <li><a href="#how-it-works">How It Works</a></li>
             <li><a href="#blog">Blog</a></li>
             <li><a href="#contact">Contact</a></li>
-            <li><a href="#try" class="nav-cta-btn">Try FlavorLab</a></li>
+            <li><a href="#try" class="nav-cta-btn">Enter the Lab</a></li>
           </ul>
         </div>
       </nav>
 
       <!-- ===== HERO ===== -->
       <section class="hero" id="hero">
+        <div class="particles-container" id="particles"></div>
         <div class="hero-overlay"></div>
         <div class="hero-content container">
-          <p class="hero-eyebrow">FLAVOR SCIENCE &nbsp;·&nbsp; MARCH 21, 2026 &nbsp;·&nbsp; 6 MIN READ</p>
-          <h1 class="hero-title">The Art and Science of Flavor Pairings Made Accessible</h1>
+          <p class="hero-eyebrow">MOLECULAR GASTRONOMY &nbsp;·&nbsp; EST. 2024 &nbsp;·&nbsp; PATENT PENDING</p>
+          <h1 class="hero-title">Where Molecular Science Meets Culinary Mastery</h1>
           <p class="hero-sub">
-            Discover why some combinations taste extraordinary while others fall flat — FlavorLab brings molecular gastronomy research to every kitchen, from curious home cooks to Michelin-starred chefs.
+            FlavorLab decodes the volatile aromatic compounds that define every ingredient — revealing scientifically-backed pairings that transform good cooking into unforgettable cuisine.
           </p>
           <div class="hero-actions">
             <a href="#how-it-works" class="btn btn-accent">Explore Pairings</a>
@@ -55,28 +56,49 @@
           </div>
         </div>
         <div class="hero-molecule" aria-hidden="true">
-          <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" opacity="0.12">
-            <circle cx="150" cy="150" r="18" fill="white"/>
-            <circle cx="80" cy="100" r="12" fill="white"/>
-            <circle cx="220" cy="100" r="12" fill="white"/>
-            <circle cx="80" cy="200" r="12" fill="white"/>
-            <circle cx="220" cy="200" r="12" fill="white"/>
-            <circle cx="40" cy="150" r="8" fill="white"/>
-            <circle cx="260" cy="150" r="8" fill="white"/>
-            <circle cx="150" cy="50" r="8" fill="white"/>
-            <circle cx="150" cy="250" r="8" fill="white"/>
-            <line x1="150" y1="150" x2="80" y2="100" stroke="white" stroke-width="2"/>
-            <line x1="150" y1="150" x2="220" y2="100" stroke="white" stroke-width="2"/>
-            <line x1="150" y1="150" x2="80" y2="200" stroke="white" stroke-width="2"/>
-            <line x1="150" y1="150" x2="220" y2="200" stroke="white" stroke-width="2"/>
-            <line x1="80" y1="100" x2="40" y2="150" stroke="white" stroke-width="1.5"/>
-            <line x1="80" y1="200" x2="40" y2="150" stroke="white" stroke-width="1.5"/>
-            <line x1="220" y1="100" x2="260" y2="150" stroke="white" stroke-width="1.5"/>
-            <line x1="220" y1="200" x2="260" y2="150" stroke="white" stroke-width="1.5"/>
-            <line x1="80" y1="100" x2="150" y2="50" stroke="white" stroke-width="1.5"/>
-            <line x1="220" y1="100" x2="150" y2="50" stroke="white" stroke-width="1.5"/>
-            <line x1="80" y1="200" x2="150" y2="250" stroke="white" stroke-width="1.5"/>
-            <line x1="220" y1="200" x2="150" y2="250" stroke="white" stroke-width="1.5"/>
+          <svg class="molecule-svg" viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg">
+            <!-- Outer hex ring -->
+            <polygon points="220,52 347,122 347,262 220,332 93,262 93,122"
+                     fill="none" stroke="rgba(77,217,208,0.22)" stroke-width="1"/>
+            <!-- Inner hex ring -->
+            <polygon points="220,102 280,136 280,202 220,236 160,202 160,136"
+                     fill="none" stroke="rgba(200,164,90,0.18)" stroke-width="1.5"/>
+            <!-- Bond lines center to outer -->
+            <line x1="220" y1="190" x2="220" y2="52" stroke="rgba(77,217,208,0.18)" stroke-width="1.2" stroke-dasharray="5 5"/>
+            <line x1="220" y1="190" x2="347" y2="122" stroke="rgba(77,217,208,0.18)" stroke-width="1.2" stroke-dasharray="5 5"/>
+            <line x1="220" y1="190" x2="347" y2="262" stroke="rgba(77,217,208,0.18)" stroke-width="1.2" stroke-dasharray="5 5"/>
+            <line x1="220" y1="190" x2="220" y2="332" stroke="rgba(77,217,208,0.18)" stroke-width="1.2" stroke-dasharray="5 5"/>
+            <line x1="220" y1="190" x2="93" y2="262" stroke="rgba(77,217,208,0.18)" stroke-width="1.2" stroke-dasharray="5 5"/>
+            <line x1="220" y1="190" x2="93" y2="122" stroke="rgba(77,217,208,0.18)" stroke-width="1.2" stroke-dasharray="5 5"/>
+            <!-- Outer atom nodes -->
+            <circle cx="220" cy="52" r="9" fill="rgba(200,164,90,0.7)" class="mol-atom"/>
+            <circle cx="347" cy="122" r="7" fill="rgba(200,164,90,0.55)" class="mol-atom"/>
+            <circle cx="347" cy="262" r="9" fill="rgba(200,164,90,0.7)" class="mol-atom"/>
+            <circle cx="220" cy="332" r="7" fill="rgba(200,164,90,0.55)" class="mol-atom"/>
+            <circle cx="93" cy="262" r="9" fill="rgba(200,164,90,0.7)" class="mol-atom"/>
+            <circle cx="93" cy="122" r="7" fill="rgba(200,164,90,0.55)" class="mol-atom"/>
+            <!-- Center atom -->
+            <circle cx="220" cy="190" r="18" fill="rgba(77,217,208,0.85)" class="mol-center"/>
+            <circle cx="220" cy="190" r="28" fill="none" stroke="rgba(77,217,208,0.25)" stroke-width="1.5" class="mol-ring-anim"/>
+            <circle cx="220" cy="190" r="40" fill="none" stroke="rgba(77,217,208,0.12)" stroke-width="1" class="mol-ring-anim2"/>
+            <!-- Chemical labels -->
+            <text x="220" y="188" text-anchor="middle" dominant-baseline="middle" fill="white" font-family="IBM Plex Mono, monospace" font-size="10" font-weight="500">C₆H</text>
+            <text x="220" y="44" text-anchor="middle" fill="rgba(200,164,90,0.85)" font-family="IBM Plex Mono, monospace" font-size="9">OH</text>
+            <text x="357" y="118" fill="rgba(200,164,90,0.85)" font-family="IBM Plex Mono, monospace" font-size="9">CH₃</text>
+            <text x="357" y="268" fill="rgba(200,164,90,0.85)" font-family="IBM Plex Mono, monospace" font-size="9">NH₂</text>
+            <text x="220" y="350" text-anchor="middle" fill="rgba(200,164,90,0.85)" font-family="IBM Plex Mono, monospace" font-size="9">COOH</text>
+            <text x="60" y="268" fill="rgba(200,164,90,0.85)" font-family="IBM Plex Mono, monospace" font-size="9">O</text>
+            <text x="55" y="118" fill="rgba(200,164,90,0.85)" font-family="IBM Plex Mono, monospace" font-size="9">C=O</text>
+            <!-- Orbiting electron path -->
+            <ellipse cx="220" cy="190" rx="55" ry="20" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1" transform="rotate(-35 220 190)"/>
+            <circle class="mol-electron" r="4" fill="rgba(255,255,255,0.95)"/>
+            <!-- Secondary smaller molecules -->
+            <circle cx="370" cy="60" r="5" fill="rgba(77,217,208,0.4)" class="mol-atom-sm"/>
+            <circle cx="380" cy="80" r="3" fill="rgba(200,164,90,0.35)" class="mol-atom-sm"/>
+            <line x1="370" y1="60" x2="380" y2="80" stroke="rgba(77,217,208,0.2)" stroke-width="1"/>
+            <circle cx="60" cy="340" r="5" fill="rgba(77,217,208,0.4)" class="mol-atom-sm"/>
+            <circle cx="75" cy="355" r="3" fill="rgba(200,164,90,0.35)" class="mol-atom-sm"/>
+            <line x1="60" y1="340" x2="75" y2="355" stroke="rgba(77,217,208,0.2)" stroke-width="1"/>
           </svg>
         </div>
       </section>
@@ -211,6 +233,76 @@
               <p>Receive ranked pairing suggestions with explanations of why they work — grounded in science, refined by culinary expertise, and tailored to your preferences.</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      <!-- ===== PAIRING SPARK DEMO ===== -->
+      <section class="pairing-demo" id="demo">
+        <div class="container">
+          <div class="section-header centered">
+            <p class="section-eyebrow">THE REACTION</p>
+            <h2>The Spark of Perfect Pairing</h2>
+            <p class="section-lead">When two ingredients share volatile aromatic compounds, something extraordinary happens — watch the molecular bond form in real time.</p>
+          </div>
+          <div class="demo-stage" id="demo-stage">
+            <div class="demo-ingredient demo-left">
+              <div class="demo-atom">
+                <div class="atom-glow"></div>
+                <div class="atom-orbit orbit-1">
+                  <div class="atom-electron"></div>
+                </div>
+                <div class="atom-orbit orbit-2">
+                  <div class="atom-electron"></div>
+                </div>
+                <div class="atom-core">
+                  <span class="atom-emoji">🍓</span>
+                </div>
+              </div>
+              <p class="demo-name">Strawberry</p>
+              <code class="demo-formula">C₁₅H₂₄O (Rotundone)</code>
+            </div>
+            <div class="demo-connection">
+              <div class="connection-line line-left"></div>
+              <div class="connection-line line-right"></div>
+              <div class="spark-center" id="spark-center">
+                <div class="spark-ring r1"></div>
+                <div class="spark-ring r2"></div>
+                <div class="spark-ring r3"></div>
+                <div class="spark-burst"></div>
+                <div class="spark-particles">
+                  <span class="sp sp1"></span>
+                  <span class="sp sp2"></span>
+                  <span class="sp sp3"></span>
+                  <span class="sp sp4"></span>
+                  <span class="sp sp5"></span>
+                  <span class="sp sp6"></span>
+                  <span class="sp sp7"></span>
+                  <span class="sp sp8"></span>
+                </div>
+                <div class="spark-label">
+                  <span class="spark-compound">Rotundone</span>
+                  <span class="spark-score">94% Match</span>
+                </div>
+              </div>
+            </div>
+            <div class="demo-ingredient demo-right">
+              <div class="demo-atom">
+                <div class="atom-glow"></div>
+                <div class="atom-orbit orbit-1">
+                  <div class="atom-electron"></div>
+                </div>
+                <div class="atom-orbit orbit-2">
+                  <div class="atom-electron"></div>
+                </div>
+                <div class="atom-core">
+                  <span class="atom-emoji">🫙</span>
+                </div>
+              </div>
+              <p class="demo-name">Black Pepper</p>
+              <code class="demo-formula">C₁₇H₁₉NO₃ (Piperine)</code>
+            </div>
+          </div>
+          <p class="demo-insight">Both share <em>rotundone</em> — a woody, peppery sesquiterpene — bridging these two ingredients into perfect sensory harmony.</p>
         </div>
       </section>
 
@@ -446,7 +538,7 @@
               <a href="#" class="footer-logo">
                 <svg width="32" height="32" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M18 4h12v16l10 18H8L18 20V4z" fill="white" opacity="0.15" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
-                  <path d="M10 34h28l2 6H8l2-6z" fill="#C8663B"/>
+                  <path d="M10 34h28l2 6H8l2-6z" fill="#4DD9D0"/>
                   <circle cx="17" cy="39" r="1.4" fill="white" opacity="0.8"/>
                   <circle cx="24" cy="38" r="1.8" fill="white" opacity="0.8"/>
                   <circle cx="31" cy="39" r="1.4" fill="white" opacity="0.8"/>
