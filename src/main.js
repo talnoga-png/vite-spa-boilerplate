@@ -253,6 +253,7 @@ function init() {
   initParallax()
   initMoleculeAnimation()
   initPairingDemo()
+  initCounters()
 }
 
 if (document.readyState === 'loading') {
