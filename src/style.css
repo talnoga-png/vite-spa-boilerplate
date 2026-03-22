@@ -1619,6 +1619,10 @@ p {
   position: relative;
 }
 .instant-examples-section .section-cta { text-align: center; margin-top: 48px; }
+.instant-examples-section h2,
+.instant-examples-section .section-lead { color: rgba(255,255,255,0.90); }
+.ingredient-name    { color: rgba(255,255,255,0.92) !important; }
+.pairing-description { color: rgba(255,255,255,0.58) !important; }
 
 .pairing-cards-grid {
   display: grid;
