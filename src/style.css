@@ -722,11 +722,12 @@ code, .mono { font-family: var(--font-mono); font-size: 0.85em; }
 .atom-core {
   position: relative; z-index: 2;
   width: 56px; height: 56px;
-  background: var(--dark-elevated);
-  border: 1.5px solid rgba(31,122,140,0.35);
+  background: rgba(255,255,255,0.10);
+  border: 1.5px solid rgba(31,122,140,0.55);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 0 20px rgba(31,122,140,0.12), inset 0 1px 0 rgba(255,255,255,0.6);
+  box-shadow: 0 0 20px rgba(31,122,140,0.25), inset 0 1px 0 rgba(255,255,255,0.15);
+  backdrop-filter: blur(4px);
 }
 .atom-emoji { font-size: 1.4rem; }
 
