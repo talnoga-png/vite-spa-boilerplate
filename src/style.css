@@ -156,15 +156,15 @@ code, .mono { font-family: var(--font-mono); font-size: 0.85em; }
 }
 
 .btn-accent {
-  background: var(--primary);
+  background: var(--accent);
   color: var(--white);
-  border-color: var(--primary);
+  border-color: var(--accent);
 }
 .btn-accent:hover {
-  background: var(--primary-mid);
-  border-color: var(--primary-mid);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(31,122,140,0.35);
+  background: var(--accent-deep);
+  border-color: var(--accent-deep);
+  transform: scale(1.03) translateY(-1px);
+  box-shadow: var(--shadow-accent);
 }
 
 .btn-ghost {
