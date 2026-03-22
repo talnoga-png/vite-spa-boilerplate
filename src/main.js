@@ -68,9 +68,9 @@ function initParticles() {
       left: ${x}%;
       top: ${startY}%;
       background: ${isGold
-        ? `rgba(200,164,90,${Math.random() * 0.5 + 0.2})`
-        : `rgba(77,217,208,${Math.random() * 0.4 + 0.15})`};
-      box-shadow: 0 0 ${size * 3}px ${isGold ? 'rgba(200,164,90,0.4)' : 'rgba(77,217,208,0.35)'};
+        ? `rgba(196,144,64,${Math.random() * 0.35 + 0.12})`
+        : `rgba(90,155,162,${Math.random() * 0.30 + 0.10})`};
+      box-shadow: 0 0 ${size * 3}px ${isGold ? 'rgba(196,144,64,0.25)' : 'rgba(90,155,162,0.22)'};
       animation: particleFloat ${duration}s ${delay}s linear infinite;
     `
     container.appendChild(p)
