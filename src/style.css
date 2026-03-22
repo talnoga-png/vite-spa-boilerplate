@@ -860,11 +860,11 @@ code, .mono { font-family: var(--font-mono); font-size: 0.85em; }
   font-family: var(--font-serif);
   font-style: italic;
   font-size: 1.1rem;
-  color: var(--text-secondary);
+  color: rgba(255,255,255,0.65);
   max-width: 600px;
   margin: 60px auto 0;
 }
-.demo-insight em { color: var(--accent-deep); font-style: normal; font-weight: 600; }
+.demo-insight em { color: var(--accent); font-style: normal; font-weight: 600; }
 
 /* =============================================
    BENEFITS
