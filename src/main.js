@@ -48,7 +48,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
    ============================================= */
 function initParticles() {
   const container = document.getElementById('particles')
-  if (!container) return
+  if (!container || prefersReducedMotion) return
 
   const PARTICLE_COUNT = 38
 
