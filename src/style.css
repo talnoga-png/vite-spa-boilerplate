@@ -1594,20 +1594,6 @@ p {
   .share-bar { flex-direction: column; align-items: flex-start; gap: var(--sp-2); }
 }
 
-/* ── CSS VARIABLE ALIASES (for new sections) ── */
-:root {
-  --dark:           var(--color-dark);
-  --dark-surface:   var(--color-dark-surface);
-  --dark-elevated:  #252B33;
-  --border:         var(--color-border);
-  --text:           var(--color-text-primary);
-  --text-secondary: var(--color-text-secondary);
-  --text-muted:     var(--color-text-muted);
-  --primary:        var(--color-primary);
-  --primary-dark:   var(--color-primary-dark);
-  --accent:         var(--color-accent);
-  --shadow:         var(--shadow-md);
-}
 
 /* =============================================
    INSTANT EXAMPLES SECTION
