@@ -1,57 +1,71 @@
 /* =============================================
-   FlavorLab — Kitchen Palette Edition
-   Inspired by: teal cabinets · brass hardware
-                blush stools · warm white walls
+   FlavorLab — Award-Winning Design System v3
+   Primary: #1F7A8C  Accent: #FF7A59
+   8px spacing grid · WCAG AA · Spring easing
    ============================================= */
 
 :root {
   /* ── Backgrounds ────────────────────────────── */
-  --void:           #2C3444;   /* navy-slate — bookcase/footer */
-  --dark:           #F7F5F0;   /* warm parchment — main bg     */
-  --dark-surface:   #EDE8DF;   /* warm linen — alt sections    */
-  --dark-elevated:  #FDFCFB;   /* near-white — card surfaces   */
+  --void:           #1A2535;   /* deep navy — footer */
+  --dark:           #F7F5F2;   /* warm cream — main bg */
+  --dark-surface:   #EEE9E0;   /* warm linen — alt sections */
+  --dark-elevated:  #FFFFFF;   /* pure white — card surfaces */
+  --color-dark-surface: #1F2D3D; /* dark differentiator (pairing demo) */
 
-  /* ── Teal (cabinets) ────────────────────────── */
-  --primary:        #5A9BA2;
-  --primary-mid:    #7AB4BA;
-  --primary-light:  #A8CED0;
-  --primary-glow:   rgba(90,155,162,0.18);
+  /* ── Primary — deep teal ─────────────────────── */
+  --primary:        #1F7A8C;
+  --primary-mid:    #2B8FA4;
+  --primary-dark:   #165E6B;
+  --primary-light:  #5AB0C2;
+  --primary-glow:   rgba(31,122,140,0.18);
 
-  /* ── Brass / Gold (hardware) ────────────────── */
-  --accent:         #C49040;
-  --accent-deep:    #A87830;
-  --accent-glow:    rgba(196,144,64,0.18);
+  /* ── Accent — terracotta orange ──────────────── */
+  --accent:         #FF7A59;
+  --accent-deep:    #E0613D;
+  --accent-glow:    rgba(255,122,89,0.18);
 
-  /* ── Blush (bar stools) ─────────────────────── */
-  --blush:          #C97B72;
+  /* ── Blush ───────────────────────────────────── */
+  --blush:          #FF7A59;
 
   /* ── Typography ─────────────────────────────── */
-  --text:           #2A2830;
-  --text-secondary: rgba(42,40,48,0.65);
-  --text-muted:     rgba(42,40,48,0.40);
+  --text:           #1A1A1A;
+  --text-secondary: #4A4A4A;
+  --text-muted:     #8A8A8A;
   --white:          #FFFFFF;
 
   /* ── Aliases ─────────────────────────────────── */
   --bg:             var(--dark);
   --bg-alt:         var(--dark-surface);
-  --border:         rgba(42,40,48,0.10);
+  --border:         rgba(26,26,26,0.10);
 
-  /* ── Shadows (warm-toned) ────────────────────── */
-  --shadow-sm:      0 2px 12px rgba(42,40,48,0.07);
-  --shadow:         0 8px 40px rgba(42,40,48,0.10);
-  --shadow-lg:      0 20px 70px rgba(42,40,48,0.14);
-  --glow-teal:      0 0 48px rgba(90,155,162,0.20);
-  --glow-gold:      0 0 48px rgba(196,144,64,0.18);
+  /* ── Shadows ─────────────────────────────────── */
+  --shadow-sm:      0 2px 12px rgba(0,0,0,0.06);
+  --shadow:         0 10px 30px rgba(0,0,0,0.08);
+  --shadow-lg:      0 24px 56px rgba(0,0,0,0.14);
+  --shadow-accent:  0 8px 28px rgba(255,122,89,0.35);
+  --glow-teal:      0 0 48px rgba(31,122,140,0.20);
+  --glow-gold:      0 0 48px rgba(255,122,89,0.18);
 
   /* ── Fonts ───────────────────────────────────── */
   --font-serif:     'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-sans:      'Space Grotesk', system-ui, -apple-system, sans-serif;
   --font-mono:      'IBM Plex Mono', 'Courier New', monospace;
 
+  /* ── Motion tokens ───────────────────────────── */
+  --t-fast:         150ms;
+  --t-base:         250ms;
+  --t-slow:         400ms;
+  --ease-spring:    cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* ── Spacing (8px grid) ──────────────────────── */
+  --sp-1: 8px;  --sp-2: 16px;  --sp-3: 24px;  --sp-4: 32px;
+  --sp-5: 40px; --sp-6: 48px;  --sp-8: 64px;  --sp-10: 80px;
+  --sp-12: 96px; --sp-16: 128px;
+
   --radius:         6px;
   --radius-lg:      14px;
   --nav-h:          72px;
-  --max-w:          1140px;
+  --max-w:          1200px;
   --max-w-narrow:   720px;
 }
 
