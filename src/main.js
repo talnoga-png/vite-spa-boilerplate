@@ -99,6 +99,7 @@ function initParticles() {
    PARALLAX HERO
    ============================================= */
 function initParallax() {
+  if (prefersReducedMotion) return
   const heroMolecule = document.querySelector('.hero-molecule')
 
   window.addEventListener('scroll', () => {
