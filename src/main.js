@@ -183,9 +183,47 @@ function initPairingDemo() {
    ============================================= */
 const revealElements = () => {
   const elements = document.querySelectorAll(
-    '.step-card, .benefit-card, .example-card, .audience-card, .article-card, .compound-card, .how-feature, .two-col-text, .two-col-visual, .section-header, .intro-lead, .share-bar, .demo-ingredient, .demo-connection'
+    '.step-card, .benefit-card, .example-card, .audience-card, .article-card, .compound-card, .how-feature, .two-col-text, .two-col-visual, .section-header, .intro-lead, .share-bar, .demo-ingredient, .demo-connection, .testimonial-card, .stat-item'
   )
   elements.forEach(el => el.classList.add('reveal'))
+}
+
+/* =============================================
+   STAT COUNTERS
+   ============================================= */
+function initCounters() {
+  if (prefersReducedMotion) return
+
+  const statNumbers = document.querySelectorAll('.stat-number[data-target]')
+  if (!statNumbers.length) return
+
+  const counterObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return
+      const el = entry.target
+      const raw = el.dataset.target
+      const end = parseInt(raw, 10)
+      if (isNaN(end)) return
+
+      const suffix = el.textContent.replace(/[\d,]/g, '').trim()
+      const duration = 1800
+      const start = performance.now()
+
+      const tick = now => {
+        const elapsed = now - start
+        const progress = Math.min(elapsed / duration, 1)
+        const eased = 1 - Math.pow(1 - progress, 3) // ease-out cubic
+        const current = Math.round(eased * end)
+        el.textContent = current.toLocaleString() + (suffix || '')
+        if (progress < 1) requestAnimationFrame(tick)
+      }
+
+      requestAnimationFrame(tick)
+      counterObserver.unobserve(el)
+    })
+  }, { threshold: 0.5 })
+
+  statNumbers.forEach(el => counterObserver.observe(el))
 }
 
 const observer = new IntersectionObserver(
