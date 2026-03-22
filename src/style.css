@@ -1594,6 +1594,310 @@ p {
   .share-bar { flex-direction: column; align-items: flex-start; gap: var(--sp-2); }
 }
 
+/* ── CSS VARIABLE ALIASES (for new sections) ── */
+:root {
+  --dark:           var(--color-dark);
+  --dark-surface:   var(--color-dark-surface);
+  --dark-elevated:  #252B33;
+  --border:         var(--color-border);
+  --text:           var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --text-muted:     var(--color-text-muted);
+  --primary:        var(--color-primary);
+  --primary-dark:   var(--color-primary-dark);
+  --accent:         var(--color-accent);
+  --shadow:         var(--shadow-md);
+}
+
+/* =============================================
+   INSTANT EXAMPLES SECTION
+   ============================================= */
+.instant-examples-section {
+  padding: 96px 28px;
+  background: var(--dark-elevated);
+  position: relative;
+}
+.instant-examples-section .section-cta { text-align: center; margin-top: 48px; }
+
+.pairing-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px;
+}
+
+.pairing-card {
+  background: var(--dark);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 40px 28px 32px;
+  text-align: center;
+  transition: box-shadow var(--t-base) ease, transform var(--t-base) ease;
+  position: relative;
+  overflow: hidden;
+}
+.pairing-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+}
+.pairing-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.pairing-ingredients {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.ingredient-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+.ingredient-emoji { font-size: 2.6rem; line-height: 1; display: block; }
+.ingredient-name {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.pair-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.pair-plus {
+  width: 34px; height: 34px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(31,122,140,0.30);
+}
+.pair-compound {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--primary);
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.pairing-description {
+  font-size: 0.92rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  margin: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 768px) {
+  .pairing-cards-grid { grid-template-columns: 1fr; gap: 20px; }
+}
+
+/* =============================================
+   HOW IT WORKS — MICRO COPY
+   ============================================= */
+.how-micro {
+  text-align: center;
+  margin-top: 48px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.how-micro::before, .how-micro::after {
+  content: '';
+  display: block;
+  width: 40px; height: 1px;
+  background: var(--text-muted);
+  opacity: 0.4;
+}
+
+/* =============================================
+   EDUCATION SECTION
+   ============================================= */
+.education-section {
+  padding: 80px 28px;
+  background: var(--dark-surface);
+}
+.edu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.edu-card {
+  background: var(--dark-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px 28px;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow var(--t-base) ease, transform var(--t-base) ease;
+}
+.edu-card::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--primary), var(--accent));
+  border-radius: 3px 0 0 3px;
+}
+.edu-card:hover { box-shadow: var(--shadow); transform: translateY(-3px); }
+.edu-icon {
+  font-size: 1.8rem;
+  margin-bottom: 16px;
+  display: block;
+}
+.edu-card h3 {
+  font-size: 1.05rem;
+  color: var(--text);
+  margin-bottom: 10px;
+  font-style: italic;
+}
+.edu-card p { font-size: 0.88rem; line-height: 1.65; }
+
+@media (max-width: 768px) {
+  .edu-grid { grid-template-columns: 1fr; gap: 16px; }
+}
+
+/* =============================================
+   FINAL CTA SECTION
+   ============================================= */
+.final-cta-section {
+  padding: 120px 28px;
+  background: var(--primary);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.final-cta-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1.5px, transparent 1.5px);
+  background-size: 36px 36px;
+  pointer-events: none;
+}
+.final-cta-section::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 60% at 50% 100%, rgba(0,0,0,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.final-cta-inner { position: relative; z-index: 1; }
+.final-cta-section h2 {
+  color: white;
+  font-size: clamp(2rem, 4vw, 3rem);
+  margin-bottom: 12px;
+  font-style: italic;
+}
+.final-cta-sub {
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.72);
+  margin-bottom: 40px;
+  font-weight: 300;
+}
+.btn-final {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  color: var(--primary-dark);
+  padding: 18px 52px;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 50px;
+  border: none;
+  text-decoration: none;
+  transition: transform var(--t-base) var(--ease-spring), box-shadow var(--t-base) ease;
+  letter-spacing: 0.02em;
+}
+.btn-final:hover {
+  transform: scale(1.04) translateY(-2px);
+  box-shadow: 0 16px 44px rgba(0,0,0,0.22);
+}
+.final-cta-micro {
+  margin-top: 20px;
+  font-size: 0.80rem;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.04em;
+}
+
+/* New testimonials layout for the redesigned testimonials section */
+.quote-mark {
+  font-family: var(--font-serif);
+  font-size: 4rem;
+  line-height: 1;
+  color: var(--color-accent);
+  opacity: 0.4;
+  display: block;
+  margin-bottom: -8px;
+}
+.testimonial-quote {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--color-text-primary);
+  line-height: 1.65;
+  flex: 1;
+  margin: 0;
+}
+.testimonial-card.featured .testimonial-quote { color: rgba(255,255,255,0.88); }
+.testimonial-card.featured .quote-mark { color: rgba(255,255,255,0.5); }
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: var(--sp-3);
+  border-top: 1px solid rgba(0,0,0,0.07);
+}
+.testimonial-card.featured .testimonial-author { border-top-color: rgba(255,255,255,0.12); }
+.author-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--color-primary-subtle);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.testimonial-card.featured .author-avatar { background: rgba(255,255,255,0.15); }
+.author-name {
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--color-text-primary);
+  display: block;
+}
+.testimonial-card.featured .author-name { color: var(--color-surface); }
+.author-title {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  display: block;
+  margin-top: 2px;
+}
+.testimonial-card.featured .author-title { color: rgba(255,255,255,0.60); }
+
+/* Section CTA utility */
+.section-cta { text-align: center; margin-top: 48px; }
+
 @media (max-width: 480px) {
   .benefits-grid { grid-template-columns: 1fr; }
   .hero-actions { flex-direction: column; align-items: stretch; }
