@@ -1740,6 +1740,8 @@ p {
 }
 .education-section h2,
 .education-section .section-lead { color: rgba(255,255,255,0.90); }
+.edu-card h3 { color: rgba(255,255,255,0.90); }
+.edu-card p  { color: rgba(255,255,255,0.58); }
 .edu-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
