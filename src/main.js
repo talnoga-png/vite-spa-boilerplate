@@ -1,14 +1,15 @@
 import './style.css'
 
 /* =============================================
-   FlavorLab — Phase 3 Main JS
+   FlavorLab — Interaction Layer v3.0
    ============================================= */
 
+// ── Reduced motion preference ─────────────────
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-// Nav: scroll shadow + mobile toggle
-const nav = document.getElementById('main-nav')
-const toggle = document.getElementById('nav-toggle')
+// ── Nav: scroll + mobile ──────────────────────
+const nav      = document.getElementById('main-nav')
+const toggle   = document.getElementById('nav-toggle')
 const navLinks = document.getElementById('nav-links')
 
 window.addEventListener('scroll', () => {
@@ -18,7 +19,7 @@ window.addEventListener('scroll', () => {
 toggle?.addEventListener('click', () => {
   const isOpen = navLinks.classList.toggle('open')
   toggle.classList.toggle('active', isOpen)
-  toggle.setAttribute('aria-expanded', isOpen)
+  toggle.setAttribute('aria-expanded', String(isOpen))
 })
 
 navLinks?.querySelectorAll('a').forEach(link => {
@@ -29,7 +30,7 @@ navLinks?.querySelectorAll('a').forEach(link => {
   })
 })
 
-// Smooth scroll for anchor links
+// ── Smooth scroll ─────────────────────────────
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', e => {
     const id = anchor.getAttribute('href')
@@ -39,219 +40,179 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     e.preventDefault()
     const offset = nav?.offsetHeight ?? 72
     const top = target.getBoundingClientRect().top + window.scrollY - offset
-    window.scrollTo({ top, behavior: 'smooth' })
+    window.scrollTo({ top, behavior: prefersReducedMotion ? 'auto' : 'smooth' })
   })
 })
 
-/* =============================================
-   PARTICLE SYSTEM
-   ============================================= */
+/* ── Particle system ─────────────────────────── */
 function initParticles() {
+  if (prefersReducedMotion) return
   const container = document.getElementById('particles')
-  if (!container || prefersReducedMotion) return
+  if (!container) return
 
-  const PARTICLE_COUNT = 38
-
-  for (let i = 0; i < PARTICLE_COUNT; i++) {
-    const p = document.createElement('div')
+  const COUNT = 28
+  for (let i = 0; i < COUNT; i++) {
+    const p    = document.createElement('div')
     p.className = 'particle'
-
-    // Random properties
-    const size = Math.random() * 3 + 1       // 1–4px
-    const x = Math.random() * 100            // % horizontal
-    const startY = Math.random() * 100       // % starting vertical
-    const duration = Math.random() * 20 + 15 // 15–35s
-    const delay = Math.random() * -30        // stagger
-    const isAccent = Math.random() > 0.6
+    const size   = Math.random() * 2.5 + 1
+    const x      = Math.random() * 100
+    const startY = Math.random() * 100
+    const dur    = Math.random() * 22 + 14
+    const delay  = Math.random() * -35
+    const isTeal = Math.random() > 0.55
 
     p.style.cssText = `
-      width: ${size}px;
-      height: ${size}px;
-      left: ${x}%;
-      top: ${startY}%;
-      background: ${isAccent
-        ? `rgba(255,122,89,${Math.random() * 0.25 + 0.08})`
-        : `rgba(31,122,140,${Math.random() * 0.22 + 0.08})`};
-      box-shadow: 0 0 ${size * 3}px ${isAccent ? 'rgba(255,122,89,0.18)' : 'rgba(31,122,140,0.15)'};
-      animation: particleFloat ${duration}s ${delay}s linear infinite;
+      width:${size}px; height:${size}px; left:${x}%; top:${startY}%;
+      background:${isTeal
+        ? `rgba(31,122,140,${(Math.random()*0.3+0.08).toFixed(2)})`
+        : `rgba(255,122,89,${(Math.random()*0.25+0.08).toFixed(2)})`};
+      box-shadow:0 0 ${size*3}px ${isTeal ? 'rgba(31,122,140,0.2)' : 'rgba(255,122,89,0.18)'};
+      animation:particleFloat ${dur}s ${delay}s linear infinite;
     `
     container.appendChild(p)
   }
 
-  // Add keyframes dynamically if not already present
-  if (!document.getElementById('particle-keyframes')) {
-    const style = document.createElement('style')
-    style.id = 'particle-keyframes'
-    style.textContent = `
+  if (!document.getElementById('particle-kf')) {
+    const s = document.createElement('style')
+    s.id = 'particle-kf'
+    s.textContent = `
       @keyframes particleFloat {
-        0%   { transform: translateY(0px) translateX(0px); opacity: 0; }
-        5%   { opacity: 1; }
-        50%  { transform: translateY(-45vh) translateX(${Math.random() > 0.5 ? '' : '-'}${Math.floor(Math.random()*40+10)}px); }
-        95%  { opacity: 0.8; }
-        100% { transform: translateY(-100vh) translateX(0px); opacity: 0; }
+        0%   { transform:translateY(0) translateX(0); opacity:0; }
+        5%   { opacity:1; }
+        50%  { transform:translateY(-45vh) translateX(${Math.floor(Math.random()*30+5)}px); }
+        95%  { opacity:0.7; }
+        100% { transform:translateY(-100vh) translateX(0); opacity:0; }
       }
     `
-    document.head.appendChild(style)
+    document.head.appendChild(s)
   }
 }
 
-/* =============================================
-   PARALLAX HERO
-   ============================================= */
+/* ── Parallax ────────────────────────────────── */
 function initParallax() {
   if (prefersReducedMotion) return
-  const heroMolecule = document.querySelector('.hero-molecule')
-
+  const mol = document.querySelector('.hero-molecule')
+  if (!mol) return
   window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY
-    if (scrollY > window.innerHeight * 1.5) return
-
-    // Parallax molecule (moves slower than scroll)
-    if (heroMolecule) {
-      heroMolecule.style.transform = `translateY(calc(-50% + ${scrollY * 0.25}px))`
-    }
+    if (window.scrollY > window.innerHeight * 1.2) return
+    mol.style.transform = `translateY(calc(-50% + ${window.scrollY * 0.22}px))`
   }, { passive: true })
 }
 
-/* =============================================
-   MOLECULE ELECTRON ORBIT ANIMATION
-   ============================================= */
-function initMoleculeAnimation() {
-  const electron = document.querySelector('.mol-electron')
-  if (!electron || prefersReducedMotion) return
-
+/* ── Molecule electron orbit ─────────────────── */
+function initMolecule() {
+  if (prefersReducedMotion) return
+  const el = document.querySelector('.mol-electron')
+  if (!el) return
+  const cx = 220, cy = 190, rx = 55, ry = 20, tilt = -35 * Math.PI / 180
   let angle = 0
-  const centerX = 220
-  const centerY = 190
-  const rx = 55
-  const ry = 20
-  const tiltDeg = -35
-  const tiltRad = tiltDeg * Math.PI / 180
-
-  function animate() {
+  const cosT = Math.cos(tilt), sinT = Math.sin(tilt)
+  ;(function tick() {
     angle += 0.015
-    // Parametric ellipse
-    const ex = centerX + rx * Math.cos(angle)
-    const ey = centerY + ry * Math.sin(angle)
-
-    // Apply tilt rotation
-    const cosT = Math.cos(tiltRad)
-    const sinT = Math.sin(tiltRad)
-    const dx = ex - centerX
-    const dy = ey - centerY
-    const rx2 = dx * cosT - dy * sinT + centerX
-    const ry2 = dx * sinT + dy * cosT + centerY
-
-    electron.setAttribute('cx', rx2.toFixed(2))
-    electron.setAttribute('cy', ry2.toFixed(2))
-
-    requestAnimationFrame(animate)
-  }
-  animate()
+    const ex = cx + rx * Math.cos(angle)
+    const ey = cy + ry * Math.sin(angle)
+    const dx = ex - cx, dy = ey - cy
+    el.setAttribute('cx', (dx * cosT - dy * sinT + cx).toFixed(2))
+    el.setAttribute('cy', (dx * sinT + dy * cosT + cy).toFixed(2))
+    requestAnimationFrame(tick)
+  })()
 }
 
-/* =============================================
-   PAIRING DEMO ACTIVATION
-   ============================================= */
+/* ── Pairing demo spark ──────────────────────── */
 function initPairingDemo() {
-  const demoSection = document.querySelector('.pairing-demo')
-  if (!demoSection) return
-
-  let activated = false
-
-  const demoObserver = new IntersectionObserver(
-    entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && !activated) {
-          activated = true
-          // Small delay for dramatic effect
-          setTimeout(() => {
-            demoSection.classList.add('demo-active')
-          }, 400)
-          demoObserver.unobserve(entry.target)
-        }
-      })
-    },
-    { threshold: 0.4 }
-  )
-
-  demoObserver.observe(demoSection)
+  const demo = document.querySelector('.pairing-demo')
+  if (!demo) return
+  let fired = false
+  new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting && !fired) {
+        fired = true
+        setTimeout(() => demo.classList.add('demo-active'),
+          prefersReducedMotion ? 0 : 350)
+      }
+    })
+  }, { threshold: 0.38 }).observe(demo)
 }
 
-/* =============================================
-   SCROLL REVEAL
-   ============================================= */
-const revealElements = () => {
-  const elements = document.querySelectorAll(
-    '.step-card, .benefit-card, .example-card, .audience-card, .article-card, .compound-card, .how-feature, .two-col-text, .two-col-visual, .section-header, .intro-lead, .share-bar, .demo-ingredient, .demo-connection, .testimonial-card, .stat-item'
-  )
-  elements.forEach(el => el.classList.add('reveal'))
-}
-
-/* =============================================
-   STAT COUNTERS
-   ============================================= */
+/* ── Stat counter animation ──────────────────── */
 function initCounters() {
   if (prefersReducedMotion) return
-
-  const statNumbers = document.querySelectorAll('.stat-number[data-target]')
-  if (!statNumbers.length) return
-
-  const counterObserver = new IntersectionObserver(entries => {
+  const counters = document.querySelectorAll('.stat-number')
+  const obs = new IntersectionObserver(entries => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return
-      const el = entry.target
-      const raw = el.dataset.target
-      const end = parseInt(raw, 10)
-      if (isNaN(end)) return
-
-      const suffix = el.textContent.replace(/[\d,]/g, '').trim()
+      const el  = entry.target
+      const raw = el.textContent.trim()
+      // Extract number and suffix
+      const match = raw.match(/^([\d,.]+)(\S*)$/)
+      if (!match) return
+      const end    = parseFloat(match[1].replace(/,/g, ''))
+      const suffix = match[2]
       const duration = 1800
-      const start = performance.now()
-
-      const tick = now => {
-        const elapsed = now - start
+      const startTime = performance.now()
+      const tick = (now) => {
+        const elapsed  = now - startTime
         const progress = Math.min(elapsed / duration, 1)
-        const eased = 1 - Math.pow(1 - progress, 3) // ease-out cubic
+        // Ease out cubic
+        const eased = 1 - Math.pow(1 - progress, 3)
         const current = Math.round(eased * end)
-        el.textContent = current.toLocaleString() + (suffix || '')
+        // Format with + if original had +
+        const hasPlus = raw.includes('+')
+        const hasStar = raw.includes('★')
+        if (hasStar) {
+          el.textContent = `${current}★`
+        } else if (end >= 1000) {
+          el.textContent = current.toLocaleString() + (hasPlus ? '+' : '') + suffix.replace(/^\+/, '')
+        } else {
+          el.textContent = current + (hasPlus ? '+' : '') + suffix.replace(/^\+/, '')
+        }
         if (progress < 1) requestAnimationFrame(tick)
+        else el.textContent = raw  // restore exact original
       }
-
       requestAnimationFrame(tick)
-      counterObserver.unobserve(el)
+      obs.unobserve(el)
     })
   }, { threshold: 0.5 })
-
-  statNumbers.forEach(el => counterObserver.observe(el))
+  counters.forEach(c => obs.observe(c))
 }
 
-const observer = new IntersectionObserver(
-  entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const siblings = entry.target.parentElement?.querySelectorAll('.reveal') ?? []
-        let delay = 0
-        siblings.forEach((sib, idx) => {
-          if (sib === entry.target) delay = idx * 90
-        })
-        setTimeout(() => entry.target.classList.add('visible'), delay)
-        observer.unobserve(entry.target)
-      }
-    })
-  },
-  { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
-)
+/* ── Scroll reveal ───────────────────────────── */
+function initReveal() {
+  const targets = document.querySelectorAll(
+    '.step-card, .benefit-card, .example-card, .audience-card, ' +
+    '.article-card, .compound-card, .how-feature, ' +
+    '.two-col-text, .two-col-visual, .section-header, ' +
+    '.intro-lead, .share-bar, .demo-ingredient, .demo-connection, ' +
+    '.testimonial-card, .stat-item'
+  )
 
-/* =============================================
-   INIT
-   ============================================= */
+  if (prefersReducedMotion) {
+    targets.forEach(el => el.classList.add('visible'))
+    return
+  }
+
+  targets.forEach(el => el.classList.add('reveal'))
+
+  // Named observer to allow unobserve
+  const revealObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return
+      const siblings = [...(entry.target.parentElement?.querySelectorAll('.reveal') ?? [])]
+      const idx = siblings.indexOf(entry.target)
+      setTimeout(() => entry.target.classList.add('visible'), idx * 80)
+      revealObs.unobserve(entry.target)
+    })
+  }, { threshold: 0.10, rootMargin: '0px 0px -40px 0px' })
+
+  targets.forEach(el => revealObs.observe(el))
+}
+
+/* ── Init ────────────────────────────────────── */
 function init() {
-  revealElements()
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+  initReveal()
   initParticles()
   initParallax()
-  initMoleculeAnimation()
+  initMolecule()
   initPairingDemo()
   initCounters()
 }
