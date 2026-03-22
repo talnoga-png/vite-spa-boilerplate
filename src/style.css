@@ -293,7 +293,7 @@ code, .mono { font-family: var(--font-mono); font-size: 0.85em; }
 }
 
 .nav-cta-btn {
-  background: var(--primary) !important;
+  background: var(--accent) !important;
   color: var(--white) !important;
   padding: 9px 20px !important;
   border-radius: 50px !important;
@@ -302,9 +302,9 @@ code, .mono { font-family: var(--font-mono); font-size: 0.85em; }
   letter-spacing: 0.04em;
 }
 .nav-cta-btn:hover {
-  background: var(--primary-mid) !important;
+  background: var(--accent-deep) !important;
   transform: translateY(-1px);
-  box-shadow: 0 4px 18px rgba(31,122,140,0.30) !important;
+  box-shadow: 0 4px 18px rgba(255,122,89,0.35) !important;
 }
 
 .nav-toggle {
