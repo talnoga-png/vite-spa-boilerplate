@@ -8,7 +8,17 @@
       "Bash(export PATH=\"/c/Program Files/nodejs:$PATH\")",
       "Skill(update-config)",
       "Bash(git --version)",
-      "Bash(git:*)"
+      "Bash(git:*)",
+      "Bash(ffmpeg -i \"C:/Users/noyha/Downloads/blessed-little-bungalow-kitchen-698e014a18a24.avif\" -vf scale=400:-1 \"C:/Users/noyha/Downloads/blessed-kitchen-small.png\")",
+      "Bash(python3:*)",
+      "Bash(python:*)",
+      "Bash(where node:*)",
+      "Bash(node -e \":*)",
+      "Bash(cmd.exe /c \"node --version\" 2>&1)",
+      "Read(//mnt/c/Users/noyha/**)",
+      "Bash(ls /c/Users/noyha/Downloads/blessed*)",
+      "Bash(convert \"/c/Users/noyha/Downloads/blessed-little-bungalow-kitchen-698e014a18a24.avif\" -resize 300x \"/c/Users/noyha/Downloads/blessed-kitchen-small.jpg\")",
+      "Bash(node:*)"
     ]
   },
   "hooks": {
