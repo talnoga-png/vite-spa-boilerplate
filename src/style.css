@@ -341,7 +341,7 @@ code, .mono { font-family: var(--font-mono); font-size: 0.85em; }
   overflow: hidden;
   background:
     radial-gradient(ellipse 65% 55% at 20% 35%, rgba(31,122,140,0.10) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 65% at 88% 55%, rgba(196,144,64,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 65% at 88% 55%, rgba(255,122,89,0.08) 0%, transparent 50%),
     radial-gradient(ellipse 70% 40% at 55% 100%, rgba(201,123,114,0.06) 0%, transparent 45%),
     linear-gradient(160deg, #F7F5F0 0%, #F2EDE4 50%, #F7F5F0 100%);
 }
@@ -562,9 +562,9 @@ code, .mono { font-family: var(--font-mono); font-size: 0.85em; }
   letter-spacing: 0.02em;
 }
 .pair-badge.accent {
-  background: rgba(196,144,64,0.10);
+  background: rgba(255,122,89,0.10);
   color: var(--accent-deep);
-  border-color: rgba(196,144,64,0.25);
+  border-color: rgba(255,122,89,0.25);
 }
 .compound-desc { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; margin: 0; }
 
@@ -661,7 +661,7 @@ code, .mono { font-family: var(--font-mono); font-size: 0.85em; }
   inset: 0;
   background:
     radial-gradient(ellipse 80% 60% at 50% 50%, rgba(31,122,140,0.06) 0%, transparent 65%),
-    radial-gradient(ellipse 40% 40% at 15% 80%, rgba(196,144,64,0.05) 0%, transparent 55%);
+    radial-gradient(ellipse 40% 40% at 15% 80%, rgba(255,122,89,0.05) 0%, transparent 55%);
   pointer-events: none;
 }
 
@@ -698,7 +698,7 @@ code, .mono { font-family: var(--font-mono); font-size: 0.85em; }
 .atom-orbit { position: absolute; border-radius: 50%; border: 1px solid rgba(31,122,140,0.25); }
 .orbit-1 { width: 80px;  height: 80px;  animation: orbitSpin 6s linear infinite; }
 .orbit-2 { width: 105px; height: 105px; animation: orbitSpin 10s linear infinite reverse;
-            border-color: rgba(196,144,64,0.18); }
+            border-color: rgba(255,122,89,0.18); }
 
 @keyframes orbitSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
@@ -906,7 +906,7 @@ code, .mono { font-family: var(--font-mono); font-size: 0.85em; }
   inset: 0;
   background:
     radial-gradient(ellipse 60% 50% at 30% 50%, rgba(31,122,140,0.07) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 60% at 80% 40%, rgba(196,144,64,0.05) 0%, transparent 55%);
+    radial-gradient(ellipse 50% 60% at 80% 40%, rgba(255,122,89,0.05) 0%, transparent 55%);
   pointer-events: none;
 }
 
