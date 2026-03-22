@@ -1738,6 +1738,8 @@ p {
   padding: 80px 28px;
   background: var(--dark-surface);
 }
+.education-section h2,
+.education-section .section-lead { color: rgba(255,255,255,0.90); }
 .edu-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
