@@ -118,7 +118,7 @@ function initParallax() {
    ============================================= */
 function initMoleculeAnimation() {
   const electron = document.querySelector('.mol-electron')
-  if (!electron) return
+  if (!electron || prefersReducedMotion) return
 
   let angle = 0
   const centerX = 220
