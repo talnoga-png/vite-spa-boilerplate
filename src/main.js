@@ -62,17 +62,17 @@ function initParticles() {
     const startY = Math.random() * 100       // % starting vertical
     const duration = Math.random() * 20 + 15 // 15–35s
     const delay = Math.random() * -30        // stagger
-    const isGold = Math.random() > 0.6
+    const isAccent = Math.random() > 0.6
 
     p.style.cssText = `
       width: ${size}px;
       height: ${size}px;
       left: ${x}%;
       top: ${startY}%;
-      background: ${isGold
-        ? `rgba(196,144,64,${Math.random() * 0.35 + 0.12})`
-        : `rgba(90,155,162,${Math.random() * 0.30 + 0.10})`};
-      box-shadow: 0 0 ${size * 3}px ${isGold ? 'rgba(196,144,64,0.25)' : 'rgba(90,155,162,0.22)'};
+      background: ${isAccent
+        ? `rgba(255,122,89,${Math.random() * 0.25 + 0.08})`
+        : `rgba(31,122,140,${Math.random() * 0.22 + 0.08})`};
+      box-shadow: 0 0 ${size * 3}px ${isAccent ? 'rgba(255,122,89,0.18)' : 'rgba(31,122,140,0.15)'};
       animation: particleFloat ${duration}s ${delay}s linear infinite;
     `
     container.appendChild(p)
