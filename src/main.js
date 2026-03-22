@@ -1,8 +1,10 @@
 import './style.css'
 
 /* =============================================
-   FlavorLab — Enhanced Main JS
+   FlavorLab — Phase 3 Main JS
    ============================================= */
+
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 // Nav: scroll shadow + mobile toggle
 const nav = document.getElementById('main-nav')
