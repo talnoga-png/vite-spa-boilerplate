@@ -12,6 +12,15 @@ npm run preview   # Preview the production build locally
 
 There is no test runner or linter configured.
 
+## Git & Build Workflow
+
+**After every code change:** Changes are auto-committed and pushed via hook (`chore: auto-save changes`).
+
+**After completing a new feature:**
+1. Run `npm run build`
+2. If there are build errors, fix them all
+3. Commit with a descriptive message and push to the current branch
+
 ## Architecture
 
 This is a **vanilla JS SPA** for **FlavorLab™** — a science-based flavor pairing product. No framework (React/Vue/etc.) is used.
