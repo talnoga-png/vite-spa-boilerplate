@@ -13,7 +13,11 @@ documentCounts:
   researchCount: 1
   brainstormingCount: 1
   projectDocsCount: 3
-classification: {}
+classification:
+  projectType: 'Full-stack Consumer SaaS Web Application with B2B API layer'
+  domain: 'Food Technology / Culinary Science'
+  complexity: 'Medium-High'
+  projectContext: 'brownfield'
 ---
 
 # Product Requirements Document — FlavorLab™
