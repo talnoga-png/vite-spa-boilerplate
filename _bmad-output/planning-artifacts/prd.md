@@ -127,6 +127,112 @@ Public Developer API, Culinary School licensing, Personal Flavor Profile, User-s
 
 ---
 
+## Domain Requirements
+
+### DR-01: Data Integrity — No Hallucinated Pairings
+
+Every pairing surfaced to any user (free, Pro, or API) must trace directly to a real edge in the FlavorGraph dataset (`edges_191120.csv`). The system must never synthesise or infer a pairing from metadata alone. If a query produces no direct FlavorGraph edge, the system surfaces the closest available match with an explicit confidence caveat — it does not generate a plausible-sounding but unverified result.
+
+**Implication:** The ETL pipeline is the trust anchor. Any re-seed, update, or schema migration must maintain edge traceability. Compound names displayed in science cards must come from the `node_type = "compound"` nodes in the same dataset, not from external LLM output.
+
+---
+
+### DR-02: Allergen Filter — Ingredient Level Only, Never Compound Level
+
+Dietary and allergen filters operate on ingredient classification (from `dict_ingr2cate` taxonomy + FlavorGraph hub labels), not on shared compound chemistry. Filtering by compound origin would produce incorrect false negatives and must not be implemented.
+
+**Implication:** The filter accuracy guarantee ("zero false negatives" in Success Criteria) applies only to ingredient-level classification. The UI must include a disclaimer: *"Compound data reflects chemical similarity, not allergen presence in the final dish."*
+
+---
+
+### DR-03: Hive Score — Eventual Consistency, Not Real-Time
+
+The Hive Score for any pairing is an aggregated community rating, recalculated periodically (not on every vote). During moderation holds, the Hive Score is frozen at its pre-event value. The displayed score must always include a `last_updated` timestamp visible to API consumers.
+
+**Implication:** Internal recalculation frequency: minimum daily, recommended hourly for hub ingredient pairings.
+
+---
+
+### DR-04: Hub vs Non-Hub Node Distinction
+
+The Ingredient Oracle search must only return hub ingredient nodes as primary results. Compound nodes are never user-searchable but are displayed in science cards as shared compounds.
+
+**Implication:** The autocomplete index is built from hub ingredients only (~616). The full ~8,000 node set is indexed only for science card rendering.
+
+---
+
+### DR-05: Dietary Taxonomy — Custom Mapping Layer Required
+
+The FlavorGraph category taxonomy does not map 1:1 to consumer dietary labels (Vegan, Vegetarian, Gluten-Free, Nut-Free, etc.). A custom dietary mapping layer must be built on top of the taxonomy.
+
+**Implication:** This mapping is a product decision, not a dataset feature, and must be explicitly maintained and versioned (e.g. "Is honey vegan?" must be a deliberate, documented choice).
+
+---
+
+### DR-06: Score Normalisation — FlavorGraph Scores Are Not Percentages
+
+FlavorGraph edge scores are floating-point similarity weights (0.0–1.0) derived from chemical fingerprint overlap and recipe co-occurrence. They are not directly interpretable as culinary compatibility percentages.
+
+**Implication:** The Science Score must be presented as a relative indicator alongside qualitative labels ("highly compatible" / "moderate match" / "low compatibility") to prevent literal misinterpretation.
+
+---
+
+### DR-07: LocalStorage Scope and Limitations
+
+Free-tier preferences (dietary filters, recently viewed, First Pairing Magic flag) are stored in browser localStorage — device-scoped, cleared by privacy modes, not available in incognito.
+
+**Implication:** Every localStorage-dependent feature must function correctly on a clean state. Cross-device sync is explicitly post-MVP and the primary free-to-Pro upsell hook.
+
+---
+
+### DR-08: Legal — FlavorGraph Dataset Licensing
+
+The FlavorGraph dataset has no explicit open-source licence in the public repository. Commercial use has not been formally cleared.
+
+**Implication:** Legal review is a **blocking pre-condition** for public launch. ETL and development work can proceed, but production deployment to users is blocked until licence status is confirmed or an alternative dataset is identified.
+
+---
+
+### DR-09: API Contract Stability
+
+Any change to the pairing response schema, score calculation method, or ingredient taxonomy that would break existing integrations is a breaking change requiring a major version bump and a minimum 60-day deprecation notice period.
+
+**Implication:** The API must be versioned from day one (`/v1/pairings`). The API response schema is the contract; the MongoDB schema is an implementation detail.
+
+---
+
+### DR-10: Moderation — Quarantine, Not Delete
+
+Community ratings held in "pending" state during moderation are not deleted — they are quarantined with a `status` field (active / pending / rejected) and full audit trail. Hive Score calculations filter on `status = active` only.
+
+**Implication:** Releasing cleared ratings retroactively must not corrupt Hive Score history. The ratings data model must support status transitions with timestamps.
+
+---
+
+### DR-11: Ingredient Coverage Gap — Multi-Source Data Strategy
+
+FlavorGraph provides ~616 hub ingredients (searchable) and ~8,000 total nodes. This coverage is heavily weighted toward Western, commercially common ingredients. Regional and heritage ingredients (e.g. sumac, yuzu, berbere, moringa, tamarind) are absent or incomplete. Critically, adding an ingredient without its compound profile produces a dead node — it appears in search but cannot generate a Science Score pairing. Compound data and ingredient coverage must be solved together.
+
+**Viable supplementary sources:**
+- **FooDB** (Wishart Lab, University of Alberta) — ~1,000 foods mapped to 70,000+ chemical records; open academic dataset. Best near-term supplement to FlavorGraph.
+- **USDA FoodData Central** — broad ingredient coverage; primarily nutritional, limited flavor-compound focus.
+- **FlavorDB (IIT Delhi)** — ~1,000 ingredients mapped to flavor molecules; independently built from FlavorGraph. Licensing requires review.
+- **PubChem** — definitive compound profiles for any molecule; requires cross-referencing to map ingredients → compounds.
+- **Scientific literature (PubMed)** — primary source for novel ingredient compound profiles; requires NLP extraction pipeline.
+
+**Phased coverage strategy:**
+
+| Phase | Action | Target |
+|---|---|---|
+| MVP | Ship with FlavorGraph's 616 hub ingredients. Surface ingredient count transparently ("616 scientifically mapped ingredients") — specificity builds trust. | 616 searchable ingredients |
+| Growth | Integrate FooDB via extended ETL. Prioritise high-value gaps: Asian, African, South American, fermented food ingredients. | ~1,000+ ingredients |
+| Vision | Community-assisted ingredient submission pipeline. Users request ingredients; automated pipeline (PubMed + PubChem) populates compound profiles. New ingredients enter "pending" state — searchable with "compound data coming soon" flag — then graduate to full Science Score participation once profiled. | Ongoing expansion |
+| Long-term moat | Proprietary compound profiling of novel/rare ingredients unavailable in any public dataset. Becomes a defensible data asset. | Competitive differentiation |
+
+**Implication:** The ETL pipeline architecture must be designed for multi-source ingestion from day one, not just FlavorGraph CSVs. The MongoDB ingredient schema must include a `data_source` field (e.g. `"flavorGraph"`, `"foodb"`, `"pending"`) and a `coverage_confidence` indicator displayed in the UI when data is partial.
+
+---
+
 ## User Journeys
 
 ### Journey 1 — Maya, Home Cook: Success Path
