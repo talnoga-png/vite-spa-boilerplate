@@ -27,7 +27,13 @@
       "Read(//c/Users/noyha/AppData/Roaming/**)",
       "Bash(\"/c/Program Files/nodejs/npx\" bmad-method install)",
       "Bash(cmd.exe /c \"npx bmad-method install\")",
-      "Bash(/c/Windows/System32/cmd.exe /c \"npx bmad-method install\")"
+      "Bash(/c/Windows/System32/cmd.exe /c \"npx bmad-method install\")",
+      "WebSearch",
+      "WebFetch(domain:www.foodpairing.com)",
+      "WebFetch(domain:flavonomics.com)",
+      "WebFetch(domain:www.flavorfox.app)",
+      "WebFetch(domain:tastematch.app)",
+      "WebFetch(domain:inspire.foodpairing.com)"
     ]
   },
   "hooks": {

@@ -127,6 +127,157 @@ Public Developer API, Culinary School licensing, Personal Flavor Profile, User-s
 
 ---
 
+## Competitive Analysis
+
+### Market Context
+
+The recipe app market is valued at $1.25B in 2024, growing at 13.2% CAGR to $2.32B by 2029. The AI in Food & Beverage market is larger and faster: $8.45–11.75B in 2024, projected to reach $50.6B by 2030 at ~29–39% CAGR. The molecular gastronomy equipment segment is growing at 9.5% CAGR — almost entirely professional today, with home cooks significantly underserved. 36% of global consumers already express interest in using AI assistants for food creation. The market exists and is growing; the science-forward consumer tier within it is essentially unoccupied.
+
+Two recent signals reinforce FlavorLab's timing:
+- **Yummly shut down December 20, 2024.** Whirlpool acquired it for $100M in 2017, pivoted to generative AI, laid off the entire team in April 2024, and shut the product permanently. 2+ million users (many paying $2.99–4.99/month) were left without their primary AI cooking assistant. This is an addressable displaced audience.
+- **Food52 filed for Chapter 11 bankruptcy December 29, 2025.** Revenue fell from $160M to $74.7M as its content-to-commerce model collapsed. The lesson: community content platforms in food need product/SaaS revenue, not just ad/media revenue. FlavorLab's freemium + Pro + API model is structurally different.
+
+---
+
+### Direct Competitors — Flavor Pairing & Molecular Tools
+
+#### Foodpairing (foodpairing.com)
+**The closest direct competitor — and the widest opportunity.**
+
+Founded 2009 in Belgium; early collaborator with Heston Blumenthal. Now a "Flavor Intelligence Company" oriented almost entirely toward CPG enterprises. Their database profiles 2,000+ ingredients across 8,000 aroma molecules. They have Foodpairing Trees (visual compatibility maps), Consumer Flavor Intelligence (ML for product success prediction), and a chef-facing Inspire module. Enterprise customers span 125 countries.
+
+| Dimension | Foodpairing | FlavorLab |
+|---|---|---|
+| Science data | Yes (molecular) | Yes (FlavorGraph, 147K pairings) |
+| Consumer UX | Minimal — enterprise-first | Full — consumer-first |
+| Community scoring | None | Hive Score |
+| Pricing | Opaque / enterprise-quoted | Free / Pro / Enterprise transparent |
+| API | Enterprise only, not self-serve | Self-serve Enterprise tier |
+| Plain-English explanations | No | Yes (dual-layer) |
+| Home cook audience | Abandoned | Primary free tier |
+
+**The gap Foodpairing leaves:** The entire home cook and prosumer market. Their enterprise pivot has effectively abandoned consumer access. A free user visiting foodpairing.com gets ~100 pairing trees with no plain-English explanation, no community data, and no pricing path that makes sense for non-enterprise users. This is FlavorLab's clearest opening.
+
+---
+
+#### FlavorDB2 (IIIT Delhi)
+Academic database of 25,595 flavor molecules linked to 936 natural ingredients. Rigorous science, raw interface, no consumer UX, no community layer, no commercial support. It is the scientific reference layer — not a consumer product. Zero competitive overlap with FlavorLab's addressable market.
+
+---
+
+#### TasteMatch (tastematch.app)
+Mobile app with 50,000+ curated flavor pairings and a combinator feature (input multiple ingredients, see shared pairings). Clean consumer UX, $1.99/month, ad-free. The combinator feature is a direct analog to FlavorLab's multi-ingredient search.
+
+**Critical weakness:** Pairings are drawn from culinary reference books (similar to The Flavor Bible), not molecular chemistry. No Science Score, no molecular compound data, no community Hive Score. 14 user ratings on the App Store — extremely small user base. No API.
+
+**Signal:** TasteMatch proves consumer willingness to pay $1.99/month for a flavor pairing tool. FlavorLab differentiates with verifiable molecular science, dual scoring, and an enterprise API tier.
+
+---
+
+#### Flavonomics (flavonomics.com)
+UK-based, 4,250+ ingredients analysed across 150 flavor dimensions. Uses genuine molecular and sensory science, not LLM pattern matching. Targets restaurants, food brands, and R&D labs. Modern, clean interface.
+
+**Weakness:** No free tier, no community scoring, no API, no consumer UX, smaller ingredient database than FlavorGraph (4,250 vs. ~8,000+). Opaque pricing keeps it inaccessible. Limited brand awareness outside food professional circles.
+
+---
+
+#### Flavorfox, The Flavor Network / flavorpair.me
+Both are recipe co-occurrence tools (not molecular science). Flavorfox has occasion/theme-based search but had website connectivity issues during research. The Flavor Network is a free indie project based on The Flavor Bible dataset — good for visual exploration, no commercial backing, no community layer, no API.
+
+**No meaningful competitive threat.** Both lack the scientific foundation that is FlavorLab's primary differentiator.
+
+---
+
+### Indirect Competitors — Recipe & AI Cooking Tools
+
+#### General AI Assistants (ChatGPT, Gemini) — Most Important Indirect Competitor
+
+The most significant indirect competitor is not a food product — it's people asking "what goes with X?" in ChatGPT or Gemini. Both are free (premium at ~$20/month), conversational, and increasingly capable.
+
+**The critical weakness:** LLMs hallucinate scientific claims. When ChatGPT says "truffle and chocolate share aromatic compounds" it is pattern-matching from text, not running a compound similarity calculation. It cannot show a Science Score, it cannot cite a FlavorGraph edge, and it cannot show a community-validated Hive Score. As LLM skepticism grows — particularly around factual claims — FlavorLab's verifiable, traceable science becomes a stronger differentiator.
+
+**The positioning:** *"ChatGPT guesses. FlavorLab proves it."*
+
+---
+
+#### Supercook (supercook.com)
+11M+ recipes from 18,000 websites in 20 languages. Input pantry ingredients, get ranked recipe matches. Truly free (ad-supported). Answers "what can I cook?" not "what pairs well and why?" — adjacent but not overlapping. No molecular science, no community pairing scores, no API. Strong SEO presence in "what to cook with X" search queries — FlavorLab and Supercook will compete for discovery searches.
+
+---
+
+#### ChefGPT
+AI recipe generator with a "PairPerfect" module for food and drink pairing. Free (10 recipes/month) / $2.99/month Pro. PairPerfect is a direct feature analog — but built on LLM inference, not molecular data. No Science Score, no community validation. Very affordable price point signals where the consumer market is pricing this category.
+
+---
+
+#### BigOven / Spoonacular API
+Both serve the developer/API market for food data:
+- **BigOven**: 1M+ recipes, public API from $99/month commercial. No flavor science.
+- **Spoonacular**: 365,000 recipes, allergen detection, unit conversion, ingredient substitution. Free tier through $149/month. Most popular food API in the space.
+
+Neither offers molecular compound pairing data. FlavorLab's Enterprise API fills a gap both have explicitly left open.
+
+---
+
+#### Samsung Food (formerly Whisk)
+Social media recipe capture (from TikTok, Instagram), meal planning, grocery lists. Strong UI, Samsung ecosystem integration. Not a pairing tool — recipe saving and discovery only. No flavor science. No competitive overlap with FlavorLab's core value proposition.
+
+---
+
+### Professional Chef & Food R&D Tools
+
+#### Meez (getmeez.com)
+Culinary operating system for professional kitchens — recipe management, food costing, scaling, nutritional analysis, allergen tagging, multilingual staff training. Achieves 3–5% COGS reduction for clients. No flavor pairing, no molecular science. **Potentially complementary** to FlavorLab's Pro tier — Meez handles kitchen operations; FlavorLab handles flavor discovery. Not head-to-head competition.
+
+#### Tastewise
+AI consumer intelligence for CPG brands — trend forecasting from social signals, restaurant menus, and reviews. Enterprise-only, demo-gated, not a pairing tool. Serves the same enterprise food business persona as FlavorLab's API tier but for trend intelligence, not pairing formulation. **Potentially complementary** at the enterprise level.
+
+---
+
+### Community Platforms
+
+#### Allrecipes (118M monthly visitors)
+Largest food community on the internet. Star ratings and written reviews on recipes — not ingredient pairings. Proves that community trust signals (ratings + reviews) drive massive engagement in the food space. FlavorLab's Hive Score applies this proven community dynamic specifically to the ingredient pairing layer.
+
+---
+
+### Competitive Landscape Matrix
+
+| Competitor | Science Data | Community Score | Consumer UX | API | Free Tier | Home Cook Focus |
+|---|---|---|---|---|---|---|
+| **FlavorLab** | Yes — molecular (147K pairs) | Yes — Hive Score | Yes | Yes — Enterprise | Yes | Yes — primary |
+| Foodpairing | Yes — molecular (8K molecules) | No | Minimal | Enterprise only | ~100 trees only | No — abandoned |
+| FlavorDB2 | Yes — molecular (25K molecules) | No | Academic | No | Yes (research) | No |
+| TasteMatch | Reference-based | Limited | Yes (mobile) | No | No | Yes |
+| Flavonomics | Yes — molecular/sensory | No | Limited | No | No | No |
+| The Flavor Network | Reference-based | No | Yes (web) | No | Yes (indie) | Yes |
+| Supercook | No | No | Yes | No | Yes | Yes |
+| ChefGPT | No (LLM) | No | Yes | No | Yes (limited) | Yes |
+| ChatGPT / Gemini | No (LLM) | No | Yes | Yes (general) | Yes | Incidental |
+| BigOven | No | Recipe ratings | Yes | Yes ($99+/mo) | Yes | Yes |
+| Spoonacular | No | No | Developer | Yes ($0–$149/mo) | Yes | Developer |
+| Meez | No | No | Professional | No | No | No |
+| Tastewise | Trend signals | No | Enterprise | Enterprise | No | No |
+| Allrecipes | No | Recipe ratings | Yes | No | Yes | Yes |
+
+---
+
+### Six Strategic Gaps FlavorLab Occupies
+
+**Gap 1 — Science for consumers:** Every molecular science tool is enterprise-only or academic. Every consumer tool lacks real molecular data. FlavorLab is the first to bridge this.
+
+**Gap 2 — Dual scoring:** No competitor combines a molecular Science Score with a community Hive Score. This architecture is unique.
+
+**Gap 3 — Yummly's displaced audience:** 2M+ users lost their primary AI cooking tool in December 2024. FlavorLab's Pro tier at a comparable price point ($2.99–4.99/month) is a natural landing point.
+
+**Gap 4 — Plain-English science communication:** Every scientific tool assumes scientific literacy. FlavorLab's dual-layer explanation (compound name + plain English) makes molecular science accessible without dumbing it down.
+
+**Gap 5 — Developer API for molecular pairing data:** Spoonacular dominates the recipe API market. BigOven competes. Neither offers molecular compound pairing data. FlavorLab's Enterprise/API tier is differentiated in a way no existing food API offers.
+
+**Gap 6 — LLM credibility gap:** As LLM hallucinations become more widely understood, verifiable science-backed answers become more valuable. FlavorLab's Science Score is traceable to a real peer-reviewed dataset — a structural trust advantage that no LLM can replicate by design.
+
+---
+
 ## Domain Requirements
 
 ### DR-01: Data Integrity — No Hallucinated Pairings
