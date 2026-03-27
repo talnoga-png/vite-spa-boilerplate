@@ -464,3 +464,223 @@ Lena leads R&D at a condiment brand. Her team queries the FlavorLab API in bulk 
 
 **EC-6D — Mobile Compound Venn (Small Screen):** On viewports < 390px, the SVG Compound Venn diagram is replaced with a compact compound list card: *"Shared compounds: limonene, linalool, citral"* with tap-to-expand. No horizontal scroll; no layout break.
 
+---
+
+## Innovation & Differentiators
+
+### Differentiator 1: Verified Molecular Trust (vs. AI Guesswork)
+
+Every major AI assistant can suggest flavor pairings. None of them can prove it. When ChatGPT says "truffle pairs with chocolate," it's pattern-matching from text — it has no access to the molecular mechanism. FlavorLab's pairings are traceable to real compound-similarity edges in peer-reviewed data. The product's core promise — *"we can show you the chemistry"* — is structurally impossible for a generative AI to replicate without the same underlying dataset.
+
+**Why it's defensible:** A competitor would need to license or replicate the same academic dataset pipeline, build the same ETL, and design the same science card UX. The data itself is open, but the combination of data + UX + community layer is the moat.
+
+### Differentiator 2: The Dual Score — Science Meets Community
+
+No existing flavor tool combines molecular science with live community validation in a single view. The gap between the Science Score and the Hive Score is itself product content — it surfaces *contested pairings* (chemistry says yes, cooks say no) and *discovered pairings* (low science score, high community love). This tension is unique to FlavorLab and generates editorial content, sharing moments, and ongoing user curiosity that static tools can never produce.
+
+**Why it's defensible:** The Hive Score data is proprietary. It accumulates with every user interaction. A new competitor starting from zero has no Hive Score history — their science scores may match ours, but their community validation layer is empty. The flywheel only accelerates over time.
+
+### Differentiator 3: Progressive Education — The Product That Makes Itself Less Necessary
+
+FlavorLab is designed to teach users flavor principles, not just dispense answers. Every science card is a micro-lesson. Every contested pairing is a discussion prompt. The long-term user doesn't return because they need the app — they return because the app has made them a more curious, principled cook, and the Hive community is where they test their evolving intuitions.
+
+**Why it's defensible:** Education-led retention is structurally different from feature-led retention. Features can be copied; the identity shift of becoming a better cook cannot.
+
+### Differentiator 4: The Data Flywheel
+
+Each rating improves Hive Score accuracy. Increased accuracy drives more searches. More searches drive more ratings. The product gets more valuable as it grows — and the value is concentrated in a dataset (community ratings + usage patterns) that is uniquely FlavorLab's. Phase 2: divergences between Science Score and Hive Score become a training signal. Ingredients that consistently outperform their FlavorGraph score in community ratings indicate missing compound data — the community crowd-sources improvements to the science layer. This feedback loop does not exist anywhere else.
+
+### Differentiator 5: Zero-Friction Science
+
+Every science-based food tool is either (a) built for professionals and inaccessible to home cooks, or (b) simplified to the point of losing scientific credibility. FlavorLab occupies the gap: full molecular data, plain-English explanations, no account required, results in under 3 seconds. The dual-layer explanation — scientific compound name + plain-English why-it-works — is the design solution to this tension.
+
+### Differentiator 6: Multi-Source Ingredient Expansion (Global Coverage Moat)
+
+FlavorLab's phased data strategy — FlavorGraph → FooDB → community-assisted profiling → proprietary compound data — means the ingredient database grows continuously. A competitor launching with only FlavorGraph data is at parity on day one. By Year 2, FlavorLab's coverage of global and regional ingredients creates a gap that is increasingly expensive to close.
+
+---
+
+## Project Type & Architecture Classification
+
+- **Project Type:** Full-Stack Consumer SaaS Web Application with B2B API Layer
+- **Frontend:** Brownfield vanilla JS SPA (Vite), expanding into full product UI
+- **Backend:** New Node.js API server (Express or Fastify)
+- **Database:** MongoDB — ingredient/pairing data + community ratings
+- **Auth:** Optional for free tier; required for Pro/API tiers
+- **Deployment:** Web (primary), mobile-responsive (required), native app (post-MVP)
+- **API surface:** Internal (frontend ↔ backend) + External (B2B Enterprise tier)
+- **Data pipeline:** One-time ETL (FlavorGraph CSVs → MongoDB) + ongoing multi-source ingestion
+
+---
+
+## Scoping Decisions
+
+### In Scope for MVP
+
+| Feature | Rationale |
+|---|---|
+| FlavorGraph ETL pipeline | Prerequisite — nothing works without it |
+| Ingredient Oracle (1–5 ingredient search) | Core value loop |
+| Science Score | Primary trust differentiator |
+| Hive Score + community rating | Flywheel seed — must launch with it, even with 0 ratings |
+| Dual-layer explanation (compound + plain English) | Non-negotiable UX differentiator |
+| Why It Fails card | Negative results are product value |
+| Dietary & Allergen Filter (localStorage) | Accessibility and safety requirement |
+| Smart Autocomplete Tiles | Reduces friction; drives discovery |
+| Compound Venn Visual (desktop) / compound list (mobile) | Science credibility signal |
+| First Pairing Magic (zero-input entry) | Handles onboarding confusion; reduces drop-off |
+| Contested Pairing badge (Science vs Hive divergence) | Unique content; drives engagement |
+| Ingredient not recognised / fuzzy match + "Request ingredient" | No dead ends |
+| Mobile-responsive layout | Required from day one |
+| Free tier fully functional (no signup) | Zero-friction entry — core to growth strategy |
+| Ingredient coverage count displayed ("616 scientifically mapped ingredients") | Transparency builds trust |
+| Pro tier scaffolded (paywall visible, not yet active) | Sets monetisation expectation without blocking launch |
+
+### Explicitly Deferred (Post-MVP)
+
+| Feature | Reason |
+|---|---|
+| Fridge Mode (multi-ingredient what-can-I-make) | Requires multi-ingredient intersection logic; not blocking |
+| Substitute Mode | Valuable but not core to first value loop |
+| Trending This Week / Frontier Feed | Needs minimum community data volume to be meaningful |
+| Chef's Notebook + PDF Export | Pro tier feature; needs auth layer first |
+| Menu Harmony Analysis | Pro tier; complex parsing pipeline |
+| Embeddable Widget | Enterprise tier; needs API stability first |
+| FooDB integration (DR-11 Phase 2) | Extend coverage after MVP proves demand |
+| Community-assisted ingredient submission | Needs moderation infrastructure at scale |
+| Cross-device sync | Explicit Pro upsell; must not be free |
+| Personal Flavor Profile | Requires session history; post-auth |
+| Flavor Science Blog / Mini-Course | Content investment; post-traction |
+| Public Developer API | After internal API is stable |
+| Dish Lens (camera scanner) | Vision item; significant CV work |
+
+---
+
+## Functional Requirements
+
+### FR-01: Ingredient Oracle — Search & Pairing Engine
+- User can input 1 to 5 ingredients in a single search
+- Search field provides autocomplete suggestions from hub ingredient index as user types (minimum 2 characters to trigger); returns up to 8 matches
+- Fuzzy match on ingredient name; disambiguation card presented for close matches; "Request this ingredient" button logged if no match found
+- Results ranked by Science Score descending by default
+- Each result card displays: pairing ingredient name, Science Score (%), Hive Score (%), top 3 shared compounds, one-line plain-English summary
+- Expanding a result card reveals: full compound list, dual-layer explanation, Why It Fails content (if Science Score < 40%), Contested Pairing badge (if Science/Hive divergence > 30 points)
+- Multi-ingredient search returns pairings compatible with the combination of inputs
+- Search response time ≤ 300ms at p95; autocomplete ≤ 100ms at p95
+
+### FR-02: Science Score
+- Displayed as 0–100% derived from FlavorGraph edge weight, normalised
+- Qualitative label alongside: ≥ 75% = "Highly Compatible", 40–74% = "Moderate Match", < 40% = "Low Compatibility"
+- Top 2–3 shared compound names (scientific + common name) always shown
+- Source label always displayed: "Based on molecular compound similarity"
+
+### FR-03: Hive Score
+- Displayed as 0–100% derived from community ratings
+- Vote count shown: "Based on 142 community ratings"
+- If vote count < 10: "New pairing — not yet rated" + prompt to be first to rate
+- `last_updated` timestamp accessible to API consumers; shown in UI as "Updated today / X days ago"
+- Ratings under moderation hold display frozen score with subtle "Under review" indicator
+
+### FR-04: Community Rating System
+- Any visitor (no account required for free tier) can submit a 1–5 star rating on any pairing they have viewed
+- Rating form: star selector + "Have you tried this pairing?" friction step (Yes / No / Planning to)
+- "Planning to" ratings recorded but weighted lower in Hive Score; shown as *Untested Opinions* layer
+- Max 20 ratings per session; soft cooldown prompt at limit
+- Velocity spike detection: > 50 ratings on a single pairing within 2 hours triggers automatic pending hold
+- Ratings quarantined (not deleted) during moderation review
+
+### FR-05: Dietary & Allergen Filter
+- Filters: Vegan, Vegetarian, Gluten-Free, Nut-Free, Dairy-Free, Shellfish-Free
+- Stored in localStorage; active on every search without re-entry
+- Zero results state: show best results with one filter relaxed + one-tap session-only override
+- Operates at ingredient classification level only; allergen disclaimer present on all filtered views
+- First-visit nudge to set preferences (one-time, dismissed on interaction)
+
+### FR-06: First Pairing Magic
+- Displayed to first-time visitors (detected via localStorage flag) before any search is performed
+- Shows a single curated high-interest pairing (editorial selection, rotated periodically)
+- Interactive demo of Science Score + Hive Score + explanation format
+- Dismissible; localStorage flag set on dismiss — never shown again
+
+### FR-07: Compound Venn Visual
+- Displayed on desktop (≥ 390px) within expanded result cards
+- SVG diagram: two overlapping circles, each ingredient's top compounds, shared compounds in intersection
+- Mobile (< 390px): compact compound list card with tap-to-expand
+- No horizontal scroll; no layout break at any supported viewport
+
+### FR-08: Why It Fails Card
+- Displayed when Science Score < 40%
+- Explains the specific compound conflict driving incompatibility
+- Framed as discovery: "Here's why this doesn't work — and what to try instead"
+- Suggests 1–2 substitute ingredients that pair well with each input
+
+### FR-09: Ingredient Coverage Transparency
+- Every search results page displays: "Powered by [N] scientifically mapped ingredients"
+- Non-FlavorGraph ingredients display a `data_source` badge
+- Partial compound profile ingredients display "Limited compound data" indicator
+- "Request this ingredient" submissions acknowledged: "We've logged your request"
+
+### FR-10: Pro Tier — Menu Harmony Analysis *(Post-MVP)*
+- Pro user uploads menu (PDF or plain text); parser extracts ingredients; unmapped ingredients flagged with nearest hub match
+- Cross-references all extracted ingredients for compound conflicts and complementary arcs
+- Generates visual harmony map + written report; exportable as PDF; email delivery on export failure
+
+### FR-11: B2B API *(Post-MVP)*
+- Versioned from launch: `/v1/pairings`, `/v1/ingredients`, `/v1/compounds`
+- Rate limiting with machine-parseable `429` responses including `Retry-After` and `reset_at`
+- `404` responses for unknown ingredients include `suggestions` array
+- All responses include `hive_score_updated_at` timestamp
+- Breaking changes: major version bump + 60-day deprecation notice
+
+---
+
+## Non-Functional Requirements
+
+### NFR-01: Performance
+- Pairing search response time ≤ 300ms at p95
+- Autocomplete ≤ 100ms at p95
+- Page initial load ≤ 2s on 4G mobile (Lighthouse Performance ≥ 85)
+- ETL pipeline completes full FlavorGraph seed in ≤ 30 minutes
+
+### NFR-02: Availability
+- API uptime ≥ 99.5% monthly
+- Planned maintenance communicated ≥ 24 hours in advance
+- Graceful degradation: if MongoDB is unavailable, frontend shows "service temporarily unavailable" — no silent empty results
+
+### NFR-03: Scalability
+- MongoDB schema supports ≥ 50,000 ingredient documents without index redesign
+- Ratings collection designed for ≥ 10M documents
+- API designed for horizontal scaling from day one (stateless request handling)
+
+### NFR-04: Security
+- All write operations require authentication (ratings, Pro features)
+- Rate limiting on all public endpoints
+- No PII stored for free-tier users (localStorage only; no server-side tracking without consent)
+- OWASP Top 10 compliance required before public launch
+
+### NFR-05: Accessibility
+- WCAG 2.1 AA compliance for all UI components
+- Full keyboard navigation
+- `prefers-reduced-motion` respected on all animations
+- Compound Venn always has a text alternative (mobile fallback satisfies this)
+- Colour contrast ratios meet AA standards throughout
+
+### NFR-06: Data Integrity
+- Zero hallucinated pairings (DR-01 enforced at API layer, not just ETL)
+- MongoDB ingredient documents include `data_source` and `etl_version` fields
+- Ratings audit trail: all status transitions logged with timestamp and moderator ID
+
+### NFR-07: Legal & Compliance
+- FlavorGraph dataset licence review completed before production deployment (DR-08)
+- GDPR-compliant data handling for Pro tier accounts and email addresses
+- Cookie/localStorage consent notice for EU users
+- Allergen disclaimer present on all filtered result views
+
+---
+
+## Document Status
+
+**Status:** Complete — ready for UX Design and Architecture workflows
+**Steps completed:** step-01-init, step-02-discovery, step-02b-vision, step-02c-executive-summary, step-03-success, step-04-journeys, step-05-domain, step-06-innovation, step-07-project-type, step-08-scoping, step-09-functional, step-10-nonfunctional, step-11-complete
+**Last updated:** 2026-03-27
+**Next workflow:** bmad-bmm-create-ux-design
