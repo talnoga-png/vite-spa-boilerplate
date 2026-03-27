@@ -51,3 +51,76 @@ Three compounding moats differentiate FlavorLab from any LLM-based competitor:
 - **Domain:** Food Technology / Culinary Science
 - **Complexity:** Medium-High — novel data pipeline (FlavorGraph ETL → MongoDB), three user tiers, community scoring system, brownfield frontend expansion
 - **Project Context:** Brownfield — existing vanilla JS SPA (FlavorLab™ marketing/landing page) being expanded into a full product with backend, database, API, and feature-rich frontend
+
+---
+
+## Success Criteria
+
+### User Success
+A home cook has succeeded when they return to FlavorLab at least **once per month** — realistic given that people cook daily but experiment with new combinations periodically. The primary retention signal is habitual return, not one-time usage.
+
+**The "aha" moment:** A user searches for an ingredient they have, receives a pairing result with a Science Score + Hive Score + "why it works" explanation, tries it, and submits their first community rating. This completes the core value loop and is the target first-session outcome.
+
+**User success metrics:**
+- **Monthly Active Return Rate:** ≥ 30% of registered users return at least once per month
+- **First Pairing Completion Rate:** ≥ 70% of new visitors complete a full pairing search in their first session
+- **Community Participation Rate:** ≥ 15% of returning users submit at least one pairing rating per month
+- **Session-to-Rating Conversion:** ≥ 20% of pairing searches result in a community rating
+
+### Business Success
+
+**3-Month Milestones (Data Flywheel Phase):**
+- Weekly Active Users growing ≥ 10% week-over-week
+- Community ratings database reaches ≥ 5,000 ratings across ≥ 500 unique pairings
+- First organic referrals appearing
+- Week-over-week user growth rate ≥ 10%
+
+**12-Month Milestones (Monetisation Validation Phase):**
+- **Pro subscribers:** ≥ 50 paying Pro accounts
+- **API customers:** ≥ 50 paying API/Enterprise accounts
+- **Referral rate:** ≥ 20% of new users arriving via referral
+- **Sharing rate:** ≥ 8% of pairing results actively shared
+- **W-o-W growth:** ≥ 10% through Month 6, tapering to ≥ 5% by Month 12
+
+### Technical Success
+- Pairing search response time ≤ 300ms (p95)
+- MongoDB fully seeded: ≥ 8,000 ingredients, ≥ 147,000 pairings
+- API uptime ≥ 99.5% monthly
+- Zero hallucinated pairings — every result traceable to a real FlavorGraph edge
+- Dietary/allergen filter accuracy: zero false negatives
+
+### Measurable Outcomes
+
+| Metric | 3-Month Target | 12-Month Target |
+|---|---|---|
+| Weekly Active Users | Growing ≥10% WoW | Established base |
+| Community Ratings | ≥ 5,000 | ≥ 50,000 |
+| Monthly Return Rate | ≥ 20% | ≥ 30% |
+| Pro Subscribers | First paying customer | ≥ 50 |
+| API Customers | First paying customer | ≥ 50 |
+| Referral Rate | ≥ 10% | ≥ 20% |
+| Sharing Rate | ≥ 5% | ≥ 8% |
+
+---
+
+## Product Scope
+
+### MVP — Minimum Viable Product
+- FlavorGraph ETL pipeline (MongoDB seed — prerequisite for all features)
+- Ingredient Oracle — search 1+ ingredients, receive ranked pairing results
+- Science Score — compound-based match percentage
+- Dual-Layer Explanation — scientific name + plain-English why it works/fails
+- Hive Score — community rating system
+- Dietary & Allergen Filter — localStorage, no signup required
+- Smart Autocomplete Tiles — ingredient suggestions on type
+- Compound Venn Visual — shared compound diagram
+- First Pairing Magic — single result for first-time visitors
+- Why It Fails — science of incompatibility
+- Zero Friction Entry — no signup for core features
+- Freemium model — free tier functional, Pro/API scaffolded
+
+### Growth Features (Post-MVP)
+Fridge Mode, Substitute Mode, Trending This Week, Frontier Feed + Pioneer Badge, History Layer (cultural stories), Beverage coverage, Chef's Notebook (Pro), Embeddable Widget, Flavor Science Blog, Mini-Course, Menu Harmony Analysis (Pro)
+
+### Vision (Future Roadmap)
+Public Developer API, Culinary School licensing, Personal Flavor Profile, User-submitted pairings, Dish Lens (camera scanner), Cross-device sync, Pairing Memory
