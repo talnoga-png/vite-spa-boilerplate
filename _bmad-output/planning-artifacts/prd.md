@@ -1,5 +1,5 @@
 ---
-stepsCompleted: ['step-01-init', 'step-02-discovery', 'step-02b-vision', 'step-02c-executive-summary']
+stepsCompleted: ['step-01-init', 'step-02-discovery', 'step-02b-vision', 'step-02c-executive-summary', 'step-03-success']
 inputDocuments:
   - '_bmad-output/brainstorming/brainstorming-session-2026-03-24.md'
   - '_bmad-output/planning-artifacts/flavorGraph-research.md'
