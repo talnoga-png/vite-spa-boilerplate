@@ -124,3 +124,86 @@ Fridge Mode, Substitute Mode, Trending This Week, Frontier Feed + Pioneer Badge,
 
 ### Vision (Future Roadmap)
 Public Developer API, Culinary School licensing, Personal Flavor Profile, User-submitted pairings, Dish Lens (camera scanner), Cross-device sync, Pairing Memory
+
+---
+
+## User Journeys
+
+### Journey 1 — Maya, Home Cook: Success Path
+
+Maya opens FlavorLab on her phone after staring at leftover salmon, a lemon, and some dill in her fridge. She types "salmon" into the Ingredient Oracle. Autocomplete tiles appear before she finishes — she taps "salmon" to confirm. The top result: **salmon + dill** (Science Score 91%, Hive Score 88%). She taps the result and reads the science card: *"Both share linalool and caryophyllene — terpene compounds responsible for herbal, slightly floral aromas. They reinforce each other rather than compete."* She also reads the plain-English layer: *"Dill's grassy brightness cuts through salmon's richness without masking it."* She cooks the pairing, returns to the app, and submits a 5-star Hive rating. First value loop complete.
+
+**Edge Case EC-1A — Ingredient Not Recognised:** Maya types "purple sprouting broccoli" — no exact match. The system fuzzy-matches to "broccoli" and shows a disambiguation card: *"Did you mean: broccoli / broccolini / broccoli rabe?"* She selects one. If no fuzzy match exists, the system shows: *"We don't have this exact ingredient yet — here are the closest matches"* + a one-tap "Request this ingredient" button that logs the term to a backlog.
+
+**Edge Case EC-1B — Extremely Low Science Score:** Maya inputs "coffee + fish." Science Score: 11%. The system surfaces the *Why It Fails* card rather than hiding the result. Explanation: *"Coffee's bitter phenols (chlorogenic acid) clash with fish's trimethylamine compounds, amplifying fishiness."* Hive Score: 3%. The negative result is framed as discovery, not error — Maya learns something.
+
+**Edge Case EC-1C — Single Ingredient, No Strong Pairings:** Maya searches "durian." FlavorGraph has limited hub connections. The system shows top 5 pairings labelled *"Limited data — fewer than 10 known pairings."* A nudge appears: *"Add another ingredient to narrow suggestions."* No false confidence displayed.
+
+**Edge Case EC-1D — Multi-Ingredient Conflict:** Maya inputs "lemon + cream + red wine." The system detects a three-way compound conflict (acid + tannins destabilise dairy) and shows a warning card: *"Combining these three may destabilise your sauce — lemon's acidity and red wine's tannins can curdle cream."* Individual pairings are still ranked and shown below the warning.
+
+---
+
+### Journey 2 — Maya, Home Cook: Dietary & Allergen Edge Cases
+
+Maya is vegan with a nut allergy. She sets both filters in the preferences panel — stored in localStorage, no account required. She searches "chocolate."
+
+**EC-2A — Filter Produces Zero Results:** All top chocolate pairings involve dairy or almonds. Rather than a blank screen, the system shows: *"No pairings match all your current filters. Showing best pairings if [Nut-Free] is relaxed → [4 results]."* A one-tap temporary override is offered. Her filter state is preserved; the override is session-only.
+
+**EC-2B — Filter State Lost Across Devices:** Maya set Gluten-Free on desktop. On mobile, localStorage is device-scoped — her filter is gone. On her first result page without filters, a one-time nudge appears: *"Set your dietary preferences once and we'll remember them on this device."* The system never silently serves allergen-containing results without disclosure.
+
+**EC-2C — Ingredient Is Itself the Allergen:** Maya (nut allergy active) types "almond." The system does not block the search — she chose it. It flags the ingredient with an allergen badge and appends: *"Note: almond is flagged as a tree nut in your filters."* No paternalism; just transparency.
+
+**EC-2D — Allergen in Shared Compound:** A pairing's shared compound is chemically derived from a nut source (e.g. benzaldehyde). The filter operates at ingredient level only — not compound origin — to prevent incorrect false negatives. A disclaimer in the science card reads: *"Compound data reflects chemical similarity, not allergen presence in the final dish."*
+
+---
+
+### Journey 3 — Marco, Professional Chef: Pro Tier
+
+Marco runs a 40-seat restaurant. He upgrades to Pro tier for Menu Harmony Analysis. He uploads the current tasting menu as a PDF. The parser extracts key ingredients per dish and cross-references the full menu for compound conflicts and complementary arcs across courses.
+
+**EC-3A — Ingredient Not in DB:** The parser extracts "Wagyu A5 striploin" — no exact FlavorGraph node. The system maps it to "beef" and flags: *"Wagyu A5 → matched to 'beef' (closest available). Compound profile may differ for highly marbled cuts."* Report is generated with transparent caveats.
+
+**EC-3B — Export Failure:** Marco generates a 48-pairing PDF report. The export times out. The UI shows: *"Export is taking longer than usual — we'll email it to you when ready."* (Pro accounts have email on file.) No silent failure.
+
+**EC-3C — Frontier Feed Exhausted:** Marco has rated every pairing in the Frontier Feed. The system shows: *"You've explored all current frontier pairings. New pairs added weekly — check back Friday."* + an option to re-sort by "most controversial" (high Science Score / low Hive Score divergence). No dead screen.
+
+Marco saves notable pairings to his Chef's Notebook, annotates them with course context, and exports a formatted PDF to share with his sous chef before service.
+
+---
+
+### Journey 4 — Lena, Food Business: API / Enterprise Tier
+
+Lena leads R&D at a condiment brand. Her team queries the FlavorLab API in bulk to stress-test a new sauce concept against 200 base ingredients.
+
+**EC-4A — Rate Limit Hit Mid-Batch:** Her pipeline sends 1,200 requests/hour against an Enterprise limit of 1,000/hour. The API returns `429 Too Many Requests` with `Retry-After` header and a machine-parseable JSON body: `{"error": "rate_limit_exceeded", "limit": 1000, "reset_at": "..."}`. Her dashboard shows a real-time usage graph with a red line at the limit. No silent drops.
+
+**EC-4B — Ingredient Not Found:** Lena queries `/pairings?ingredient=cricket_flour`. No FlavorGraph node exists. The API returns `404` with `{"error": "ingredient_not_found", "suggestions": ["cricket", "insect_protein"]}`. Machine-parseable with human-readable alternatives.
+
+**EC-4C — Stale Hive Score Data:** Lena's system caches Hive Scores for 30 days. The API response includes `hive_score_updated_at` timestamp. Her integration detects cache staleness. API documentation states Hive Scores are eventually consistent and may change daily.
+
+**EC-4D — Embeddable Widget CSP Conflict:** Lena's e-commerce site has a strict Content Security Policy. Documentation includes: *"Ensure `cdn.flavorlab.io` is in your CSP `script-src` and `frame-src` directives."* If blocked, the widget degrades gracefully — shows a static CTA linking to FlavorLab rather than a JS error.
+
+---
+
+### Journey 5 — Community Rating System: Integrity & Trust
+
+**EC-5A — Coordinated Upvote Spam:** A pairing receives 200 5-star ratings within 2 hours from accounts aged < 7 days. The moderation system flags the velocity spike. Auto-action: ratings held in "pending" state, not counted in Hive Score. Displayed Hive Score is frozen at pre-spike value. Moderator receives an alert in the admin dashboard.
+
+**EC-5B — Single User Rating Loop:** A user submits 50 ratings in one session. Rate limit: max 20 ratings per session with a soft cooldown prompt: *"You've rated 20 pairings today — take a break and cook something!"* Friction-adding but not punitive.
+
+**EC-5C — Contested Rating (Science vs Community Divergence):** "Strawberry + balsamic" has Science Score 87% but Hive Score 42%. This is surfaced as a *Contested Pairing* badge. The explanation reads: *"Science says yes, cooks are split. This pairing requires technique — try it in a reduction, not raw."* The divergence is product content, not a bug.
+
+**EC-5D — Rating Without Trying:** A user rates a pairing immediately after viewing it. The rating form includes a soft friction step: *"Have you tried this pairing?"* (Yes / No / Planning to). Ratings marked "Planning to" are recorded but weighted lower in the Hive Score algorithm and shown as *Untested Opinions* in a secondary score layer.
+
+---
+
+### Journey 6 — First-Time Visitor: Onboarding
+
+**EC-6A — User Doesn't Know What to Search:** New visitor sees the search field, types nothing. After 4 seconds idle, the field animates ghost suggestions: *"Try: garlic, lemon, salmon..."* rotating every 3 seconds. Secondary CTA: *"Not sure where to start? Try First Pairing Magic →"* — auto-loads a curated pairing requiring no input.
+
+**EC-6B — User Searches a Dish, Not an Ingredient:** User types "pasta carbonara." No matching ingredient node. System responds: *"'pasta carbonara' is a dish — try its key ingredients:"* with tap-to-add tiles for guanciale, egg, pecorino, black pepper. User is redirected to the correct interaction pattern without an error message.
+
+**EC-6C — User Overwhelmed by Results:** First-time user searches "chicken" and receives 47 ranked pairings. Default view shows top 5 with a *"Show more"* expand. The top pairing is visually dominant. A one-time tooltip on first visit: *"The Science Score shows molecular compatibility. The Hive Score shows what other cooks love."* Dismissed on first interaction, never shown again.
+
+**EC-6D — Mobile Compound Venn (Small Screen):** On viewports < 390px, the SVG Compound Venn diagram is replaced with a compact compound list card: *"Shared compounds: limonene, linalool, citral"* with tap-to-expand. No horizontal scroll; no layout break.
+
