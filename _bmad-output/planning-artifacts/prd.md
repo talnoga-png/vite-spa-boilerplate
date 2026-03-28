@@ -118,7 +118,7 @@ A home cook has succeeded when they return to FlavorLab at least **once per mont
 - Compound Venn Visual — shared compound diagram
 - First Pairing Magic — single result for first-time visitors
 - Why It Fails — science of incompatibility
-- Zero Friction Entry — no signup for core features
+- Zero Friction Entry — no signup to search, browse, or view science cards; email required only to rate
 - Freemium model — free tier functional, Pro/API scaffolded
 
 ### Growth Features (Post-MVP)
