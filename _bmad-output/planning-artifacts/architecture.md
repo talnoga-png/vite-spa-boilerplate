@@ -1219,6 +1219,54 @@ BullMQ worker (async, ≤5 min debounced)
   → Redis SET new versioned cache key
 ```
 
+### Contested Pairing Explanation System
+
+**Trigger condition** (both must be true to show a contested explanation):
+```
+|science_score - hive_score| >= CONTESTED_GAP_THRESHOLD (30 points at MVP)
+AND hive_vote_count >= 20
+```
+
+Gap direction is signed: positive = science leads, negative = community leads.
+
+**No LLM required.** The explanation is a client-side template lookup. The pairing response DTO already returns `confidenceTier`, `cuisineContext`, `scienceScore`, `hiveScore`, and `hiveVoteCount`. The frontend runs a decision tree and selects a static template string. No new backend fields, no new API calls, no runtime generation.
+
+**Template key = `gapDirection` × `confidenceTier` × `cuisineContext`**
+
+| Gap direction | `confidenceTier` | `cuisineContext` | Template |
+|---|---|---|---|
+| Science > Community | Any | `EAST_ASIAN_CONTRADICTED` | "This pairing is validated in Western cooking but frequently clashes in East Asian flavor contexts. The chemistry is real; the cultural application varies." |
+| Science > Community | Any | `CONTEXT_DEPENDENT` | "These compounds are compatible, but cooks find the result varies heavily with preparation — temperature and technique matter more than the chemistry alone predicts." |
+| Science > Community | `RECIPE_CO_OCCURRENCE` | Any | "Part of this pairing's science score comes from recipe co-occurrence data, not confirmed molecular analysis. The community's skepticism may reflect that limitation." |
+| Science > Community | `ML_PREDICTED` | Any | "This score includes a machine-learning prediction rather than direct compound measurement. The community may be picking up on nuance the model missed." |
+| Science > Community | `GC_MS_EXPERIMENTAL` or `LITERATURE_CURATED` | `WESTERN_VALIDATED` | "The chemistry is confirmed, but cooks find this pairing harder to execute than the score suggests — likely ratio or technique-sensitive." |
+| Community > Science | Any | `WESTERN_VALIDATED` | "Cooks discovered this pairing works before the chemistry fully explains why — sometimes culinary tradition runs ahead of the science." |
+| Community > Science | Any | `NOT_VALIDATED` | "This is a community-validated pairing without strong molecular data yet. Cooks trust it; the science hasn't caught up." |
+| Community > Science | Any | `CONTEXT_DEPENDENT` | "This pairing may work through complementary contrast rather than shared compounds — a flavor architecture that molecular similarity scores underweight." |
+
+**Fallback template** (gap triggered but no specific match):
+> "Science and community diverge on this pairing. This tension is itself useful information — try it and add your rating to help resolve the question."
+
+**Large gap modifier** (gap ≥ 50 points): Render a **"Contested pairing"** badge on the Confidence Ring visualization in addition to the explanation text in the science card.
+
+**Low vote count softener** (vote count 20–49): Prefix template with *"Early signals suggest..."* instead of asserting community consensus.
+
+**Implementation location:**
+```
+apps/web/src/features/pairings/utils/contested-pairing.ts
+  - getContestedExplanation(scienceScore, hiveScore, voteCount, confidenceTier, cuisineContext): string | null
+  - Returns null when trigger condition not met (no explanation shown)
+```
+
+Templates stored in:
+```
+apps/web/src/features/pairings/copy/contested-templates.ts
+  - Plain TypeScript object — key: template ID, value: string
+  - Zero runtime dependencies
+```
+
+---
+
 ### Integration Points
 
 **Internal communication:**
