@@ -285,11 +285,36 @@ Score version embedded in cache key means formula changes auto-invalidate withou
 
 #### Authorization Tier Model
 ```
-Anonymous     → session token cookie only (Redis-backed, 30-day TTL)
-Free          → Better Auth JWT + session
-Pro           → Better Auth JWT + plan: 'pro' claim
-Enterprise    → API key in Authorization header (hashed in Postgres)
+Anonymous (browsing)   → session token cookie only (Redis-backed, 30-day TTL)
+                          can: search, view pairings, view science cards
+                          cannot: submit ratings
+
+Email-verified rater   → anonymous session + verified email in Redis session
+                          email stored in localStorage post-verification (skip OTP on return)
+                          can: submit ratings (up to 20/session)
+                          cannot: cross-device sync, saved notebooks
+
+Free (full account)    → Better Auth JWT + session (Pro upsell path)
+Pro                    → Better Auth JWT + plan: 'pro' claim
+Enterprise             → API key in Authorization header (hashed in Postgres)
 ```
+
+#### Email Verification Flow (Rating Gate)
+1. User taps "Rate this pairing"
+2. Frontend checks `localStorage.flavorlab.rater_email`:
+   - Present → pre-fill email, skip to step 5 (auto-verify from session)
+   - Absent → show email capture modal
+3. User submits email → `POST /api/v1/auth/email-otp/send`
+4. Better Auth sends 6-digit OTP via Resend (TTL: 10 minutes)
+5. User enters OTP → `POST /api/v1/auth/email-otp/verify`
+6. Session upgraded: Redis session gains `{ raterEmail, raterVerifiedAt }` fields
+7. Frontend stores email in `localStorage.flavorlab.rater_email`
+8. Rating widget unlocks — user submits rating with verified email attached
+9. **Follow-up:** 7 days after first rating, single "How was your experience?" email sent via BullMQ job (`feedback-request` queue). One email per address, ever.
+
+**Email service:** Resend (`resend.com`) — free tier covers 3,000 emails/month (sufficient for MVP); React Email templates; simple SDK integration with NestJS.
+
+Redis key added: `email-otp:{email}` → `{ otp, expiresAt }` (TTL 10 min, single-use — deleted on verify)
 - NestJS `@Roles()` decorator + `RolesGuard` checks JWT `plan` claim
 - Enterprise `ApiKeyStrategy` via Passport — separate from JWT flow
 - API keys stored as bcrypt hashes; plaintext shown only at creation
