@@ -63,9 +63,10 @@ A home cook has succeeded when they return to FlavorLab at least **once per mont
 **The "aha" moment:** A user searches for an ingredient they have, receives a pairing result with a Science Score + Hive Score + "why it works" explanation, tries it, and submits their first community rating. This completes the core value loop and is the target first-session outcome.
 
 **User success metrics:**
-- **Monthly Active Return Rate:** ≥ 30% of registered users return at least once per month
+- **Monthly Active Return Rate:** ≥ 30% of email-verified users return at least once per month
 - **First Pairing Completion Rate:** ≥ 70% of new visitors complete a full pairing search in their first session
-- **Community Participation Rate:** ≥ 15% of returning users submit at least one pairing rating per month
+- **Email Capture Rate:** ≥ 25% of users who view a pairing result provide their email to submit a rating
+- **Community Participation Rate:** ≥ 15% of email-verified users submit at least one pairing rating per month
 - **Session-to-Rating Conversion:** ≥ 20% of pairing searches result in a community rating
 
 ### Business Success
