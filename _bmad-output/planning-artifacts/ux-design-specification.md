@@ -408,3 +408,115 @@ Infinite scroll creates a sense of abundance but no sense of progress. A ranked 
 - Blended scores — Science Score and Hive Score remain separate, always
 - Technical-first copy — compound names are always expandable depth, never the headline
 - Generic empty states and confirmation toasts — every empty state is an invitation, every confirmation carries brand language
+
+---
+
+## Design System Foundation
+
+### Design System Choice
+
+**Custom design system built on the existing CSS token foundation.**
+
+FlavorLab's current codebase already has the correct starting point: CSS custom properties in `:root`, CSS Grid layouts, and semantic design tokens (`--primary`, `--accent`, `--dark`, `--bg-alt`, `--font-serif`, `--font-sans`). The design system extends this foundation rather than replacing it with a third-party library.
+
+No component library (Material UI, Chakra UI, Ant Design) applies here. FlavorLab is a vanilla JS SPA — React/Vue component libraries are out of scope by architecture. More importantly, the product's most critical UI element — the Confidence Ring — is a bespoke SVG visualization that no library provides. The science card expand animation, the confidence tier badge hierarchy, and the contested pairing tension display all require custom implementation. A third-party system would add constraint and bundle weight without providing the components that actually matter.
+
+**Selected approach:** Bespoke component library built on CSS custom properties, with ARIA patterns drawn from WAI-ARIA Authoring Practices Guide (not from a library, but as a reference spec for accessible interaction patterns).
+
+### Rationale for Selection
+
+**1. The most important UI elements are all custom by necessity.**
+The Confidence Ring (novel SVG), the science card expand (bespoke animation), the dietary filter ambient tag, the contested pairing explanation card — none of these exist in any component library. The design system must be built from first principles regardless. Using a third-party system as a base would mean overriding or ignoring most of it.
+
+**2. The existing token system is already sound.**
+The `:root` variables define a coherent color palette, typographic scale, and spacing system. The custom design system extends these tokens rather than introducing a parallel token vocabulary. One token system, one source of truth.
+
+**3. Brand differentiation requires full visual control.**
+FlavorLab's visual identity — dark forest green (`--primary: #1B4332`), terracotta accent (`--accent: #C8663B`), Playfair Display serif for headings, warm off-white (`--bg-alt: #F2F2EC`) — is precise and intentional. A generic design system's default palette and typography would need to be fully overridden. The overhead is greater than building clean.
+
+**4. Mobile-first performance.**
+Vanilla CSS custom properties + CSS Grid has essentially zero bundle overhead. Third-party design systems (even tree-shaken) add JavaScript and CSS payload that impacts FCP on Maya's mobile connection. The performance budget is better spent on the pairing API response than on component library initialization.
+
+### Implementation Approach
+
+**Token layer (existing tokens + additions needed):**
+
+```css
+:root {
+  /* Color tokens — existing */
+  --primary: #1B4332;       /* Dark forest green */
+  --accent: #C8663B;        /* Terracotta orange */
+  --dark: #0D1A12;          /* Near-black */
+  --bg-alt: #F2F2EC;        /* Warm off-white */
+
+  /* Color tokens — new additions */
+  --confidence-experimental: #2D6A4F;   /* GC_MS_EXPERIMENTAL tier */
+  --confidence-predicted: #74C69D;      /* PREDICTED tier */
+  --confidence-occurrence: #B7E4C7;     /* RECIPE_CO_OCCURRENCE tier */
+  --science-score-ring: #1B4332;        /* Outer arc of Confidence Ring */
+  --hive-score-ring: #C8663B;           /* Inner fill of Confidence Ring */
+  --contested-gap: #E9C46A;             /* Contested pairing highlight */
+  --error-bg: #FFF3F0;                  /* Degraded mode banner */
+
+  /* Typography tokens — new additions */
+  --text-science-label: 0.7rem;         /* Compound name labels */
+  --text-confidence-badge: 0.65rem;     /* Confidence tier badge text */
+
+  /* Spacing scale — to be formalized */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 48px;
+
+  /* Motion tokens */
+  --duration-reveal: 150ms;             /* Science card expand */
+  --duration-fade: 200ms;               /* Toast, overlay transitions */
+  --easing-reveal: cubic-bezier(0.4, 0, 0.2, 1);
+}
+```
+
+**Component inventory:**
+
+| Component | Type | Notes |
+|---|---|---|
+| Search input + dietary tag | Custom | Ambient filter tag below input |
+| Result row | Custom | Ingredient pair + confidence badge + scores |
+| Science card | Custom | Expand/collapse in-place; plain-English headline, compound expandable |
+| Confidence Ring | Custom SVG | Outer arc = Science Score, inner fill = Hive Score |
+| Confidence tier badge | Custom | Icon + color; label on tap at 360px |
+| Rating widget | Custom | Email gate → star selection → submission |
+| Email OTP modal | Custom | Pre-star; social proof copy |
+| Contested pairing card | Custom | Template text + gap explanation |
+| Failure card | Custom | "Why It Fails" — same visual polish as success |
+| Dietary filter tag | Custom | Persistent context below search; one-tap dismiss |
+| Empty state (Hive Score) | Custom | First-mover invitation copy |
+| Degraded mode banner | Custom | "Showing community scores only" |
+| First Pairing Magic | Custom | Full-bleed zero-state; one pairing + Confidence Ring |
+| Toast / confirmation | Custom | Brand copy ("You're now part of the science") |
+
+**Accessibility baseline (WAI-ARIA reference):**
+- Search input: `role="search"`, `aria-label`
+- Result list: `role="list"` + `role="listitem"`
+- Science card expand: `aria-expanded`, `aria-controls`
+- Modal (email gate): `role="dialog"`, focus trap, `aria-modal="true"`
+- Star rating: `role="radiogroup"` + `role="radio"` per star
+- Confidence Ring SVG: `aria-label` with text equivalent ("Science Score 84, Hive Score 31")
+
+### Customization Strategy
+
+**Phase 1 (MVP) — formalize what exists, add what's missing:**
+1. Document all existing CSS variables as the official token set
+2. Add new tokens for confidence tiers, ring colors, contested pairing state
+3. Add spacing scale tokens (currently implicit in the stylesheet)
+4. Add motion tokens for reveal animations
+5. Build the Confidence Ring as a reusable SVG component with JS props (science score, hive score → arc lengths)
+6. Build the science card expand pattern as a reusable JS behavior
+
+**Phase 2 (Post-MVP) — component library extraction:**
+As the product grows (Pro tier, Chef's Notebook, menu analysis), extract the component patterns into a documented component library with component states, do/don't guidance, and accessibility notes.
+
+**What to never adopt:**
+- Runtime CSS-in-JS — no React in the stack; adds overhead with no benefit
+- Tailwind utility classes — conflicts with the semantic custom-property approach; two styling systems = maintenance burden
+- Third-party icon libraries — SVG icons inline, optimized per component; no icon font overhead
