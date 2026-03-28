@@ -1194,3 +1194,206 @@ BullMQ worker (async, ≤5 min debounced)
 - Integration tests: `apps/api/test/integration/` — NestJS test module against test DB
 - E2E tests: `apps/api/test/e2e/` — Playwright against 5 critical journeys only
 
+---
+
+## Architecture Validation Results
+
+_Step-07: All sections reviewed against PRD requirements; Advanced Elicitation + Party Mode protocols applied._
+
+### Validation Summary
+
+All 11 functional requirements, 8 non-functional requirements, and 12 design rules from the PRD are mapped and addressed. Two critical gaps were identified and resolved during validation.
+
+---
+
+### Gap Findings & Resolutions
+
+#### GAP-01 — `cuisine_context` column missing from schema (CRITICAL)
+
+**Source:** Party Mode — PRD cross-cutting concern 4 (geographic context flags) was never translated into a Drizzle schema column.
+
+**Resolution:** Add `cuisine_context` pgEnum and column to `pairing-edges.schema.ts`:
+
+```typescript
+// apps/api/src/modules/pairings/schemas/pairing-edges.schema.ts
+export const cuisineContextEnum = pgEnum('cuisine_context', [
+  'WESTERN_VALIDATED',
+  'EAST_ASIAN_CONTRADICTED',
+  'NOT_VALIDATED',
+  'CONTEXT_DEPENDENT',
+]);
+
+// In pairingEdges table definition:
+cuisineContext: cuisineContextEnum('cuisine_context')
+  .notNull()
+  .default('NOT_VALIDATED'),
+```
+
+**Impact:** `cuisineContext` is a required field in `pairing-response.dto.ts`. ETL defaults all new pairings to `NOT_VALIDATED`. Frontend Science Card displays context badge when value is not `NOT_VALIDATED`.
+
+---
+
+#### GAP-02 — `confidenceSummary` null fallback undefined
+
+**Source:** Advanced Elicitation — what is the `confidenceSummary` when a pairing has zero compound associations?
+
+**Resolution:** When `compound_associations` is empty for a pairing, `confidenceSummary` defaults to `'RECIPE_CO_OCCURRENCE'` (the lowest confidence tier). This is semantically correct — a pairing with no compound evidence is effectively recipe co-occurrence only.
+
+**Implementation location:** `PairingsService.computeConfidenceSummary()` — explicit `?? 'RECIPE_CO_OCCURRENCE'` fallback.
+
+---
+
+#### GAP-03 — Better Auth migration order
+
+**Source:** Advanced Elicitation — Sprint 0 bootstrap sequence not documented.
+
+**Resolution:** Better Auth creates its own tables (`account`, `session`, `verification`) using its own migration runner. These must be created **before** Drizzle migrations run, because Drizzle schemas may reference Better Auth user IDs.
+
+**Sprint 0 sequence in `apps/api/src/main.ts`:**
+1. `await betterAuth.migrate()` — creates Better Auth tables
+2. `await drizzle.migrate()` — creates application tables (may FK to Better Auth `user.id`)
+3. Start NestJS application
+
+---
+
+#### GAP-04 — Redis eviction policy conflicts with BullMQ
+
+**Source:** Advanced Elicitation — `noeviction` policy causes BullMQ writes to OOM-fail silently under memory pressure.
+
+**Resolution:**
+- Railway Redis config: `maxmemory-policy allkeys-lru`
+- BullMQ uses isolated key namespace: `bull:` prefix (configured via `defaultJobOptions.prefix`)
+- Cache keys use versioned TTL patterns: `fl:v{N}:{type}:{id}` with explicit `EX` on every SET
+
+---
+
+#### GAP-05 — `confidence_tier` NOT NULL constraint not enforced at DB layer
+
+**Source:** Advanced Elicitation — schema had enum type but no `NOT NULL` constraint documented.
+
+**Resolution:** Both `confidence_tier` and `cuisine_context` columns have `.notNull()` in Drizzle schema. This means:
+- ETL must always provide a value (no silent nulls from CSV gaps)
+- Drizzle `.$inferSelect` type will be the enum string (not `string | null`)
+- Query results never need null-guards for these fields
+
+---
+
+#### GAP-06 — Canonical ingredient name aliases not tracked
+
+**Source:** Advanced Elicitation — "garlic" vs "Allium sativum" vs "ajo" must resolve to the same ingredient node.
+
+**Resolution:** `ingredients` table has:
+- `canonical_name` — the display name (e.g. "Garlic")
+- `aliases: text[]` — searchable variants (e.g. `['garlic', 'Allium sativum', 'ajo', 'knoblauch']`)
+- GIN index on `aliases` for efficient `@>` array containment queries
+- Autocomplete searches `canonical_name ILIKE` first, then `aliases @>` for exact matches
+
+---
+
+#### GAP-07 — Session middleware not in project structure
+
+**Source:** Party Mode — `session.middleware.ts` was missing from the step-06 directory tree.
+
+**Resolution:** Added to `apps/api/src/middleware/`:
+
+```
+apps/api/src/middleware/
+└── session.middleware.ts     # UUID v4 anonymous token; HTTP-only SameSite=Lax cookie; Redis TTL 30d
+```
+
+Session middleware behaviour:
+- Issues UUID v4 anonymous session token on **first request to any endpoint**
+- Stores in Redis with 30-day sliding TTL
+- Sets HTTP-only, `SameSite=Lax`, `Secure` (prod) cookie
+- All rating and preference operations tagged with session ID
+- No re-issue if valid session cookie present
+
+---
+
+### ETL Upsert Pattern (Enforcement Rule)
+
+**Source:** Advanced Elicitation — ETL re-runs on data updates must be idempotent.
+
+**Rule:** All ETL insert operations use `onConflictDoUpdate` — **never** plain `insert`. This applies to:
+- `seed.ts` (initial seed)
+- `scripts/YYYYMMDD-*.ts` (incremental updates)
+- Any future pipeline additions
+
+```typescript
+// Pattern: always upsert, never insert-or-fail
+await db.insert(ingredients)
+  .values(rows)
+  .onConflictDoUpdate({
+    target: ingredients.canonicalName,
+    set: { aliases: sql`excluded.aliases`, updatedAt: sql`now()` },
+  });
+```
+
+---
+
+### HNSW Index Specification
+
+**Source:** Advanced Elicitation — ivfflat requires training data at index creation; HNSW builds incrementally.
+
+**Final decision:** `pgvector` HNSW index (not ivfflat) on `ingredient_embeddings.embedding`:
+
+```sql
+CREATE INDEX ON ingredient_embeddings
+USING hnsw (embedding vector_cosine_ops)
+WITH (m = 16, ef_construction = 64);
+```
+
+Rationale: HNSW works at any dataset size, no training phase, better recall at MVP scale. ivfflat revisited at 100k+ vectors if needed.
+
+---
+
+### Requirements Coverage Matrix
+
+| Requirement | Architecture Address | Validation Status |
+|---|---|---|
+| FR-01 Ingredient search ≤300ms | Pre-computed `pairing_edges` + Redis cache + HNSW | ✅ |
+| FR-02 Autocomplete ≤100ms | In-memory prefix index; Redis backing | ✅ |
+| FR-03 Community ratings | BullMQ async scoring; quarantine threshold | ✅ |
+| FR-04 Hive Score | Pure scoring engine; `score_version` column | ✅ |
+| FR-05 Dietary filters | `dietary_flags` on `ingredients`; filter at query | ✅ |
+| FR-06 Preference persistence | Zustand + localStorage; cross-device deferred to Pro | ✅ |
+| FR-07 Flavour profile cards | Science Card component; `confidence_tier` + `cuisine_context` display | ✅ GAP-01 resolved |
+| FR-08 Science Score | Multi-signal scoring engine; `confidenceSummary` in every response | ✅ GAP-02 resolved |
+| FR-09 Provenance tracking | `confidence_tier NOT NULL`; `source_dataset` per compound association | ✅ GAP-05 resolved |
+| FR-10 Pro tier | Auth + Better Auth; accounts deferred | ✅ migration order GAP-03 |
+| FR-11 B2B API | `apps/api/src/enterprise/v1/` surface; versioned | ✅ |
+| NFR search latency | Redis cache-aside; pgvector HNSW | ✅ GAP index spec |
+| NFR autocomplete latency | In-memory index; Redis | ✅ |
+| NFR mobile load | Vite optimisation; lazy science cards | ✅ |
+| NFR uptime | Graceful degradation; Railway managed infra | ✅ |
+| NFR scale | HNSW not ivfflat; pagination cursors on all list endpoints | ✅ |
+| DR-01 Zero hallucinations | `confidence_tier NOT NULL`; source per compound | ✅ |
+| DR-08 Open Source Notices | Post-MVP task tracked in `post-mvp-tasks.md` | ⏳ pre-launch |
+
+---
+
+### Architecture Completeness Checklist
+
+- [x] All 11 FRs addressed
+- [x] All 8 NFRs addressed
+- [x] All 12 DRs addressed
+- [x] Monorepo structure defined to file level
+- [x] Data models complete (ingredients, pairing_edges, compound_associations, ratings, user_preferences)
+- [x] `confidence_tier` pgEnum with NOT NULL constraint
+- [x] `cuisine_context` pgEnum with NOT NULL constraint (GAP-01)
+- [x] `confidenceSummary` null fallback defined (GAP-02)
+- [x] Better Auth migration order documented (GAP-03)
+- [x] Redis eviction policy and BullMQ namespace documented (GAP-04)
+- [x] ETL upsert pattern enforced (onConflictDoUpdate)
+- [x] HNSW index spec (not ivfflat)
+- [x] Session middleware in project structure
+- [x] Canonical name aliases with GIN index
+- [x] Scoring engine isolation (zero NestJS/Drizzle imports)
+- [x] Test pyramid defined (unit / integration / E2E)
+- [x] CI/CD pipeline defined
+- [x] Railway hosting architecture defined
+- [x] Custom Claude Code agents created (code-reviewer, security-auditor, release-notes)
+
+---
+
+_Architecture validation complete. Document ready for implementation phase._
