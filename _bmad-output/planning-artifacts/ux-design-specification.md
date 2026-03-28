@@ -312,3 +312,99 @@ The Confidence Ring gap is only intriguing if the user understands what the gap 
 **4. Belonging, not registration.** Every interaction that creates community belonging (rating, seeing community scores, receiving pairing-specific follow-up email) must be framed in community language, not account language. The user is joining a community of cooks, not creating a profile on a service.
 
 **5. Error states are brand moments.** How the product behaves when things go wrong reveals its character more than how it behaves when things go right. Degraded mode, no-results states, OTP failures — all of these must feel like honest product transparency, not silent failures.
+
+---
+
+## UX Pattern Analysis & Inspiration
+
+### Inspiring Products Analysis
+
+**1. Vivino (wine discovery)**
+The closest direct analog to FlavorLab. Vivino solves the same problem in wine that FlavorLab solves in cooking: a user holds an ingredient (bottle) and wants to know if it's worth choosing. Key UX lessons:
+- *Community + expert score duality* — Vivino's critic score vs. community rating is structurally identical to Science Score + Hive Score. Users understand that two independent signals are more useful than one blended number.
+- *Scan as zero-friction entry* — pointing your camera at a label is the wine equivalent of typing an ingredient: immediate, contextual, no setup. FlavorLab's search input must feel equally low-effort.
+- *Vintage context flags* — Vivino shows region and vintage as context tags on every result, analogous to FlavorLab's cuisine context flags. Users learn to read these quickly without needing to understand their full significance.
+- *What Vivino gets wrong for FlavorLab:* Vivino surfaces community scores prominently but buries the "why." FlavorLab inverts this: the "why" (plain-English science) is the headline, scores are confirmation.
+
+**2. Rotten Tomatoes (dual-signal trust)**
+The Tomatometer + Audience Score is the most recognizable dual-trust-signal UI in consumer software. Every user immediately understands: "critics think X, audiences think Y." The gap between the two scores is interesting, not confusing. This directly validates the Confidence Ring concept. Key lessons:
+- *The gap is the content* — Rotten Tomatoes' most shareable moments are the widely-contested films where Tomatometer and Audience Score diverge by 50+ points. The product turns disagreement into editorial. FlavorLab's contested pairing system should achieve the same.
+- *Certified Fresh as confidence tier* — the green/red/certified-fresh visual hierarchy is instantly learnable and carries confidence weight. FlavorLab's confidence tier badges need the same immediacy.
+- *What Rotten Tomatoes gets wrong:* The dual scores are displayed as two separate numbers with no visualization of their relationship. The Confidence Ring improves on this by making the relationship — specifically the gap — visible at a glance.
+
+**3. iNaturalist (citizen science + expert data)**
+iNaturalist maps community-submitted wildlife observations against expert taxonomic data — a direct analog to Hive Score vs. Science Score. Key lessons:
+- *Community data improves over time, and that improvement is visible* — iNaturalist shows observation counts; the database gets better as more people contribute. This is the same dynamic FlavorLab's Hive Score needs to embody: voting is contribution, not just opinion.
+- *Research grade as confidence tier* — observations that meet scientific criteria are labeled "Research Grade." This gives community contributors a clear signal of what quality looks like. Applicable to FlavorLab's confidence tier display logic.
+- *"Be the first to observe this species in your area"* — iNaturalist turns data sparsity into an invitation. FlavorLab's empty Hive Score states should do the same: "Be the first to rate this pairing" is not a failure state, it's a first-mover invitation.
+
+**4. Wolfram Alpha (trusted authority that shows its work)**
+Wolfram Alpha is trusted precisely because it shows exactly how it computed its answer — sources, steps, confidence bounds. Users who don't understand the computation still trust it because the transparency is visible. Key lessons:
+- *Showing your work is a trust signal even when the viewer doesn't check the work* — the fact that compound names are expandable (even if Maya never taps them) communicates scientific seriousness. The transparency is the trust signal.
+- *Units and sources on every answer* — Wolfram never gives an answer without its unit and source. FlavorLab's confidence tier and cuisine context are its equivalents: context that makes every score interpretable, not just a number.
+
+**5. Duolingo (progressive commitment + earned celebration)**
+Duolingo turned language learning — a high-friction, long-term commitment — into a series of small, immediately rewarding interactions. Key lessons:
+- *The streak as re-engagement mechanic* — Duolingo's streak is effective because it makes return visits feel earned, not prompted. FlavorLab's pairing-specific 7-day follow-up email achieves a similar re-engagement through personalized content rather than a streak counter.
+- *Celebration at the moment of completion* — Duolingo's confetti on lesson completion is timed to the exact moment of accomplishment, not 30 seconds later. FlavorLab's post-rating "You're now part of the science" moment needs the same timing precision.
+- *What Duolingo gets wrong for FlavorLab:* Duolingo's gamification works for daily habit formation. FlavorLab's use case is episodic (cook-triggered), not daily-habit. Don't import streak mechanics that don't fit the use pattern.
+
+### Transferable UX Patterns
+
+**Navigation patterns:**
+- *Single-focus zero state (Vivino scan, Instagram camera)* — present one clear action when the user has no context yet. First Pairing Magic applies this: one pairing, one question, one decision.
+- *Persistent ambient filter (Airbnb, Booking.com)* — filters that stay active across searches without requiring re-entry. Direct model for the dietary filter context tag below the search input.
+- *Breadcrumb-free deep drill (Apple Settings, Notion)* — back chevron only, no breadcrumb trail. Science card expand/collapse follows this model: the result row is always reachable with one tap back.
+
+**Interaction patterns:**
+- *Card reveal / lift animation (Google Now, Apple Wallet)* — a card that expands in-place (not navigates to a new page) feels like revealing what was already there, not loading something new. Science card expand should use this metaphor.
+- *Dual-score divergence as editorial content (Rotten Tomatoes)* — the contested state is a feature, not an edge case. The gap between Science Score and Hive Score generates product content that no competitor can replicate.
+- *Pre-action framing before commitment (Medium, Substack paywall)* — showing the user what they're joining before asking for a commitment. Applied to: email gate copy ("Join [N] people") appears before star selection, not after.
+- *Community-language contribution framing (Wikipedia "edit this page," iNaturalist "add observation")* — users contribute to a shared resource, not "submit data." Rating language follows this model throughout.
+
+**Visual patterns:**
+- *Confidence tier as visual hierarchy, not metadata (Rotten Tomatoes Certified Fresh, iNaturalist Research Grade)* — the tier is legible at a glance, not buried in a tooltip. Color + icon together, not text label alone on mobile.
+- *Score ring as relationship visualization (Apple Watch activity rings, Fitbit)* — rings that show the relationship between two values are more immediately legible than two separate numbers. Validates the Confidence Ring concept.
+- *Aroma/flavor family as accessible label layer (Vivino flavor wheel)* — Vivino's flavor wheel maps wine characteristics to plain-English categories ("fruity," "oaky") before introducing varietal-specific language. FlavorLab's aroma families do the same for compound chemistry.
+
+### Anti-Patterns to Avoid
+
+**1. Interstitial gates before value delivery (Yummly, most recipe apps)**
+Yummly asks for dietary preferences, cooking skill level, and household size before showing a single recipe. The user has delivered nothing and is being asked to invest before receiving any proof of value. FlavorLab's principle: one search → immediate results → email gate only at rating, never before value is received.
+
+**2. Blended scores that hide disagreement**
+A single "92/100" that averages science data with community ratings hides the most interesting information. When science and community disagree, that disagreement is the product's most valuable editorial content. Never blend scores.
+
+**3. Science-forward copy that loses non-scientists (too many food apps, Yummly's nutrient labels)**
+Leading with compound names, chemical formulas, or technical jargon loses Maya in the first sentence. Any copy that requires chemistry knowledge before the value is accessible is a trust violation. The science is proof, not headline.
+
+**4. Empty states that feel like errors**
+"No results found." "No ratings yet." "Data unavailable." These copy patterns communicate product failure. Every empty state in FlavorLab must be designed to feel like an invitation: "Be the first to rate," "Try [similar ingredient] instead," "Showing community scores only right now."
+
+**5. Notification requests before engagement (most apps)**
+Asking for push notification permission before the user has experienced any value is the app equivalent of a waiter asking for a tip before taking the order. Any permission request in FlavorLab (email, notifications) comes after demonstrated value.
+
+**6. Infinite scroll without entry points**
+Infinite scroll creates a sense of abundance but no sense of progress. A ranked list with clear confidence-tier grouping (GC_MS_EXPERIMENTAL at the top, RECIPE_CO_OCCURRENCE below a visual divider) gives users an anchor to navigate from, not a stream to scroll through endlessly.
+
+**7. Generic confirmation toasts**
+"Saved." "Submitted." "Done." These confirm that a transaction completed, not that a meaningful thing happened. Post-rating: "You're now part of the science" is a confirmation that carries the brand promise. Never use a generic toast where a brand moment is possible.
+
+### Design Inspiration Strategy
+
+**Adopt directly:**
+- *Dual-score divergence as editorial content* (Rotten Tomatoes) — the Confidence Ring gap is the product's most interesting UI state; design it with the same editorial weight as a "Most Contested" editorial section
+- *Persistent ambient filter* (Airbnb) — dietary filter as a context tag below search input, always visible, one-tap removal
+- *Card reveal in-place* (Apple Wallet, Google Now) — science card expands in-place, not navigates; the result row is the card's collapsed state
+- *Community contribution language throughout* (iNaturalist, Wikipedia) — rating = contributing to science, not submitting data
+
+**Adapt for FlavorLab:**
+- *Confidence tier visual hierarchy* (Rotten Tomatoes Certified Fresh → FlavorLab tier badges) — adapt the icon+color pattern but design it to communicate "data quality" rather than "critical approval"
+- *Score ring visualization* (Apple Watch rings → Confidence Ring) — adapt the ring metaphor to show the relationship between two scores, not progress toward a single goal; the gap is a feature, not a deficit
+- *Progressive commitment funnel* (Duolingo streaks → FlavorLab rating → email → Pro) — adapt the concept of earning commitment through value, but replace streak mechanics (wrong use pattern) with pairing-specific re-engagement email
+
+**Avoid entirely:**
+- Pre-value gates (Yummly-style onboarding) — zero friction to first result, no exceptions
+- Blended scores — Science Score and Hive Score remain separate, always
+- Technical-first copy — compound names are always expandable depth, never the headline
+- Generic empty states and confirmation toasts — every empty state is an invitation, every confirmation carries brand language
