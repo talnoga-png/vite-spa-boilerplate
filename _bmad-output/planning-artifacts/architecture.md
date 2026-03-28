@@ -91,3 +91,129 @@ _This document builds collaboratively through step-by-step discovery. Sections a
 - **Primary domain:** Full-stack SaaS with data pipeline core — ETL and scoring engine are as important as the API
 - **Estimated architectural components:** 9 — ETL pipeline, Ingredient Ontology Service, Postgres data layer, pgvector embedding layer, Redis cache layer, scoring engine, community ratings service, internal REST API, external enterprise REST API
 - **Highest risk component:** Multi-source ETL with confidence tier tracking — Ingredient Ontology Service (canonical name normalisation across FlavorGraph/FooDB/PubChem naming conventions) is the most complex and most consequential pre-work
+
+---
+
+## Starter Template Evaluation
+
+### Primary Technology Domain
+
+**Full-stack SaaS** with clean frontend/backend separation. The backend complexity (multi-signal scoring engine, ETL pipeline, two versioned API surfaces, community ratings, background jobs) justifies an enterprise-grade backend framework. The frontend is a pure SPA — no SSR required, all data is API-fetched.
+
+### Starter Options Considered
+
+| Option | TypeScript DX | BE Complexity Fit | FE Fit | Ops | Scale | Team Fit | **Score** |
+|---|---|---|---|---|---|---|---|
+| **pnpm workspaces + Vite + NestJS** ✅ | 5 | 5 | 4 | 4 | 4 | 4 | **4.45** |
+| Turborepo + Vite + NestJS | 5 | 5 | 4 | 3 | 4 | 3 | 4.10 |
+| Next.js full-stack | 4 | 2 | 5 | 5 | 3 | 4 | 3.50 |
+| Vite + Express/Fastify | 3 | 3 | 4 | 5 | 3 | 5 | 3.55 |
+| SvelteKit + NestJS | 4 | 5 | 3 | 3 | 4 | 2 | 3.65 |
+| Vite + Hono | 4 | 2 | 4 | 5 | 3 | 4 | 3.45 |
+
+**Why not Next.js full-stack:** Next.js API routes run as stateless serverless functions — fundamentally incompatible with BullMQ workers (persistent process), nightly batch scoring recalculations, and Redis connection pooling. Adding a separate worker service alongside Next.js produces three deployment units instead of two, with a useless BFF middleman layer.
+
+**Why not Turborepo:** Windows 11 development environment introduces path-handling risk. pnpm workspaces with file-reference packages provides the same shared types benefit (`"@flavorlab/types": "file:../../packages/shared-types"`) with zero orchestration overhead. Turborepo build caching can be added later when CI/CD is established.
+
+**Why Drizzle over TypeORM:** Drizzle schema definitions ARE TypeScript types — no decorator magic, no `@Entity()`, no class inheritance. `typeof ingredients.$inferSelect` produces the correct type automatically and is importable into the shared-types package. TypeORM entities require a live DB connection to instantiate properly, making unit tests slower and more complex. Critical for the scoring engine test pyramid.
+
+### Selected Starter: pnpm workspaces + Vite React + NestJS + Drizzle ORM
+
+**Rationale:**
+- Vite + React — consistent with marketing page toolchain; SPA is correct for product app (no SSR needed); TypeScript template ready
+- NestJS — module system, DI container, Guards, Pipes, versioned routing, BullMQ integration; all map directly to FlavorLab™'s service architecture
+- Drizzle ORM — schema IS the TypeScript type; superior inference; pgvector column support; healthier test pyramid
+- pnpm workspaces — shared `@flavorlab/types` package enforces API contract between frontend and backend; Windows-safe; zero additional tooling
+
+**Initialization Commands:**
+
+```bash
+# Step 1: Bootstrap pnpm workspace monorepo
+mkdir flavorlab && cd flavorlab
+pnpm init
+echo "packages:\n  - 'apps/*'\n  - 'packages/*'" > pnpm-workspace.yaml
+
+# Step 2: Product app frontend
+npm create vite@latest apps/web -- --template react-ts
+
+# Step 3: Backend API
+npx @nestjs/cli@latest new apps/api --package-manager pnpm
+
+# Step 4: Shared types package
+mkdir -p packages/shared-types && cd packages/shared-types && pnpm init
+
+# Step 5: Add Drizzle ORM to API
+cd ../../apps/api
+pnpm add drizzle-orm pg && pnpm add -D drizzle-kit @types/pg
+```
+
+**Resulting workspace structure:**
+
+```
+flavorlab/
+├── apps/
+│   ├── web/                    # Vite + React + TS → flavorlab.io/app
+│   └── api/                    # NestJS + TS → REST API server
+├── packages/
+│   ├── shared-types/           # TS interfaces: Ingredient, Pairing, ScienceCard, HiveScore
+│   └── shared-config/          # ESLint + TypeScript base configs
+├── pnpm-workspace.yaml
+└── package.json
+```
+
+**NestJS backend module structure:**
+
+```
+apps/api/src/
+├── modules/
+│   ├── ingredients/            # Search, autocomplete, ingredient lookup
+│   ├── pairings/               # Pairing engine, Science Score retrieval
+│   ├── ratings/                # Community Hive Score, BullMQ jobs
+│   ├── users/                  # Better Auth session management
+│   └── etl/                    # ETL orchestration + status endpoints
+├── api/                        # Internal /api/v1/ controllers
+├── public/                     # Enterprise /public/v1/ controllers
+├── database/                   # Drizzle schema, migrations, client
+├── cache/                      # Redis service (ioredis)
+└── scoring/                    # Pure TS scoring engine (zero framework deps)
+```
+
+### Architectural Decisions Provided by Starter
+
+**Language & Runtime:**
+- TypeScript 5.x throughout — strict mode, shared `tsconfig` base in `packages/shared-config`
+- Node.js runtime (NestJS API), browser target (Vite SPA)
+
+**Styling Solution:**
+- No opinion from starter — product app will use CSS Modules or Tailwind (TBD in UX Design phase)
+- Marketing page retains its existing flat CSS — no change
+
+**Build Tooling:**
+- Frontend: Vite 5.x — HMR, ESM, optimised production bundles
+- Backend: NestJS CLI / tsc — watch mode for development
+- Monorepo: pnpm workspaces — no build cache tooling at MVP; add Turborepo post-launch
+
+**Testing Framework:**
+- NestJS: Jest (included by default)
+- Frontend: Vitest (same config as Vite, add as dev dependency)
+- E2E: Playwright (add post-Sprint 1)
+- Test pyramid: Unit (Vitest, pure functions) → Integration (NestJS test module + test Postgres container) → E2E (Playwright)
+
+**Development Experience:**
+- `pnpm dev` — starts both Vite dev server (port 5174) and NestJS watch mode (port 3000) in parallel
+- Hot reload on frontend; NestJS `--watch` flag on backend
+- Shared types auto-resolved via workspace path references
+- `@nestjs/cli` scaffold commands for new modules
+
+### Implementation Principles (from A+P analysis)
+
+1. **Scoring engine isolation** — The scoring algorithm (`compound_affinity × 0.35 + graph_similarity × 0.25 + ...`) lives in `apps/api/src/scoring/` as a pure TypeScript function. Zero NestJS decorators, zero Drizzle imports. Input: signal values. Output: weighted score. Independently unit-testable, independently replaceable.
+
+2. **`confidence_tier` ENUM in schema from Sprint 1** — Drizzle schema includes `pgEnum('confidence_tier', ['GC_MS_EXPERIMENTAL', 'LITERATURE_CURATED', 'ML_PREDICTED', 'RECIPE_CO_OCCURRENCE'])` from day one. Not a Sprint 3 refinement — it's the data integrity differentiator and science honesty guarantee.
+
+3. **Skeleton states as UI convention** — Product app uses skeleton loading states (not spinners, not blank screens) for all async data fetches. Established as a project-wide convention in Sprint 1, applied to every data-dependent component.
+
+4. **Deployment catch-all routing** — Vite SPA requires server-side catch-all (`/*` → `index.html`) to support direct URL access (e.g. `/app/ingredient/garlic`). Configured in Nginx/Caddy deployment config, not a code change.
+
+**Note:** Project initialization using the commands above is the first implementation story in Epic 1, Story 1.
+
