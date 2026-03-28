@@ -230,3 +230,4 @@ _Tracked here so nothing falls through the cracks. Each item has a trigger (when
 | 8 | **5B** — Monitoring stack | Before marketing push |
 | 9 | **3A/3B/3C** — Non-Western ingredient ETL | Phase 2 coverage sprint |
 | 10 | **4A–4G** — Post-MVP features | Per roadmap |
+| 11 | **6A** — Lower contested pairing threshold 30 → 25 | When avg Hive vote count ≥ 50 |
