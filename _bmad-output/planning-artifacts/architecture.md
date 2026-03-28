@@ -600,6 +600,7 @@ features/{feature}/
 |---|---|---|
 | Environment config (changes per env) | `apps/api/src/config/env.schema.ts` | `DATABASE_URL`, `REDIS_TTL` |
 | Algorithm invariants (scoring weights, limits) | `apps/api/src/modules/scoring/scoring.constants.ts` | `COMPOUND_AFFINITY_WEIGHT = 0.35` |
+| Contested pairing threshold | `apps/api/src/modules/scoring/scoring.constants.ts` | `CONTESTED_GAP_THRESHOLD = 30` (lower to 25 post-MVP once Hive Score data is validated — tracked in post-mvp-tasks.md §6A) |
 | Shared cross-module constants | `apps/api/src/common/constants.ts` | `MAX_PAIRINGS_PER_QUERY = 50` |
 
 ---
