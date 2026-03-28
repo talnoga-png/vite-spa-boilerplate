@@ -449,3 +449,371 @@ const envSchema = z.object({
 - Redis must be running before rate limiting, caching, or BullMQ job queues work
 - Scoring engine pure function must be complete before Hive Score BullMQ job can call it
 
+---
+
+## Implementation Patterns & Consistency Rules
+
+**14 potential conflict areas identified** — patterns defined for all of them.
+
+---
+
+### Naming Patterns
+
+#### Database Naming (Drizzle schema)
+
+| Convention | Rule | Example |
+|---|---|---|
+| Table names | `snake_case`, plural | `ingredients`, `pairing_edges`, `rating_events` |
+| Column names | `snake_case` | `canonical_name`, `confidence_tier`, `created_at` |
+| Foreign keys | `{table_singular}_id` | `ingredient_a_id`, `ingredient_b_id` |
+| Enum types | `snake_case` | `confidence_tier`, `user_plan` |
+| Index names | `idx_{table}_{columns}` | `idx_pairing_edges_ingredient_a_score` |
+| Timestamps | `created_at` + `updated_at` on every table, no exceptions | — |
+
+#### API Endpoint Naming
+
+| Convention | Rule | Example |
+|---|---|---|
+| Resources | Plural nouns | `/ingredients`, `/pairings`, `/ratings` |
+| Nesting depth | Max 2 levels | `/ingredients/:id/pairings` ✅ |
+| Route params | `:camelCase` in NestJS | `:ingredientId`, `:pairingId` |
+| Query params | `camelCase` | `?canonicalName=garlic&limit=20&cursor=abc` |
+| Actions | POST to resource — no verb routes | `POST /ratings` ✅ `POST /ratings/create` ❌ |
+| Versioning | URL prefix set once in `main.ts` | `/api/v1/ingredients`, `/public/v1/ingredients` |
+
+#### Code Naming (TypeScript)
+
+| Convention | Rule | Example |
+|---|---|---|
+| React component files | `PascalCase.tsx` | `ScienceCard.tsx`, `IngredientSearch.tsx` |
+| Service/module files | `kebab-case.ts` | `ingredients.service.ts` |
+| Schema files | `kebab-case.schema.ts` | `ingredients.schema.ts` |
+| Test files | Co-located, `*.spec.ts` (unit) / `*.e2e.ts` (E2E) | `scoring.service.spec.ts` |
+| React components | `PascalCase` | `ScienceCard`, `HiveScoreDisplay` |
+| Custom hooks | `use` prefix + `camelCase` | `useIngredientSearch`, `usePairingData` |
+| Zustand stores | `use` prefix + `Store` suffix | `useFilterStore`, `useSavedStore` |
+| NestJS services | `PascalCase` + `Service` | `IngredientsService`, `ScoringService` |
+| NestJS controllers | `PascalCase` + `Controller` | `IngredientsController` |
+| DTOs | `PascalCase` + verb + `Dto` | `CreateRatingDto`, `SearchIngredientsDto` |
+| Zod schemas | `camelCase` + `Schema` | `searchIngredientsSchema` |
+| Constants | `SCREAMING_SNAKE_CASE` | `MAX_PAIRINGS_PER_QUERY`, `CACHE_TTL_SECONDS` |
+| Env vars | `SCREAMING_SNAKE_CASE` | `DATABASE_URL`, `REDIS_URL` |
+
+---
+
+### Structure Patterns
+
+#### Monorepo Layout
+
+```
+flavorlab/
+├── apps/
+│   ├── web/src/
+│   │   ├── components/         # Shared UI (not page-specific)
+│   │   ├── features/           # Domain-scoped components + hooks
+│   │   │   ├── ingredients/    # Must match Drizzle table name
+│   │   │   ├── pairings/       # Must match Drizzle table name
+│   │   │   └── ratings/        # Must match Drizzle table name
+│   │   ├── routes/             # TanStack Router route files (screens/pages)
+│   │   ├── stores/             # Zustand stores
+│   │   ├── lib/                # API client, query key factory, utils
+│   │   └── hooks/              # Shared hooks (not feature-scoped)
+│   └── api/src/
+│       ├── modules/            # NestJS feature modules
+│       │   ├── ingredients/
+│       │   ├── pairings/
+│       │   ├── ratings/
+│       │   ├── scoring/        # Pure function + BullMQ consumer
+│       │   ├── users/
+│       │   └── etl/
+│       ├── database/           # Drizzle schema, client, migrations
+│       │   ├── schema/         # One file per table
+│       │   └── migrations/     # Generated migration files (committed to git)
+│       ├── cache/              # Redis service (ioredis)
+│       ├── config/             # Zod env schema, NestJS ConfigModule
+│       └── common/             # Framework wiring ONLY (Guards, Filters, Interceptors, Pipes, constants)
+├── packages/
+│   ├── shared-types/           # TypeScript interfaces + shared Zod schemas — NO app imports
+│   └── shared-config/          # tsconfig.base.json, eslint.base.js
+└── pnpm-workspace.yaml
+```
+
+**Feature folder rule:** Feature folders MUST match Drizzle table names (`ingredients`, `pairings`, `ratings`, `users`). Screens and pages are compositions — they live in `routes/`, not `features/`. No `features/search/`, `features/hero-demo/`, or `features/shared/`.
+
+**`common/` rule:** Contains ONLY framework wiring that applies across multiple modules (Guards, Filters, Interceptors, Pipes, shared constants). Module-specific logic stays in the module. No business logic in `common/`.
+
+#### NestJS Feature Module Structure (every module)
+
+```
+modules/{feature}/
+├── {feature}.module.ts         # Imports, providers, exports
+├── {feature}.controller.ts     # HTTP handlers only — no business logic
+├── {feature}.service.ts        # Business logic — no HTTP concepts
+├── {feature}.service.spec.ts   # Unit tests — co-located
+├── dto/
+│   ├── create-{feature}.dto.ts
+│   └── {feature}-response.dto.ts
+└── (optional) {feature}.consumer.ts  # BullMQ consumer if async jobs needed
+```
+
+#### React Feature Folder Structure (every feature)
+
+```
+features/{feature}/
+├── components/                 # Feature-specific UI components
+├── hooks/                      # Feature-specific React hooks
+├── {feature}.api.ts            # TanStack Query hooks wrapping API calls
+└── index.ts                    # Public API — only export what other features need
+```
+
+#### Constants: Three Categories, Three Locations
+
+| Type | Location | Example |
+|---|---|---|
+| Environment config (changes per env) | `apps/api/src/config/env.schema.ts` | `DATABASE_URL`, `REDIS_TTL` |
+| Algorithm invariants (scoring weights, limits) | `apps/api/src/modules/scoring/scoring.constants.ts` | `COMPOUND_AFFINITY_WEIGHT = 0.35` |
+| Shared cross-module constants | `apps/api/src/common/constants.ts` | `MAX_PAIRINGS_PER_QUERY = 50` |
+
+---
+
+### Format Patterns
+
+#### API Success Response Shape
+
+```typescript
+// Single resource
+{ "data": { ...resource } }
+
+// List resource
+{
+  "data": [...items],
+  "nextCursor": "base64string | null",
+  "hasMore": boolean,
+  "total": number  // only when cheap to compute
+}
+
+// Mutation (create/update/delete) — always return the mutated resource
+{ "data": { ...updatedResource } }
+```
+
+#### API Error Response Shape (global ExceptionFilter)
+
+```typescript
+{
+  "statusCode": number,          // HTTP status code
+  "error": "SCREAMING_SNAKE",    // Typed error code
+  "message": string,             // Safe to display in UI — never a stack trace
+  "requestId": string,           // UUID for log correlation
+  "timestamp": string            // ISO 8601 UTC
+}
+```
+
+#### Pairing Response — `confidenceSummary` Required Field
+
+Every pairing API response MUST include `confidenceSummary` — the minimum confidence tier across all compound associations for that pairing. This is the science honesty contract made visible in the API.
+
+```typescript
+{
+  "data": {
+    "id": "garlic:rosemary",
+    "ingredientA": "garlic",
+    "ingredientB": "rosemary",
+    "scienceScore": 0.84,
+    "confidenceSummary": "LITERATURE_CURATED",  // min tier — NEVER omitted
+    "compounds": [...],
+    ...
+  }
+}
+```
+
+`confidenceSummary` is computed in the service layer (not controller), derived as `MIN(confidence_tier)` across joined compound associations.
+
+#### JSON Field Naming
+
+- All API responses use `camelCase` — no exceptions
+- DB stores `snake_case`; Drizzle `.$inferSelect` returns `snake_case`
+- **Serialisation:** Zod transform at the service boundary converts to `camelCase` — compile-time safety, not runtime `ClassSerializerInterceptor` (which fails silently if forgotten)
+
+#### Date/Time
+
+- Always ISO 8601 with UTC: `"2026-03-28T12:00:00.000Z"`
+- Zod transform: `z.date().transform(d => d.toISOString())` on all date fields
+- Frontend displays in user's local timezone via `Intl.DateTimeFormat`
+- Never Unix timestamps in API responses
+
+#### Pagination Rule
+
+Paginate if and only if the result set can exceed 50 items in production. Return all items for bounded sets (dietary filter options ≤ 20, confidence tier enum ≤ 4). Default page size: 20 items.
+
+---
+
+### Communication Patterns
+
+#### BullMQ Job Naming
+
+| Convention | Rule | Example |
+|---|---|---|
+| Queue names | `kebab-case` | `hive-score-recalc`, `etl-seed` |
+| Job names | `{domain}.{verb}` | `pairing.recalculate-score`, `etl.seed-ingredients` |
+| Job payloads | Typed interface in `shared-types` | `RecalculateScoreJob { pairingId: string }` |
+| Retry config | On every job definition | `{ attempts: 3, backoff: { type: 'exponential', delay: 1000 } }` |
+
+**Typed queue wrapper** — use a generic `Queue<TPayload>` wrapper in `common/` to enforce payload types at compile time. Never pass untyped objects to `job.add()`.
+
+#### NestJS Internal Domain Events
+
+- Event names: `{domain}.{past-tense-verb}` — `rating.submitted`, `pairing.score-updated`
+- Payload: always a typed class imported from `shared-types`
+- Used for decoupling within the API process: rating submitted → event → BullMQ enqueues job
+
+#### TanStack Query Key Factory
+
+All query keys use the centralised factory in `apps/web/src/lib/query-keys.ts`. No ad-hoc inline `queryKey: ['...']` arrays — ESLint rule enforced.
+
+```typescript
+// apps/web/src/lib/query-keys.ts
+export const queryKeys = {
+  ingredients: {
+    all: ['ingredients'] as const,
+    search: (q: string) => ['ingredients', 'search', q] as const,
+    detail: (id: string) => ['ingredients', 'detail', id] as const,
+  },
+  pairings: {
+    forIngredient: (id: string) => ['pairings', 'ingredient', id] as const,
+    detail: (id: string) => ['pairings', 'detail', id] as const,
+  },
+  ratings: {
+    forPairing: (id: string) => ['ratings', 'pairing', id] as const,
+  }
+}
+```
+
+#### Zustand Store Pattern
+
+```typescript
+// All stores follow this shape — state + actions co-located
+interface FilterStore {
+  activeFilters: DietaryFilter[]
+  setFilter: (filter: DietaryFilter) => void
+  clearFilters: () => void
+}
+
+// Always use selective subscriptions — never subscribe to full store
+const activeFilters = useFilterStore(state => state.activeFilters) // ✅
+const store = useFilterStore()  // ❌ — causes re-render on any state change
+```
+
+---
+
+### Process Patterns
+
+#### Error Handling — Backend
+
+```typescript
+// Services throw typed NestJS exceptions — NEVER return null for "not found"
+throw new NotFoundException(`Ingredient '${name}' not found`)
+throw new BadRequestException('RECIPE_CO_OCCURRENCE cannot contribute to Science Score')
+throw new ConflictException('Rating already submitted for this pairing today')
+
+// Global ExceptionFilter formats ALL exceptions into the standard error shape
+// Controllers and services NEVER format HTTP responses directly
+```
+
+#### Error Handling — Frontend
+
+```typescript
+// ALWAYS destructure error.response.data.message — the safe ExceptionFilter field
+// NEVER use error.message — may contain stack traces or DB query fragments (security risk)
+const message = error.response?.data?.message ?? 'Something went wrong'
+
+// TanStack Query error boundary at route level, not per-component
+// Component-level errors show inline error state with retry button
+const { data, isLoading, error } = usePairingData(ingredientId)
+if (isLoading) return <PairingSkeleton />         // Skeleton, never spinner
+if (error) return <PairingError onRetry={refetch} /> // Inline error with retry
+return <PairingList pairings={data} />
+```
+
+#### Loading States — The Skeleton Contract
+
+Every component that fetches async data MUST export a co-located skeleton:
+
+```typescript
+// ✅ Correct — skeleton co-located and exported
+export function ScienceCard({ pairing }: Props) { ... }
+export function ScienceCardSkeleton() {
+  return <div className="animate-pulse rounded-lg bg-gray-100 h-48 w-full" />
+}
+
+// ❌ Anti-pattern
+if (isLoading) return <Spinner />        // Never
+if (isLoading) return <div>Loading...</div> // Never
+if (isLoading) return null               // Never
+```
+
+#### Validation — Three Layers, Each Owns Its Boundary
+
+```
+Frontend (Zod + TanStack Form): Validate on blur + submit, never on keystroke
+Backend (Zod pipe):             Validate at controller entry, before any service call
+DB (Drizzle + Postgres):        Enforce invariants that must survive direct DB access
+```
+
+Each layer validates what it owns. No layer skips its responsibility.
+
+#### Test Pyramid — Explicit Scope
+
+| Layer | Tool | What it tests | When |
+|---|---|---|---|
+| Unit | Vitest | Scoring engine (pure function), Zod schemas, utility functions | Every PR |
+| Integration | NestJS test module + test Postgres | Every service method that touches DB or Redis | Every PR |
+| E2E | Playwright | The 5 critical user journeys only (search → pairing, rate, science card, autocomplete, dietary filter) | Pre-release |
+
+Rule: Do not write E2E tests for things covered by integration tests. Do not write integration tests for things covered by unit tests.
+
+#### Retry Policy
+
+- API requests (TanStack Query): Default 3 retries with exponential backoff. Override to 0 retries for non-idempotent mutations (`POST /ratings`).
+- BullMQ jobs: `{ attempts: 3, backoff: { type: 'exponential', delay: 1000 } }` on every job definition.
+- ETL scripts: Idempotent by design — can be re-run at any time; no retry complexity needed.
+
+---
+
+### Enforcement Guidelines
+
+**All AI agents MUST:**
+
+1. Feature folders match Drizzle table names — no screen-named feature folders
+2. Use query key factory from `src/lib/query-keys.ts` — no inline query key arrays
+3. Throw typed NestJS exceptions from services — no `return null` for not-found
+4. Export a skeleton component alongside every data-fetching component
+5. `camelCase` in all JSON responses — no `snake_case` leaking via Zod transform
+6. Keep NestJS controllers thin — zero business logic in controllers
+7. Keep scoring engine free of NestJS/Drizzle imports — pure TypeScript function
+8. Use `confidence_tier` ENUM values only as defined — no string literals elsewhere
+9. Every pairing API response includes `confidenceSummary` — computed in service
+10. `shared-types` is a leaf node — no imports from `apps/web` or `apps/api`
+11. Frontend error display uses `error.response.data.message` only — never `error.message`
+12. `common/` contains framework wiring only — no business logic
+13. Constants in their correct location (env config / module-local / `common/constants.ts`)
+14. `any` type forbidden in business logic — `unknown` + assertion allowed at NestJS framework boundaries (Guards, Interceptors, lifecycle hooks)
+
+**Anti-patterns to reject in PR review:**
+- `any` in service or DTO code
+- Direct `fetch()` calls in React components (always TanStack Query)
+- `console.log` in production code (use `nestjs-pino` logger in API; no logging in frontend)
+- Inline styles in React (always Tailwind classes)
+- `ClassSerializerInterceptor` for camelCase conversion (use Zod transform instead)
+- Spinner/blank div/null for loading states (always skeleton)
+- `error.message` in frontend error display (always `error.response.data.message`)
+- Inline `queryKey: ['ingredients', id]` arrays (always query key factory)
+
+**PR Checklist** (`.github/PULL_REQUEST_TEMPLATE.md`):
+- [ ] Skeleton component exported alongside every new async component
+- [ ] Query key factory used — no inline query key arrays
+- [ ] Controller is logic-free (service handles all business logic)
+- [ ] Zod validation pipe on all new endpoints
+- [ ] New BullMQ jobs have typed payloads and retry config
+- [ ] `confidenceSummary` included in all pairing responses
+- [ ] No `any` types in business logic or DTOs
+
