@@ -34,7 +34,12 @@
       "WebFetch(domain:www.flavorfox.app)",
       "WebFetch(domain:tastematch.app)",
       "WebFetch(domain:inspire.foodpairing.com)",
-      "WebFetch(domain:chatgpt.com)"
+      "WebFetch(domain:chatgpt.com)",
+      "WebFetch(domain:pmc.ncbi.nlm.nih.gov)",
+      "WebFetch(domain:foodb.ca)",
+      "WebFetch(domain:www.vcf-online.nl)",
+      "WebFetch(domain:cosylab.iiitd.edu.in)",
+      "WebFetch(domain:fdc.nal.usda.gov)"
     ]
   },
   "hooks": {
