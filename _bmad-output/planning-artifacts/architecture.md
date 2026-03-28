@@ -68,7 +68,7 @@ _This document builds collaboratively through step-by-step discovery. Sections a
 |---|---|---|
 | 1 | Frontend | Marketing stays vanilla JS; product app is new framework-based build |
 | 2 | Domain | Same domain — `flavorlab.io` (marketing) + `flavorlab.io/app` (product) |
-| 3 | Free tier identity | Anonymous session token — secure HTTP-only cookie, Redis-backed, 30-day TTL |
+| 3 | Free tier identity | Two-tier: (a) anonymous session token for browsing/searching — HTTP-only cookie, Redis-backed, 30-day TTL; (b) email-verified rater — email + OTP verification required to submit ratings, email stored in localStorage after first verification |
 | 4 | Auth provider | Better Auth — open source, self-hosted, runs on existing Postgres, zero cost |
 | 5 | Autocomplete | In-memory prefix index (MVP); abstracted interface for Typesense swap at Growth |
 | 6 | Embeddings | FlavorGraph pre-existing Node2Vec (MVP, Apache 2.0); sentence-transformers Phase 2 |
