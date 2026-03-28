@@ -216,3 +216,99 @@ Every screen element exists to accelerate this loop. Anything that does not serv
 | Confidence Ring legend: once, on first contested pairing, dismissed to localStorage | Reverse Engineering | Novel visualization needs a learning moment timed to when it matters |
 | Cook's View / Science View toggle | What If Scenarios | Future direction: simplify the card further for cooks who want less science |
 | 30-second session optimization for re-acquisition | What If Scenarios | Return users without a specific ingredient need value within 30 seconds |
+
+---
+
+## Desired Emotional Response
+
+### Primary Emotional Goals
+
+FlavorLab's primary emotional goal is **confident curiosity** — the feeling of knowing enough science to trust a pairing, combined with a genuine desire to go test it in the kitchen. This is a rarer and more valuable emotional state than either pure excitement (which doesn't survive the commute home) or mere efficiency (which doesn't create loyalty).
+
+The three primary emotions the product must deliver, in order of priority:
+
+**1. Intellectual confidence** — *"I understand why this works."*
+Not "I trust an algorithm." Not "the app said so." Confidence that comes from understanding: the user read the plain-English explanation, saw the science behind it, and now has a mental model she can apply to other pairings. This is what distinguishes FlavorLab from a recommendation engine — it teaches, not just suggests.
+
+**2. Delight at the unexpected** — *"I never would have guessed that."*
+The first result that surprises — strawberry + black pepper, chocolate + blue cheese, lavender + lamb — creates a shareable emotional moment. This is the emotion that drives word-of-mouth. The product earns it through the quality of its pairing selections and the surprise value of the Science Score relative to expectation.
+
+**3. Trust through honesty** — *"This product tells me the truth."*
+When the product says "chemistry says compatible, but cooks consistently disagree," users feel something rarer than delight: they feel respected. The contested pairing system and the failure card are the product's most trust-building moments precisely because they don't oversell. A product that admits its own uncertainty is one users return to.
+
+### Emotional Journey Mapping
+
+**On first arrival (First Pairing Magic active):**
+Emotion target: *curiosity, not overwhelm*
+The user sees one pairing — the most-contested pairing of the week — as a zero-state. No choices, no grid of options. One question: "Does science and community agree on this pairing? Tap to find out." The Confidence Ring is the entire UI at this moment. Overwhelm is impossible when there's only one thing to look at.
+
+**During search and scanning results:**
+Emotion target: *anticipation and recognition*
+The search response feels instant (< 2s p95). The ranked results list is scannable: ingredient name, confidence tier badge, Science Score, Hive Score. The user recognizes familiar ingredients and feels anticipation at the unfamiliar pairings she wouldn't have considered. The confidence tier hierarchy in the ranking order subliminally communicates: "the results at the top are the most reliable."
+
+**Opening a science card:**
+Emotion target: *intellectual delight*
+The expand animation is the moment of reveal — the card lifts open to show the plain-English explanation first, then the compound layer underneath. The emotion is the same as turning over a card in a magic trick: "Oh — *that's* why." The "See the chemistry →" trigger copy sets up this reveal; "Show compounds ↓" would set up a list, not a revelation.
+
+**Encountering a contested pairing:**
+Emotion target: *intrigue, not confusion*
+The Confidence Ring gap is visible. The template explanation surfaces. The emotion we want is the feeling of a good puzzle: "The science says yes, but the cooks say no — why?" Not: "This data is inconsistent." The design must work to make the gap feel like a discovery invitation rather than a product bug. The copy and the Confidence Ring visualization do this together.
+
+**At the email gate (before rating):**
+Emotion target: *fair exchange, not friction*
+The user has just read a science card and decided she wants to rate a pairing she loved. The email modal appears before stars. The copy reads: *"Join [N] people who rated this pairing."* The emotion is: "I'm becoming part of something." Not "I'm being asked to create an account before I can do what I came to do." The distinction is entirely in the framing — the mechanism is identical.
+
+**After submitting a rating:**
+Emotion target: *contribution and belonging*
+Post-submission, the UI shows how the user's rating affected the Hive Score (or that it will affect it after moderation). The message: *"You're now part of the science."* Not a generic confirmation toast. The user should feel that her experience in the kitchen added a data point to a shared body of knowledge. That is a fundamentally different emotional register than "Rating submitted."
+
+**On return visit:**
+Emotion target: *recognition and momentum*
+The search autofocus is active. The dietary filter is still set (if she set one). There's no onboarding again. The product remembers. The 7-day follow-up email (if she rated a pairing) brings her back with specific, personal content: *"You rated this 4 stars. Here's what 200 other people thought."* The emotion is the feeling of returning to a conversation already in progress.
+
+**When something goes wrong (error states):**
+Emotion target: *calm confidence, not anxiety*
+API degraded: "Showing community scores only right now" — matter-of-fact, not alarming. Search returns no results: "We don't have compound data for [ingredient] yet — try [related ingredient]" — honest, redirective, never a dead end. OTP not received: a clear resend path within 60 seconds. Errors must feel like product transparency, not product failure.
+
+### Micro-Emotions
+
+| Micro-emotion pair | Target state | Design mechanism |
+|---|---|---|
+| Trust vs. Skepticism | Trust | Confidence tier visible, hierarchical, influences ranking |
+| Curiosity vs. Overwhelm | Curiosity | Progressive disclosure; one thing at a time |
+| Accomplishment vs. Frustration | Accomplishment | Failure card = education, not dead end; contested pairings = intrigue |
+| Belonging vs. Isolation | Belonging | Email gate copy as community joining; rating contribution framing |
+| Delight vs. Satisfaction | Delight | First surprising result; unexpected pairings ranked prominently |
+| Confidence vs. Uncertainty | Confidence | Plain-English headline before compound names; Science Score with tier |
+| Intrigue vs. Confusion | Intrigue | Contested pairing template explains the gap; Confidence Ring makes it visual |
+
+The emotion to actively avoid is **anxiety** — the feeling that you might be missing something, that the data might be wrong without knowing how wrong, or that you might be locked out of a feature without understanding the terms. Every design decision that reduces anxiety (honest confidence tiers, transparent email gate, graceful error states) is also a trust investment.
+
+### Design Implications
+
+**Confidence → Hierarchy and progressiveness**
+If we want users to feel confident, information hierarchy must match information reliability. The most reliable data (high-confidence tier, high community vote count) appears first and largest. Lower-confidence data is present but visually subordinate. The user never has to wonder "how much should I trust this?" — the visual hierarchy answers for her.
+
+**Delight at the unexpected → Curation of the result set**
+Delight requires surprise, and surprise requires that the product shows the user something she wouldn't have found herself. This means the pairing engine must prioritize unexpected-but-valid results over expected ones for high-confidence data. A strawberry + strawberry "pairing" at the top of the strawberry search is not delight — it's a broken search engine.
+
+**Trust through honesty → Contested pairings and failure cards as features**
+The failure card and the contested pairing explanation are not edge cases — they are core brand moments. Both must receive the same design polish as the success state. A low-effort error state communicates that the product didn't anticipate this situation; a high-effort "Why It Fails" card communicates that the product designed for it.
+
+**Belonging → Rating widget language**
+The rating widget's copy at every stage (gate, confirmation, post-submission) must use community language: "Join [N] people," "You're now part of the science," "See how you compare." Never transactional language ("submit," "confirm," "save"). The user is contributing to a shared body of knowledge, not completing a form.
+
+**Intrigue (not confusion) → Confidence Ring legend timing**
+The Confidence Ring gap is only intriguing if the user understands what the gap represents. Showing a gap without explanation produces confusion. Showing the legend on every card produces noise. The solution: show the legend exactly once, on the first contested pairing the user encounters, then trust that she remembers. The timing is the design decision.
+
+### Emotional Design Principles
+
+**1. Teach, don't just recommend.** Every result that generates confidence should also generate understanding. A user who leaves knowing *why* a pairing works is more likely to return than a user who just got a good answer.
+
+**2. Honesty is the most differentiating emotion.** No competitor admits uncertainty. FlavorLab's most distinctive emotional moments are the contested pairing system and the failure card — both of which require the product to acknowledge its own limits. Design these moments with pride, not apology.
+
+**3. Surprise earns trust; expected outputs are forgettable.** The pairings that generate emotional delight are the unexpected ones with high science scores. Surface these prominently. A pairing the user already knew about generates no emotional response worth designing for.
+
+**4. Belonging, not registration.** Every interaction that creates community belonging (rating, seeing community scores, receiving pairing-specific follow-up email) must be framed in community language, not account language. The user is joining a community of cooks, not creating a profile on a service.
+
+**5. Error states are brand moments.** How the product behaves when things go wrong reveals its character more than how it behaves when things go right. Degraded mode, no-results states, OTP failures — all of these must feel like honest product transparency, not silent failures.
