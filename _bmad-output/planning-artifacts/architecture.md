@@ -85,7 +85,7 @@ _This document builds collaboratively through step-by-step discovery. Sections a
 4. **Geographic context flags** — Pairings carry cuisine context and food pairing hypothesis applicability (Western validated / East Asian negative correlation / Not validated)
 5. **Graceful degradation** — Structured error states when Postgres or Redis unavailable; no silent empty results
 6. **ETL idempotency** — `etl_version` + `etl_run_id` per record; upsert semantics throughout
-7. **Rating integrity** — Anonymous session token + device fingerprint + per-pairing daily limit + new-account weight decay
+7. **Rating integrity** — Email verification required to rate (OTP flow); email stored in localStorage post-verification to skip re-verification; `rater_email` stored on every `rating_event` record; per-email daily limit + velocity spike detection + new-email weight decay (7-day cool-off on first N ratings)
 8. **Two API surfaces** — Internal presentation API and external enterprise API share service layer but differ in response serialisation and auth
 
 ### Scale & Complexity Assessment
