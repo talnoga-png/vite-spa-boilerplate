@@ -1396,7 +1396,7 @@ Rationale: HNSW works at any dataset size, no training phase, better recall at M
 |---|---|---|
 | FR-01 Ingredient search ≤300ms | Pre-computed `pairing_edges` + Redis cache + HNSW | ✅ |
 | FR-02 Autocomplete ≤100ms | In-memory prefix index; Redis backing | ✅ |
-| FR-03 Community ratings | BullMQ async scoring; quarantine threshold | ✅ |
+| FR-03 Community ratings | BullMQ async scoring; quarantine threshold; email-verified rater gate | ✅ |
 | FR-04 Hive Score | Pure scoring engine; `score_version` column | ✅ |
 | FR-05 Dietary filters | `dietary_flags` on `ingredients`; filter at query | ✅ |
 | FR-06 Preference persistence | Zustand + localStorage; cross-device deferred to Pro | ✅ |
