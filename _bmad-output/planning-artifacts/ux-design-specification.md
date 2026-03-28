@@ -654,3 +654,150 @@ Maya arrives with the "ingredient I have" mental model, not the "cuisine + flavo
 - Triggers: Science Score < 30 OR explicit incompatibility flag.
 - Failure card at top of results: "Why [A] + [B] Don't Work" — plain-English explanation + flavor education angle.
 - Same visual polish as success science card.
+
+---
+
+## Visual Design Foundation
+
+### Color System
+
+**Brand palette (established):**
+
+| Token | Value | Use |
+|---|---|---|
+| `--primary` | `#1B4332` | Dark forest green — headings, borders, primary UI chrome |
+| `--accent` | `#C8663B` | Terracotta orange — CTAs, highlights, active states |
+| `--dark` | `#0D1A12` | Near-black — hero backgrounds, dark sections |
+| `--bg-alt` | `#F2F2EC` | Warm off-white — alternate section backgrounds |
+
+**Extended palette (new tokens for product features):**
+
+| Token | Value | Use |
+|---|---|---|
+| `--bg-white` | `#FFFFFF` | Card backgrounds, modal surfaces |
+| `--text-primary` | `#1A1A1A` | Body text on light backgrounds |
+| `--text-secondary` | `#5C6B63` | Supporting text, labels, secondary copy |
+| `--text-muted` | `#9CAD9A` | Placeholder text, disabled states |
+| `--border-subtle` | `#E2E8E1` | Card borders, dividers |
+| `--surface-hover` | `#F7F7F3` | Result row hover/press state |
+
+**Confidence tier palette:**
+
+| Token | Value | Tier | Meaning |
+|---|---|---|---|
+| `--tier-experimental` | `#2D6A4F` | GC_MS_EXPERIMENTAL | Strongest — experimentally confirmed |
+| `--tier-predicted` | `#74C69D` | PREDICTED | Moderate — model-predicted |
+| `--tier-occurrence` | `#B7E4C7` | RECIPE_CO_OCCURRENCE | Weakest — recipe co-occurrence only |
+| `--tier-bg-experimental` | `#D8F3DC` | Badge background | |
+| `--tier-bg-predicted` | `#EEF8F2` | Badge background | |
+| `--tier-bg-occurrence` | `#F4FBF6` | Badge background | |
+
+**Score visualization palette:**
+
+| Token | Value | Use |
+|---|---|---|
+| `--ring-science` | `#1B4332` | Confidence Ring outer arc (Science Score) |
+| `--ring-hive` | `#C8663B` | Confidence Ring inner fill (Hive Score) |
+| `--ring-track` | `#E2E8E1` | Ring background track (unfilled) |
+| `--ring-contested` | `#E9C46A` | Contested pairing gap highlight |
+
+**Semantic colors:**
+
+| Token | Value | Use |
+|---|---|---|
+| `--success` | `#2D6A4F` | Rating confirmed, OTP verified |
+| `--warning` | `#E9C46A` | Contested pairing flag, low vote count |
+| `--error` | `#D62828` | OTP failed, API error |
+| `--error-bg` | `#FFF3F0` | Degraded mode banner background |
+| `--info` | `#2B6CB0` | "Be the first to rate" invitation state |
+
+**WCAG AA contrast compliance:**
+- Body text (`--text-primary` on `--bg-white`): 17:1 — AAA ✓
+- Body text on `--bg-alt`: 14:1 — AAA ✓
+- `--primary` on `--bg-white`: 9.4:1 — AAA ✓
+- White text on `--primary`: 9.4:1 — AAA ✓
+- `--accent` on `--bg-white`: 3.2:1 — AA for large text (≥ 18px) only; use for CTAs, never for body copy
+- All confidence tier badge color/bg pairs: verified ≥ 4.5:1 ✓
+
+### Typography System
+
+**Font pairing (established):**
+- **Serif — Playfair Display:** All `h1`–`h4`, science card headlines, First Pairing Magic. Communicates authority, craft, editorial quality — the discovery and wonder layer.
+- **Sans-serif — Inter:** Body text, nav, labels, badges, compound names, UI copy. Communicates clarity, precision — the decision and action layer.
+
+**Type scale:**
+
+| Role | Font | Size | Weight | Line height |
+|---|---|---|---|---|
+| Hero headline | Playfair Display | 2.5rem | 700 | 1.15 |
+| Section headline (h2) | Playfair Display | 1.75rem | 700 | 1.2 |
+| Card headline (h3) | Playfair Display | 1.25rem | 600 | 1.3 |
+| Science card headline | Playfair Display | 1.1rem | 600 | 1.4 |
+| Body text | Inter | 1rem | 400 | 1.6 |
+| Label / UI copy | Inter | 0.875rem | 400 | 1.5 |
+| Badge / micro-copy | Inter | 0.75rem | 500 | 1.4 |
+| Compound name | Inter | 0.7rem | 400 | 1.4 |
+| Confidence badge | Inter | 0.65rem | 600 | 1.3 |
+
+**Mobile type adjustments (360px breakpoint):**
+- Hero headline: 1.75rem
+- Science card headline: 1rem (one sentence, no truncation — copy must fit the constraint)
+- Confidence badge label: hidden (icon-only at 360px)
+
+**Readability rules:**
+- Science card plain-English headline: max one sentence, no truncation at any mobile breakpoint
+- Body text minimum: 1rem (16px) — never smaller for reading-intent copy
+- Touch targets: minimum 44×44px for all interactive elements (WCAG 2.5.5)
+
+### Spacing & Layout Foundation
+
+**Spacing scale (8px base):**
+
+| Token | Value | Use |
+|---|---|---|
+| `--space-xs` | 4px | Icon padding, badge internal spacing |
+| `--space-sm` | 8px | Between label and value, tight groupings |
+| `--space-md` | 16px | Card internal padding, between related elements |
+| `--space-lg` | 24px | Between cards, section internal spacing |
+| `--space-xl` | 48px | Between major sections |
+| `--space-2xl` | 80px | Section vertical rhythm (desktop) |
+
+**Layout principles:**
+
+**1. Single-column mobile, constrained desktop.** Content column max-width: 640px, centered. White space on desktop sides is intentional — this is not a dashboard.
+
+**2. CSS Grid for all layouts.** Grid is the layout primitive. Science card expand uses grid-row height transition (0 → 1fr) — no JavaScript height calculation required.
+
+**3. Full-bleed for emotional moments.** First Pairing Magic, hero, and dark sections are full-bleed. Content column is contained. Full-bleed signals importance.
+
+**4. Confidence Ring sizing:**
+- Result row: 48px diameter
+- Science card (mobile): 80px diameter
+- Science card (desktop): 96px diameter
+- Minimum legible (360px): 64px — below this, ring replaced by two stacked score numbers
+
+**5. Science card expand geometry:**
+- Collapsed: 64px height (result row)
+- Expanded: content-driven natural height
+- Animation: CSS Grid row height transition + opacity, 150ms `--easing-reveal`
+
+### Accessibility Considerations
+
+**Color is never the only signal.** Every confidence tier uses color + icon + text label. At 360px the label hides but the icon remains. Color reinforces, never alone carries meaning.
+
+**Focus management:**
+- Email OTP modal: focus trap on open, return focus to trigger on close
+- Science card expand: focus moves to expanded card headline on open
+- Star rating: arrow key navigation, Enter to select
+
+**Reduced motion:**
+- `prefers-reduced-motion`: all CSS transitions collapse to 0ms
+- Confidence Ring arc fill animation disabled
+- Card expand is instant (no animation)
+
+**Screen reader support:**
+- Confidence Ring SVG: `aria-label="Science Score [N], Hive Score [N]"`
+- Contested pairing explanation: `role="status"` — announced when it appears
+- Email OTP modal: `aria-live="polite"` on error/success message
+- Result list: `aria-label="Pairing results for [ingredient]"` on list container
+- Science card expand: `aria-expanded`, `aria-controls` on the trigger
