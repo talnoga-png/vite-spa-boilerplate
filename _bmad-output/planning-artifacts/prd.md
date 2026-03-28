@@ -406,25 +406,38 @@ Each signal is stored separately in the `pairing_edges` record so the formula we
 
 ### DR-11: Ingredient Coverage Gap — Multi-Source Data Strategy
 
-FlavorGraph provides ~616 hub ingredients (searchable) and ~8,000 total nodes. This coverage is heavily weighted toward Western, commercially common ingredients. Regional and heritage ingredients (e.g. sumac, yuzu, berbere, moringa, tamarind) are absent or incomplete. Critically, adding an ingredient without its compound profile produces a dead node — it appears in search but cannot generate a Science Score pairing. Compound data and ingredient coverage must be solved together.
+FlavorGraph provides ~616 hub ingredients (searchable) and ~8,000 total nodes. This coverage is heavily weighted toward Western, commercially common ingredients — the underlying Recipe1M corpus from which it was derived is predominantly English-language Western cooking. Regional and heritage ingredients (sumac, yuzu, berbere, moringa, tamarind, etc.) are absent or have severely limited compound data. Critically, adding an ingredient without its compound profile produces a dead node — it appears in search but cannot participate in the Science Score.
 
-**Viable supplementary sources:**
-- **FooDB** (Wishart Lab, University of Alberta) — ~1,000 foods mapped to 70,000+ chemical records; open academic dataset. Best near-term supplement to FlavorGraph.
-- **USDA FoodData Central** — broad ingredient coverage; primarily nutritional, limited flavor-compound focus.
-- **FlavorDB (IIT Delhi)** — ~1,000 ingredients mapped to flavor molecules; independently built from FlavorGraph. Licensing requires review.
-- **PubChem** — definitive compound profiles for any molecule; requires cross-referencing to map ingredients → compounds.
-- **Scientific literature (PubMed)** — primary source for novel ingredient compound profiles; requires NLP extraction pipeline.
+**Confirmed data source stack (by phase):**
 
-**Phased coverage strategy:**
+**MVP — commercially clean today:**
+| Source | What It Adds | Licence | Notes |
+|---|---|---|---|
+| FlavorGraph chemical edges | 35,440 compound-ingredient links across ~616 hub ingredients | Apache 2.0 | Use chemical edges only; exclude recipe co-occurrence edges from Science Score |
+| Flavornet (Cornell) | 738 GCO-confirmed aroma-active compounds across ~200 foods | Open (Cornell) | Use as aroma-activity filter — confirms which compounds are perceptually relevant above threshold |
+| ChemTastesDB | 2,944 taste molecules (bitter, sweet, sour, umami, salty) | Open/downloadable | Adds non-volatile taste dimension missing from aroma-focused databases |
+| PubChem (API) | Molecular properties, structural similarity, 3D structures for all compounds | Public domain (NIH) | Enrichment layer — molecular weight, logP, SMILES, Tanimoto similarity |
+| FEMA GRAS library | Regulatory status for 3,012+ flavour compounds | Public | Regulatory metadata layer |
+| FlavorMiner | ML-predicted flavor profiles for ingredients with no experimental data | CC BY 4.0 | Gap-filling only; labelled as "predicted" confidence tier |
 
-| Phase | Action | Target |
+**Growth (requires licence negotiation — pursue in parallel with development):**
+| Source | What It Adds | Licence | Action |
+|---|---|---|---|
+| FooDB (Wishart Lab, Univ. of Alberta) | ~1,000 foods × 70,926 chemical compounds — most comprehensive food chemistry database available | CC BY-NC 4.0 | Contact shhan@ualberta.ca for commercial licence |
+| FlavorDB2 (IIIT Delhi) | 936 natural ingredients × 25,595 flavor molecules — best curated flavour-specific dataset | CC BY-NC-SA 3.0 | Contact bagler+FlavorDB@iiitd.ac.in for commercial licence |
+| VCF Database (BeWiDo BV) | 13,200+ volatile compounds across 2,015 foods — gold standard experimental validation | Subscription | Subscribe for validation layer and concentration/threshold data |
+
+**Non-Western ingredient coverage (Phase 2+):**
+| Source | Coverage Gap Addressed | Notes |
 |---|---|---|
-| MVP | Ship with FlavorGraph's 616 hub ingredients. Surface ingredient count transparently ("616 scientifically mapped ingredients") — specificity builds trust. | 616 searchable ingredients |
-| Growth | Integrate FooDB via extended ETL. Prioritise high-value gaps: Asian, African, South American, fermented food ingredients. | ~1,000+ ingredients |
-| Vision | Community-assisted ingredient submission pipeline. Users request ingredients; automated pipeline (PubMed + PubChem) populates compound profiles. New ingredients enter "pending" state — searchable with "compound data coming soon" flag — then graduate to full Science Score participation once profiled. | Ongoing expansion |
-| Long-term moat | Proprietary compound profiling of novel/rare ingredients unavailable in any public dataset. Becomes a defensible data asset. | Competitive differentiation |
+| IMPPAT 2.0 | Indian/South Asian spices and medicinal plants (4,010 plants, 17,967 phytochemicals) | Open |
+| LANaPDB | Latin American ingredients (13,578 compounds) | Open |
+| TCM@Taiwan | Chinese traditional ingredients (58,000 compounds) | Review licence |
+| Regional food science literature (PubMed) | Targeted per cuisine gap | Requires NLP extraction pipeline |
 
-**Implication:** The ETL pipeline architecture must be designed for multi-source ingestion from day one, not just FlavorGraph CSVs. The ingredient schema must include a `data_source` field (e.g. `"flavorGraph"`, `"foodb"`, `"pending"`) and a `coverage_confidence` indicator displayed in the UI when data is partial.
+**Scientific honesty obligation:** No comprehensive flavor-specific database exists for Sub-Saharan African, Southeast Asian, or Middle Eastern ingredients. These gaps must be transparent to users — ingredients from these regions will either have limited Science Score data, ML-predicted confidence tier, or "compound data pending" status. This gap is a research opportunity, not something to paper over.
+
+**Implication:** ETL pipeline must be designed for multi-source ingestion from day one. Every ingredient document must carry `data_source`, `compound_confidence_tier`, and `coverage_completeness` fields. These surface in the UI as ingredient data quality indicators.
 
 ---
 
