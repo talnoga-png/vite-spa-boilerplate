@@ -1194,10 +1194,22 @@ User selects "garlic" → pairings load
   → PairingsService → Redis MISS → Drizzle JOIN → confidenceSummary computed
   → Zod transform snake_case → camelCase → Redis SET → return {data, nextCursor, hasMore}
 
-User submits rating
+User taps rate (not yet verified)
+  → Frontend checks localStorage.flavorlab.rater_email → absent
+  → Email capture modal → POST /api/v1/auth/email-otp/send {email}
+  → Better Auth → Resend sends 6-digit OTP (10 min TTL)
+  → User enters OTP → POST /api/v1/auth/email-otp/verify {email, otp}
+  → Redis session upgraded: session:{token} gains { raterEmail, raterVerifiedAt }
+  → Frontend stores email in localStorage.flavorlab.rater_email
+  → Rating widget unlocks
+
+User submits rating (verified)
   → POST /api/v1/ratings (0 retries — non-idempotent)
-  → RatingsService → Drizzle INSERT → EventEmitter: rating.submitted
+  → RatingsService reads raterEmail from session → validates email present
+  → Drizzle INSERT rating_events (rater_email NOT NULL)
+  → EventEmitter: rating.submitted
   → BullMQ enqueue: pairing.recalculate-score {pairingId}
+  → BullMQ enqueue: feedback-request {email, firstRatingAt} (fires 7 days later, once per email)
   → Redis DEL versioned cache key → return {data: {id, value, createdAt}}
 
 BullMQ worker (async, ≤5 min debounced)
