@@ -414,7 +414,30 @@ FlavorGraph provides ~616 hub ingredients (searchable) and ~8,000 total nodes. T
 | Vision | Community-assisted ingredient submission pipeline. Users request ingredients; automated pipeline (PubMed + PubChem) populates compound profiles. New ingredients enter "pending" state — searchable with "compound data coming soon" flag — then graduate to full Science Score participation once profiled. | Ongoing expansion |
 | Long-term moat | Proprietary compound profiling of novel/rare ingredients unavailable in any public dataset. Becomes a defensible data asset. | Competitive differentiation |
 
-**Implication:** The ETL pipeline architecture must be designed for multi-source ingestion from day one, not just FlavorGraph CSVs. The MongoDB ingredient schema must include a `data_source` field (e.g. `"flavorGraph"`, `"foodb"`, `"pending"`) and a `coverage_confidence` indicator displayed in the UI when data is partial.
+**Implication:** The ETL pipeline architecture must be designed for multi-source ingestion from day one, not just FlavorGraph CSVs. The ingredient schema must include a `data_source` field (e.g. `"flavorGraph"`, `"foodb"`, `"pending"`) and a `coverage_confidence` indicator displayed in the UI when data is partial.
+
+---
+
+### DR-12: Infrastructure Stack — Required Layers
+
+Based on the production architecture requirements, the backend stack must include the following layers. These are not optional enhancements — they are structural requirements for the product to be reliable, scalable, and legally defensible.
+
+**Layer 1 — Source-of-truth database:**
+PostgreSQL as the primary relational database. Stores canonical ingredients, aliases, compounds, ingredient–compound links, pairing edges (with all score signals), constraints/rules, provenance records, and evaluation data. MongoDB may be retained for the consumer-facing read layer (fast document lookups for the free tier API), but Postgres is the authoritative record.
+
+**Layer 2 — Vector layer (embeddings):**
+pgvector (Postgres extension) for v1. Stores ingredient semantic embeddings and graph embeddings alongside relational data. Abstraction layer required so this can be migrated to Qdrant in v2 if vector retrieval becomes a bottleneck, without changing business logic.
+
+**Layer 3 — Cache layer:**
+Redis for hot pairing queries, ingredient detail lookups, precomputed explanation payloads, and Science Score results. Cache keys must be versioned (e.g. `pairings:ingredient:123:v5`) so formula or data changes automatically invalidate stale results.
+
+**Layer 4 — Async processing:**
+A job queue (Celery or equivalent) for all non-realtime operations: ETL ingestion, ingredient normalisation, alias resolution, compound linking, embedding generation, pairing score recomputation, cache warming, and scheduled re-indexing. Nothing in this list should block a web request.
+
+**Layer 5 — API layer:**
+Versioned REST API (`/v1/`) separating public consumer endpoints from internal admin/data-science endpoints. Public endpoints are read-only and cached. Admin endpoints (rebuild embeddings, recompute scores, invalidate cache) are internal-only.
+
+**Implication:** The architecture workflow must produce explicit decisions on each layer: DB engine choice per entity type, embedding model selection, Redis TTL strategy per entity type, Celery queue topology, and API versioning scheme. These decisions directly affect UX capabilities (what data is available, how fresh it is, what explanations can be generated).
 
 ---
 
