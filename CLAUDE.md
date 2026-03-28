@@ -19,7 +19,19 @@ There is no test runner or linter configured.
 **After completing a new feature:**
 1. Run `npm run build`
 2. If there are build errors, fix them all
-3. Commit with a descriptive message and push to the current branch
+3. Run the `qa-architect` agent to validate test coverage and integrity rules
+4. Commit with a descriptive message and push to the current branch
+
+## Agents
+
+Four custom agents are available — invoke by name in any session:
+
+| Agent | Purpose |
+|---|---|
+| `qa-architect` | Run after completing any feature — tests, coverage gaps, integrity rules |
+| `code-reviewer` | Run before committing — bugs, DRY, TypeScript issues |
+| `security-auditor` | Run before committing API/auth code — OWASP Top 10, secrets, missing guards |
+| `release-notes` | Run when preparing a release — user-facing notes from git history |
 
 ## Architecture
 
