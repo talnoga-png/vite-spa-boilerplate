@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlavorLab™ — Design Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --primary: #1B4332;
+    --accent: #C8663B;
+    --dark: #0D1A12;
+    --bg-alt: #F2F2EC;
+    --font-serif: 'Playfair Display', serif;
+    --font-sans: 'Inter', sans-serif;
+    --ring-science: #1B4332;
+    --ring-hive: #C8663B;
+    --ring-track: #E2E8E1;
+    --tier-experimental: #2D6A4F;
+    --tier-experimental-bg: #D8F3DC;
+    --tier-occurrence: #74C69D;
+    --tier-occurrence-bg: #EEF8F2;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: #111;
+    color: #fff;
+  }
+
+  /* ── NAV ── */
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(0,0,0,.85);
+    backdrop-filter: blur(8px);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    border-bottom: 1px solid #333;
+  }
+  .nav-title {
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    color: #aaa;
+    white-space: nowrap;
+    margin-right: 16px;
+  }
+  .nav-btn {
+    padding: 6px 14px;
+    border: 1px solid #444;
+    border-radius: 20px;
+    background: transparent;
+    color: #ccc;
+    font-size: 0.75rem;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .nav-btn:hover, .nav-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* ── SECTIONS ── */
+  .direction-section {
+    min-height: 100vh;
+    padding: 80px 0 60px;
+    display: none;
+  }
+  .direction-section.visible { display: block; }
+
+  .section-label {
+    text-align: center;
+    padding: 0 24px 32px;
+  }
+  .section-label h2 {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+  .section-label p {
+    color: #999;
+    font-size: 0.85rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* ── DEVICE FRAME ── */
+  .device-grid {
+    display: flex;
+    gap: 24px;
+    padding: 0 24px;
+    overflow-x: auto;
+    justify-content: center;
+  }
+  .device-frame {
+    flex-shrink: 0;
+    width: 375px;
+    background: #fff;
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(0,0,0,.6);
+    border: 1px solid #333;
+  }
+  .device-label {
+    text-align: center;
+    font-size: 0.7rem;
+    color: #666;
+    padding: 8px 0 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .device-screen {
+    height: 720px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+  }
+  .device-screen::-webkit-scrollbar { display: none; }
+
+  /* ══════════════════════════════════════════
+     DIRECTION 1 — EDITORIAL DARK
+     Dark hero, serif-heavy, magazine feel
+  ══════════════════════════════════════════ */
+  .d1 {
+    background: var(--dark);
+  }
+  .d1 .hero {
+    background: var(--dark);
+    padding: 28px 20px 20px;
+  }
+  .d1 .logo {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    color: #fff;
+    letter-spacing: 0.02em;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .d1 .logo-icon { color: var(--accent); font-size: 1.2rem; }
+  .d1 .search-wrap {
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .d1 .search-icon { color: #888; font-size: 0.9rem; }
+  .d1 .search-placeholder { color: #777; font-size: 0.9rem; }
+  .d1 .filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(200,102,59,.15);
+    border: 1px solid rgba(200,102,59,.3);
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    color: var(--accent);
+  }
+  .d1 .results-area { padding: 16px 20px; background: var(--dark); }
+  .d1 .results-heading {
+    font-family: var(--font-serif);
+    font-size: 0.75rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  .d1 .result-row {
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    background: rgba(255,255,255,.03);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .d1 .result-row:hover { background: rgba(255,255,255,.06); }
+  .d1 .result-row.expanded {
+    background: rgba(27,67,50,.3);
+    border-color: rgba(27,67,50,.5);
+  }
+  .d1 .row-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .d1 .ingredient-pair {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: #fff;
+  }
+  .d1 .scores {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .d1 .score-chip {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  .d1 .science-chip {
+    background: rgba(27,67,50,.5);
+    color: #74C69D;
+  }
+  .d1 .hive-chip {
+    background: rgba(200,102,59,.2);
+    color: var(--accent);
+  }
+  .d1 .tier-badge {
+    font-size: 0.6rem;
+    padding: 2px 7px;
+    border-radius: 20px;
+    font-weight: 600;
+    margin-top: 5px;
+    display: inline-block;
+    background: var(--tier-experimental-bg);
+    color: var(--tier-experimental);
+  }
+  /* Expanded science card D1 */
+  .d1 .science-card {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255,255,255,.06);
+  }
+  .d1 .ring-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+  .d1 .science-headline {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: #fff;
+    line-height: 1.4;
+  }
+  .d1 .aroma-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0;
+  }
+  .d1 .aroma-tag {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.65rem;
+    color: #bbb;
+  }
+  .d1 .see-chemistry {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--accent);
+    font-size: 0.75rem;
+    cursor: pointer;
+  }
+
+  /* ══════════════════════════════════════════
+     DIRECTION 2 — CLEAN SCIENCE
+     White, minimal, precision-focused
+  ══════════════════════════════════════════ */
+  .d2 { background: #fff; }
+  .d2 .header {
+    padding: 20px 20px 0;
+    background: #fff;
+    border-bottom: 1px solid #f0f0ee;
+  }
+  .d2 .logo {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: var(--primary);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .d2 .search-wrap {
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .d2 .search-placeholder { color: #999; font-size: 0.875rem; }
+  .d2 .filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 0.65rem;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .d2 .results-area { padding: 16px 20px; }
+  .d2 .results-heading {
+    font-size: 0.65rem;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+  }
+  .d2 .result-row {
+    border-bottom: 1px solid #f0f0ee;
+    padding: 12px 0;
+    cursor: pointer;
+  }
+  .d2 .result-row.expanded {
+    background: #f8faf9;
+    padding: 12px 12px;
+    margin: 0 -12px;
+    border-radius: 8px;
+    border-bottom: none;
+  }
+  .d2 .row-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .d2 .ingredient-pair {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1a1a1a;
+  }
+  .d2 .scores {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .d2 .score-num {
+    font-size: 0.7rem;
+    color: #666;
+  }
+  .d2 .score-num strong {
+    font-size: 0.875rem;
+    color: var(--primary);
+  }
+  .d2 .tier-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--tier-experimental);
+  }
+  .d2 .science-card {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e8ede9;
+  }
+  .d2 .ring-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .d2 .science-headline {
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    color: #1a1a1a;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+  .d2 .tier-label {
+    font-size: 0.6rem;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background: var(--tier-experimental-bg);
+    color: var(--tier-experimental);
+    font-weight: 600;
+    margin-top: 8px;
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .d2 .see-chemistry {
+    margin-top: 10px;
+    color: var(--primary);
+    font-size: 0.75rem;
+    cursor: pointer;
+    border-bottom: 1px solid var(--primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ══════════════════════════════════════════
+     DIRECTION 3 — WARM LABORATORY
+     Warm off-white, soft shadows, approachable
+  ══════════════════════════════════════════ */
+  .d3 { background: var(--bg-alt); }
+  .d3 .header {
+    background: var(--primary);
+    padding: 24px 20px 20px;
+  }
+  .d3 .logo {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  .d3 .search-wrap {
+    background: rgba(255,255,255,.12);
+    border-radius: 24px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .d3 .search-placeholder { color: rgba(255,255,255,.5); font-size: 0.9rem; }
+  .d3 .filter-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(200,102,59,.25);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 0.7rem;
+    color: #ffd4b5;
+  }
+  .d3 .results-area { padding: 16px 16px; }
+  .d3 .result-row {
+    background: #fff;
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(27,67,50,.06);
+    transition: box-shadow 0.2s;
+  }
+  .d3 .result-row:hover { box-shadow: 0 4px 16px rgba(27,67,50,.12); }
+  .d3 .result-row.expanded { box-shadow: 0 8px 24px rgba(27,67,50,.15); }
+  .d3 .row-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .d3 .ingredient-pair {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: var(--primary);
+  }
+  .d3 .scores { display: flex; gap: 8px; align-items: center; }
+  .d3 .score-pill {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+  }
+  .d3 .s-pill { background: #D8F3DC; color: var(--primary); }
+  .d3 .h-pill { background: #FFE8DC; color: var(--accent); }
+  .d3 .science-card {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #f0ece4;
+  }
+  .d3 .ring-row { display: flex; gap: 14px; align-items: center; margin-bottom: 12px; }
+  .d3 .science-headline {
+    font-family: var(--font-serif);
+    font-size: 0.95rem;
+    color: var(--dark);
+    line-height: 1.45;
+  }
+  .d3 .aroma-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0;
+  }
+  .d3 .aroma-chip {
+    background: #eef8f2;
+    color: var(--primary);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.65rem;
+    border: 1px solid #c3e6cc;
+  }
+  .d3 .tier-row {
+    font-size: 0.65rem;
+    color: #888;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .d3 .tier-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--tier-experimental); }
+  .d3 .see-chemistry {
+    color: var(--accent);
+    font-size: 0.75rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* ══════════════════════════════════════════
+     DIRECTION 4 — BOLD COMMUNITY
+     Accent-forward, Hive Score prominent
+  ══════════════════════════════════════════ */
+  .d4 { background: #fafaf8; }
+  .d4 .header {
+    background: #fff;
+    border-bottom: 2px solid var(--accent);
+    padding: 20px 20px 16px;
+  }
+  .d4 .logo {
+    font-family: var(--font-serif);
+    color: var(--dark);
+    font-size: 1rem;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .d4 .logo span { color: var(--accent); }
+  .d4 .search-wrap {
+    border: 2px solid #e0e0d8;
+    border-radius: 6px;
+    padding: 10px 14px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .d4 .search-placeholder { color: #bbb; font-size: 0.875rem; }
+  .d4 .filter-tag {
+    background: #fff4ee;
+    border: 1px solid #ffc8a8;
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 0.65rem;
+    color: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .d4 .results-area { padding: 16px 20px; }
+  .d4 .community-banner {
+    background: var(--accent);
+    color: #fff;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.75rem;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .d4 .result-row {
+    background: #fff;
+    border: 1px solid #e8e8e0;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .d4 .result-row:hover { border-color: var(--accent); }
+  .d4 .result-row.expanded { border-color: var(--primary); border-width: 2px; }
+  .d4 .row-top { display: flex; align-items: center; justify-content: space-between; }
+  .d4 .ingredient-pair { font-weight: 500; font-size: 0.9rem; color: #1a1a1a; }
+  .d4 .hive-prominent {
+    text-align: right;
+  }
+  .d4 .hive-big { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+  .d4 .hive-label { font-size: 0.55rem; color: #bbb; text-transform: uppercase; letter-spacing: 0.05em; }
+  .d4 .science-sub { font-size: 0.65rem; color: #888; }
+  .d4 .science-card {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f0f0e8;
+  }
+  .d4 .ring-row { display: flex; gap: 14px; align-items: center; margin-bottom: 12px; }
+  .d4 .science-headline { font-family: var(--font-serif); font-size: 0.9rem; color: var(--dark); line-height: 1.4; }
+  .d4 .rating-preview {
+    background: #fff8f5;
+    border: 1px solid #ffd4b5;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-top: 12px;
+  }
+  .d4 .rating-preview p { font-size: 0.7rem; color: var(--accent); font-weight: 500; margin-bottom: 6px; }
+  .d4 .stars { color: var(--accent); font-size: 1.1rem; letter-spacing: 2px; }
+  .d4 .see-chemistry { color: var(--primary); font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 4px; margin-top: 10px; }
+
+  /* ══════════════════════════════════════════
+     DIRECTION 5 — MINIMAL TRUST
+     Ultra-minimal, large confidence tier display
+  ══════════════════════════════════════════ */
+  .d5 { background: #fff; }
+  .d5 .header {
+    padding: 24px 20px 20px;
+    background: #fff;
+  }
+  .d5 .logo {
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #333;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .d5 .search-wrap {
+    border-bottom: 2px solid #1a1a1a;
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .d5 .search-placeholder { color: #ccc; font-size: 1rem; }
+  .d5 .filter-tag {
+    font-size: 0.65rem;
+    color: #999;
+    border-bottom: 1px solid var(--accent);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .d5 .results-area { padding: 20px 20px; }
+  .d5 .result-row {
+    padding: 16px 0;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+  }
+  .d5 .result-row.expanded { border-bottom: none; }
+  .d5 .row-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+  .d5 .ingredient-pair {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    color: #1a1a1a;
+    line-height: 1.3;
+  }
+  .d5 .score-block { text-align: right; flex-shrink: 0; }
+  .d5 .score-big { font-size: 1.5rem; font-weight: 300; color: var(--primary); line-height: 1; }
+  .d5 .score-sub { font-size: 0.55rem; color: #bbb; text-transform: uppercase; letter-spacing: 0.06em; }
+  .d5 .tier-line { font-size: 0.6rem; color: var(--tier-experimental); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+  .d5 .science-card {
+    padding: 16px 0;
+    border-top: 1px solid #f0f0f0;
+    margin-top: 8px;
+  }
+  .d5 .ring-row { display: flex; gap: 16px; align-items: center; margin-bottom: 14px; }
+  .d5 .science-headline {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    color: #1a1a1a;
+    line-height: 1.45;
+    font-weight: 400;
+  }
+  .d5 .compound-preview {
+    font-size: 0.7rem;
+    color: #aaa;
+    margin-top: 10px;
+    font-style: italic;
+  }
+  .d5 .see-chemistry { font-size: 0.7rem; color: #555; cursor: pointer; margin-top: 6px; display: inline-flex; align-items: center; gap: 4px; text-decoration: underline; }
+
+  /* ══════════════════════════════════════════
+     DIRECTION 6 — CONTESTED / SPLIT SCREEN
+     Shows the contested pairing state prominently
+  ══════════════════════════════════════════ */
+  .d6 { background: #f5f3ef; }
+  .d6 .header {
+    background: var(--dark);
+    padding: 20px 20px 18px;
+  }
+  .d6 .logo { font-family: var(--font-serif); font-size: 1rem; color: #fff; margin-bottom: 14px; }
+  .d6 .search-wrap {
+    background: rgba(255,255,255,.1);
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .d6 .search-placeholder { color: rgba(255,255,255,.4); font-size: 0.875rem; }
+  .d6 .results-area { padding: 16px; }
+  .d6 .contested-banner {
+    background: #fff;
+    border-left: 4px solid #E9C46A;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+  }
+  .d6 .contested-label {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #bbb;
+    margin-bottom: 4px;
+  }
+  .d6 .contested-title { font-family: var(--font-serif); font-size: 0.95rem; color: var(--dark); }
+  .d6 .result-row {
+    background: #fff;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .d6 .result-row:hover { transform: translateX(3px); }
+  .d6 .result-row.expanded { border-left: 3px solid var(--primary); }
+  .d6 .row-top { display: flex; align-items: center; justify-content: space-between; }
+  .d6 .ingredient-pair { font-family: var(--font-serif); font-size: 0.95rem; color: var(--dark); }
+  .d6 .score-split {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  .d6 .s-score { font-size: 0.65rem; color: var(--primary); font-weight: 600; }
+  .d6 .h-score { font-size: 0.65rem; color: var(--accent); font-weight: 600; }
+  .d6 .science-card {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #eee;
+  }
+  .d6 .ring-row { display: flex; gap: 14px; align-items: center; margin-bottom: 12px; }
+  .d6 .ring-legend {
+    background: #fffbf0;
+    border: 1px solid #f0d98a;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 0.65rem;
+    color: #886b00;
+    margin-bottom: 10px;
+  }
+  .d6 .science-headline { font-family: var(--font-serif); font-size: 0.9rem; color: var(--dark); line-height: 1.4; }
+  .d6 .contested-explanation {
+    background: #fffbf0;
+    border: 1px solid #f0d98a;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-top: 10px;
+    font-size: 0.72rem;
+    color: #665200;
+    line-height: 1.5;
+  }
+  .d6 .see-chemistry { color: var(--primary); font-size: 0.75rem; cursor: pointer; display: flex; align-items: center; gap: 4px; margin-top: 10px; }
+
+  /* ── SVG RING UTIL ── */
+  .ring-svg { flex-shrink: 0; }
+
+  /* ── COMPARISON VIEW ── */
+  #comparison .device-grid { flex-wrap: wrap; justify-content: center; }
+  #comparison .device-frame { width: 200px; }
+  #comparison .device-screen { height: 400px; transform: scale(0.53); transform-origin: top left; width: 375px; }
+  #comparison .device-wrap { width: 200px; overflow: hidden; border-radius: 22px; height: 215px; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <span class="nav-title">FlavorLab™ Design Directions</span>
+  <button class="nav-btn active" onclick="show('d1')">D1 · Editorial Dark</button>
+  <button class="nav-btn" onclick="show('d2')">D2 · Clean Science</button>
+  <button class="nav-btn" onclick="show('d3')">D3 · Warm Lab</button>
+  <button class="nav-btn" onclick="show('d4')">D4 · Bold Community</button>
+  <button class="nav-btn" onclick="show('d5')">D5 · Minimal Trust</button>
+  <button class="nav-btn" onclick="show('d6')">D6 · Contested State</button>
+  <button class="nav-btn" onclick="show('comparison')">↔ Compare All</button>
+</nav>
+
+<!-- ══ D1: EDITORIAL DARK ══ -->
+<section class="direction-section visible" id="d1">
+  <div class="section-label">
+    <h2>Direction 1 — Editorial Dark</h2>
+    <p>Dark hero surfaces, serif-heavy typography, magazine editorial feel. Science as authority. Community as discovery.</p>
+  </div>
+  <div class="device-grid">
+    <!-- Screen A: Result list -->
+    <div>
+      <p class="device-label">Search Results</p>
+      <div class="device-frame">
+        <div class="device-screen d1">
+          <div class="hero">
+            <div class="logo"><span class="logo-icon">⬡</span> FlavorLab™</div>
+            <div class="search-wrap">
+              <span class="search-icon">⌕</span>
+              <span class="search-placeholder">strawberry</span>
+            </div>
+            <span class="filter-tag">Vegan ×</span>
+          </div>
+          <div class="results-area">
+            <div class="results-heading">12 pairings — ranked by data quality</div>
+            <!-- Row 1 expanded -->
+            <div class="result-row expanded">
+              <div class="row-top">
+                <div>
+                  <div class="ingredient-pair">Black Pepper</div>
+                  <span class="tier-badge">GC-MS Confirmed</span>
+                </div>
+                <div class="scores">
+                  <span class="score-chip science-chip">S 84</span>
+                  <span class="score-chip hive-chip">H 71</span>
+                </div>
+              </div>
+              <div class="science-card">
+                <div class="ring-row">
+                  <svg class="ring-svg" width="72" height="72" viewBox="0 0 72 72">
+                    <circle cx="36" cy="36" r="28" fill="none" stroke="#2a3a30" stroke-width="8"/>
+                    <circle cx="36" cy="36" r="28" fill="none" stroke="#1B4332" stroke-width="8"
+                      stroke-dasharray="148 176" stroke-dashoffset="44" stroke-linecap="round"/>
+                    <circle cx="36" cy="36" r="18" fill="none" stroke="#3a2a20" stroke-width="6"/>
+                    <circle cx="36" cy="36" r="18" fill="none" stroke="#C8663B" stroke-width="6"
+                      stroke-dasharray="80 113" stroke-dashoffset="28" stroke-linecap="round"/>
+                  </svg>
+                  <div class="science-headline">A fruity-spicy bridge — shared methyl hexanoate creates intensity without competition.</div>
+                </div>
+                <div class="aroma-tags">
+                  <span class="aroma-tag">fruity esters</span>
+                  <span class="aroma-tag">spicy terpenes</span>
+                  <span class="aroma-tag">volatile bridges</span>
+                </div>
+                <div class="see-chemistry">See the chemistry →</div>
+              </div>
+            </div>
+            <!-- Row 2 -->
+            <div class="result-row">
+              <div class="row-top">
+                <div>
+                  <div class="ingredient-pair">Balsamic Vinegar</div>
+                  <span class="tier-badge">GC-MS Confirmed</span>
+                </div>
+                <div class="scores">
+                  <span class="score-chip science-chip">S 79</span>
+                  <span class="score-chip hive-chip">H 88</span>
+                </div>
+              </div>
+            </div>
+            <!-- Row 3 -->
+            <div class="result-row">
+              <div class="row-top">
+                <div>
+                  <div class="ingredient-pair">Basil</div>
+                  <span class="tier-badge" style="background:#EEF8F2;color:#74C69D;">Predicted</span>
+                </div>
+                <div class="scores">
+                  <span class="score-chip science-chip">S 72</span>
+                  <span class="score-chip hive-chip">H 65</span>
+                </div>
+              </div>
+            </div>
+            <!-- Row 4 -->
+            <div class="result-row">
+              <div class="row-top">
+                <div>
+                  <div class="ingredient-pair">Lavender</div>
+                  <span class="tier-badge" style="background:#EEF8F2;color:#74C69D;">Predicted</span>
+                </div>
+                <div class="scores">
+                  <span class="score-chip science-chip">S 68</span>
+                  <span class="score-chip hive-chip">H 41</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Screen B: First Pairing Magic -->
+    <div>
+      <p class="device-label">First Pairing Magic</p>
+      <div class="device-frame">
+        <div class="device-screen d1" style="display:flex;flex-direction:column;justify-content:center;align-items:center;padding:32px 24px;text-align:center;">
+          <div style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#888;margin-bottom:8px;">This Week's Most Contested Pairing</div>
+          <div style="font-family:var(--font-serif);font-size:2rem;color:#fff;line-height:1.2;margin-bottom:24px;">Strawberry<br>+ Lavender</div>
+          <svg width="96" height="96" viewBox="0 0 96 96" style="margin-bottom:20px;">
+            <circle cx="48" cy="48" r="38" fill="none" stroke="#1a2e20" stroke-width="10"/>
+            <circle cx="48" cy="48" r="38" fill="none" stroke="#1B4332" stroke-width="10"
+              stroke-dasharray="200 239" stroke-dashoffset="60" stroke-linecap="round"/>
+            <circle cx="48" cy="48" r="24" fill="none" stroke="#3a2015" stroke-width="8"/>
+            <circle cx="48" cy="48" r="24" fill="none" stroke="#C8663B" stroke-width="8"
+              stroke-dasharray="60 151" stroke-dashoffset="38" stroke-linecap="round"/>
+          </svg>
+          <div style="font-size:0.7rem;color:#888;margin-bottom:4px;">Science says <strong style="color:#74C69D;">compatible (82)</strong></div>
+          <div style="font-size:0.7rem;color:#888;margin-bottom:24px;">Cooks rate it <strong style="color:#C8663B;">lower (31)</strong></div>
+          <div style="font-size:0.8rem;color:#aaa;max-width:260px;line-height:1.5;">"Floral terpenes overlap — but texture and temperature may explain the community's skepticism."</div>
+          <div style="margin-top:24px;font-size:0.75rem;color:#888;">Type an ingredient to search</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ D2: CLEAN SCIENCE ══ -->
+<section class="direction-section" id="d2">
+  <div class="section-label">
+    <h2>Direction 2 — Clean Science</h2>
+    <p>White surfaces, high contrast, precision-focused. Science data as the primary visual element. Minimal decoration.</p>
+  </div>
+  <div class="device-grid">
+    <div>
+      <p class="device-label">Search Results</p>
+      <div class="device-frame">
+        <div class="device-screen d2">
+          <div class="header">
+            <div class="logo">⬡ FlavorLab™</div>
+            <div class="search-wrap">
+              <span style="color:#1a1a1a;font-size:0.875rem;">⌕</span>
+              <span class="search-placeholder">strawberry</span>
+            </div>
+            <span class="filter-tag">Vegan ×</span>
+          </div>
+          <div class="results-area">
+            <div class="results-heading">12 results · sorted by confidence</div>
+            <div class="result-row expanded">
+              <div class="row-top">
+                <div>
+                  <div class="ingredient-pair">Black Pepper</div>
+                  <div class="tier-label">GC-MS Experimental</div>
+                </div>
+                <div class="scores">
+                  <div>
+                    <div class="score-num"><strong>84</strong> sci</div>
+                    <div class="score-num"><strong>71</strong> hive</div>
+                  </div>
+                  <div class="tier-dot"></div>
+                </div>
+              </div>
+              <div class="science-card">
+                <div class="ring-row">
+                  <svg class="ring-svg" width="64" height="64" viewBox="0 0 64 64">
+                    <circle cx="32" cy="32" r="24" fill="none" stroke="#e8ede9" stroke-width="7"/>
+                    <circle cx="32" cy="32" r="24" fill="none" stroke="#1B4332" stroke-width="7"
+                      stroke-dasharray="127 151" stroke-dashoffset="38" stroke-linecap="round"/>
+                    <circle cx="32" cy="32" r="14" fill="none" stroke="#f5ede8" stroke-width="5"/>
+                    <circle cx="32" cy="32" r="14" fill="none" stroke="#C8663B" stroke-width="5"
+                      stroke-dasharray="62 88" stroke-dashoffset="22" stroke-linecap="round"/>
+                  </svg>
+                  <div class="science-headline">A fruity-spicy bridge — shared methyl hexanoate creates intensity without competition.</div>
+                </div>
+                <div class="see-chemistry">See the chemistry →</div>
+              </div>
+            </div>
+            <div class="result-row">
+              <div class="row-top">
+                <div><div class="ingredient-pair">Balsamic Vinegar</div></div>
+                <div class="scores">
+                  <div>
+                    <div class="score-num"><strong>79</strong> sci</div>
+                    <div class="score-num"><strong>88</strong> hive</div>
+                  </div>
+                  <div class="tier-dot"></div>
+                </div>
+              </div>
+            </div>
+            <div class="result-row">
+              <div class="row-top">
+                <div><div class="ingredient-pair">Basil</div></div>
+                <div class="scores">
+                  <div>
+                    <div class="score-num"><strong>72</strong> sci</div>
+                    <div class="score-num"><strong>65</strong> hive</div>
+                  </div>
+                  <div class="tier-dot" style="background:#74C69D;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ D3: WARM LABORATORY ══ -->
+<section class="direction-section" id="d3">
+  <div class="section-label">
+    <h2>Direction 3 — Warm Laboratory</h2>
+    <p>Dark green header, warm off-white body, card elevation, rounded corners. Approachable and warm — science without intimidation.</p>
+  </div>
+  <div class="device-grid">
+    <div>
+      <p class="device-label">Search Results</p>
+      <div class="device-frame">
+        <div class="device-screen d3">
+          <div class="header">
+            <div class="logo">FlavorLab™</div>
+            <div class="search-wrap">
+              <span style="color:rgba(255,255,255,.4);">⌕</span>
+              <span class="search-placeholder">strawberry</span>
+            </div>
+            <span class="filter-tag">🌿 Vegan ×</span>
+          </div>
+          <div class="results-area">
+            <div class="result-row expanded">
+              <div class="row-top">
+                <div class="ingredient-pair">Black Pepper</div>
+                <div class="scores">
+                  <span class="score-pill s-pill">S 84</span>
+                  <span class="score-pill h-pill">H 71</span>
+                </div>
+              </div>
+              <div class="science-card">
+                <div class="ring-row">
+                  <svg class="ring-svg" width="72" height="72" viewBox="0 0 72 72">
+                    <circle cx="36" cy="36" r="28" fill="none" stroke="#e8ede9" stroke-width="8"/>
+                    <circle cx="36" cy="36" r="28" fill="none" stroke="#1B4332" stroke-width="8"
+                      stroke-dasharray="148 176" stroke-dashoffset="44" stroke-linecap="round"/>
+                    <circle cx="36" cy="36" r="18" fill="none" stroke="#f5e0d0" stroke-width="6"/>
+                    <circle cx="36" cy="36" r="18" fill="none" stroke="#C8663B" stroke-width="6"
+                      stroke-dasharray="80 113" stroke-dashoffset="28" stroke-linecap="round"/>
+                  </svg>
+                  <div class="science-headline">A fruity-spicy bridge — shared methyl hexanoate creates intensity without competition.</div>
+                </div>
+                <div class="aroma-row">
+                  <span class="aroma-chip">fruity esters</span>
+                  <span class="aroma-chip">spicy terpenes</span>
+                </div>
+                <div class="tier-row"><span class="tier-dot"></span> Experimentally confirmed · GC-MS</div>
+                <div class="see-chemistry">See the chemistry →</div>
+              </div>
+            </div>
+            <div class="result-row">
+              <div class="row-top">
+                <div class="ingredient-pair">Balsamic Vinegar</div>
+                <div class="scores">
+                  <span class="score-pill s-pill">S 79</span>
+                  <span class="score-pill h-pill">H 88</span>
+                </div>
+              </div>
+            </div>
+            <div class="result-row">
+              <div class="row-top">
+                <div class="ingredient-pair">Basil</div>
+                <div class="scores">
+                  <span class="score-pill" style="background:#eef8f2;color:#2d6a4f;">S 72</span>
+                  <span class="score-pill h-pill">H 65</span>
+                </div>
+              </div>
+            </div>
+            <div class="result-row">
+              <div class="row-top">
+                <div class="ingredient-pair">Lavender</div>
+                <div class="scores">
+                  <span class="score-pill" style="background:#eef8f2;color:#2d6a4f;">S 68</span>
+                  <span class="score-pill h-pill" style="background:#ffe8dc;color:#b34f25;">H 41</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ D4: BOLD COMMUNITY ══ -->
+<section class="direction-section" id="d4">
+  <div class="section-label">
+    <h2>Direction 4 — Bold Community</h2>
+    <p>Accent-forward, Hive Score prominently featured, community framing throughout. For products where community trust is the primary signal.</p>
+  </div>
+  <div class="device-grid">
+    <div>
+      <p class="device-label">Search Results</p>
+      <div class="device-frame">
+        <div class="device-screen d4">
+          <div class="header">
+            <div class="logo">Flavor<span>Lab™</span></div>
+            <div class="search-wrap">
+              <span style="color:#bbb;">⌕</span>
+              <span class="search-placeholder">strawberry</span>
+            </div>
+            <span class="filter-tag">🌿 Vegan ×</span>
+          </div>
+          <div class="results-area">
+            <div class="community-banner">🍯 847 ratings submitted this week</div>
+            <div class="result-row expanded">
+              <div class="row-top">
+                <div class="ingredient-pair">Black Pepper</div>
+                <div class="hive-prominent">
+                  <div class="hive-big">71</div>
+                  <div class="hive-label">Hive Score</div>
+                  <div class="science-sub">Science 84 · GC-MS</div>
+                </div>
+              </div>
+              <div class="science-card">
+                <div class="ring-row">
+                  <svg class="ring-svg" width="64" height="64" viewBox="0 0 64 64">
+                    <circle cx="32" cy="32" r="24" fill="none" stroke="#e8ede9" stroke-width="7"/>
+                    <circle cx="32" cy="32" r="24" fill="none" stroke="#1B4332" stroke-width="7"
+                      stroke-dasharray="127 151" stroke-dashoffset="38" stroke-linecap="round"/>
+                    <circle cx="32" cy="32" r="14" fill="none" stroke="#f5ede8" stroke-width="5"/>
+                    <circle cx="32" cy="32" r="14" fill="none" stroke="#C8663B" stroke-width="5"
+                      stroke-dasharray="62 88" stroke-dashoffset="22" stroke-linecap="round"/>
+                  </svg>
+                  <div class="science-headline">A fruity-spicy bridge — shared methyl hexanoate creates intensity without competition.</div>
+                </div>
+                <div class="rating-preview">
+                  <p>Join 234 people who rated this pairing</p>
+                  <div class="stars">★★★★☆</div>
+                </div>
+                <div class="see-chemistry">See the chemistry →</div>
+              </div>
+            </div>
+            <div class="result-row">
+              <div class="row-top">
+                <div class="ingredient-pair">Balsamic Vinegar</div>
+                <div class="hive-prominent">
+                  <div class="hive-big">88</div>
+                  <div class="hive-label">Hive Score</div>
+                  <div class="science-sub">Science 79</div>
+                </div>
+              </div>
+            </div>
+            <div class="result-row">
+              <div class="row-top">
+                <div class="ingredient-pair">Basil</div>
+                <div class="hive-prominent">
+                  <div class="hive-big">65</div>
+                  <div class="hive-label">Hive Score</div>
+                  <div class="science-sub">Science 72</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ D5: MINIMAL TRUST ══ -->
+<section class="direction-section" id="d5">
+  <div class="section-label">
+    <h2>Direction 5 — Minimal Trust</h2>
+    <p>Ultra-minimal. Large score numbers, Playfair headlines, maximum white space. Every element earns its place.</p>
+  </div>
+  <div class="device-grid">
+    <div>
+      <p class="device-label">Search Results</p>
+      <div class="device-frame">
+        <div class="device-screen d5">
+          <div class="header">
+            <div class="logo">FLAVORLAB™</div>
+            <div class="search-wrap">
+              <span style="color:#ccc;">⌕</span>
+              <span class="search-placeholder">strawberry</span>
+            </div>
+            <span class="filter-tag">Vegan ×</span>
+          </div>
+          <div class="results-area">
+            <div class="result-row expanded">
+              <div class="row-top">
+                <div class="ingredient-pair">Black Pepper</div>
+                <div class="score-block">
+                  <div class="score-big">84</div>
+                  <div class="score-sub">Science</div>
+                  <div class="tier-line">● GC-MS confirmed</div>
+                </div>
+              </div>
+              <div class="science-card">
+                <div class="ring-row">
+                  <svg class="ring-svg" width="72" height="72" viewBox="0 0 72 72">
+                    <circle cx="36" cy="36" r="28" fill="none" stroke="#f0f0f0" stroke-width="8"/>
+                    <circle cx="36" cy="36" r="28" fill="none" stroke="#1B4332" stroke-width="8"
+                      stroke-dasharray="148 176" stroke-dashoffset="44" stroke-linecap="round"/>
+                    <circle cx="36" cy="36" r="18" fill="none" stroke="#f8ede8" stroke-width="6"/>
+                    <circle cx="36" cy="36" r="18" fill="none" stroke="#C8663B" stroke-width="6"
+                      stroke-dasharray="80 113" stroke-dashoffset="28" stroke-linecap="round"/>
+                  </svg>
+                  <div class="science-headline">A fruity-spicy bridge — shared methyl hexanoate creates intensity without competition.</div>
+                </div>
+                <div class="compound-preview">methyl hexanoate · linalool · (E)-β-ocimene</div>
+                <div class="see-chemistry">expand compounds →</div>
+              </div>
+            </div>
+            <div class="result-row">
+              <div class="row-top">
+                <div class="ingredient-pair">Balsamic Vinegar</div>
+                <div class="score-block">
+                  <div class="score-big">79</div>
+                  <div class="score-sub">Science</div>
+                </div>
+              </div>
+            </div>
+            <div class="result-row">
+              <div class="row-top">
+                <div class="ingredient-pair">Basil</div>
+                <div class="score-block">
+                  <div class="score-big">72</div>
+                  <div class="score-sub">Science</div>
+                </div>
+              </div>
+            </div>
+            <div class="result-row">
+              <div class="row-top">
+                <div class="ingredient-pair">Lavender</div>
+                <div class="score-block">
+                  <div class="score-big">68</div>
+                  <div class="score-sub">Science</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ D6: CONTESTED STATE ══ -->
+<section class="direction-section" id="d6">
+  <div class="section-label">
+    <h2>Direction 6 — Contested State Focus</h2>
+    <p>Designed to showcase the product's most distinctive moment: when science and community disagree. The gap between scores becomes the editorial feature.</p>
+  </div>
+  <div class="device-grid">
+    <div>
+      <p class="device-label">Contested Pairing</p>
+      <div class="device-frame">
+        <div class="device-screen d6">
+          <div class="header">
+            <div class="logo">FlavorLab™</div>
+            <div class="search-wrap">
+              <span style="color:rgba(255,255,255,.3);">⌕</span>
+              <span class="search-placeholder">strawberry + lavender</span>
+            </div>
+          </div>
+          <div class="results-area">
+            <div class="contested-banner">
+              <div>
+                <div class="contested-label">Contested Pairing</div>
+                <div class="contested-title">Strawberry + Lavender</div>
+              </div>
+            </div>
+            <div class="result-row expanded">
+              <div class="row-top">
+                <div class="ingredient-pair">Strawberry + Lavender</div>
+                <div class="score-split">
+                  <span class="s-score">S 82</span>
+                  <span class="h-score">H 31</span>
+                </div>
+              </div>
+              <div class="science-card">
+                <div class="ring-legend">
+                  Outer ring = Science Score · Inner ring = Hive Score<br>Wide gap = contested pairing
+                </div>
+                <div class="ring-row">
+                  <svg class="ring-svg" width="72" height="72" viewBox="0 0 72 72">
+                    <!-- Science outer (large arc) -->
+                    <circle cx="36" cy="36" r="28" fill="none" stroke="#e8ede9" stroke-width="8"/>
+                    <circle cx="36" cy="36" r="28" fill="none" stroke="#1B4332" stroke-width="8"
+                      stroke-dasharray="144 176" stroke-dashoffset="44" stroke-linecap="round"/>
+                    <!-- Hive inner (small arc — contested) -->
+                    <circle cx="36" cy="36" r="18" fill="none" stroke="#f5ede8" stroke-width="6"/>
+                    <circle cx="36" cy="36" r="18" fill="none" stroke="#C8663B" stroke-width="6"
+                      stroke-dasharray="22 113" stroke-dashoffset="28" stroke-linecap="round"/>
+                    <!-- Gap indicator -->
+                    <circle cx="36" cy="36" r="23" fill="none" stroke="#E9C46A" stroke-width="1.5" stroke-dasharray="4 4"/>
+                  </svg>
+                  <div class="science-headline">Floral terpenes overlap — chemistry says compatible.</div>
+                </div>
+                <div class="contested-explanation">
+                  <strong>Chemistry says compatible. Cooks consistently disagree.</strong><br><br>
+                  Linalool bridges the two — but lavender's camphor notes may clash with strawberry's ester brightness at typical preparation temperatures. This is a texture and temperature issue chemistry alone can't predict.
+                </div>
+                <div class="see-chemistry">See the chemistry →</div>
+              </div>
+            </div>
+            <div style="padding: 10px 0; font-size:0.7rem;color:#aaa;text-align:center;">Other strawberry pairings ↓</div>
+            <div class="result-row">
+              <div class="row-top">
+                <div class="ingredient-pair">Black Pepper</div>
+                <div class="score-split">
+                  <span class="s-score">S 84</span>
+                  <span class="h-score">H 71</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Email gate -->
+    <div>
+      <p class="device-label">Email Gate</p>
+      <div class="device-frame">
+        <div class="device-screen d6" style="display:flex;flex-direction:column;">
+          <div class="header">
+            <div class="logo">FlavorLab™</div>
+            <div class="search-wrap">
+              <span style="color:rgba(255,255,255,.3);">⌕</span>
+              <span class="search-placeholder">strawberry</span>
+            </div>
+          </div>
+          <!-- Dimmed result behind modal -->
+          <div style="padding:16px;opacity:0.3;pointer-events:none;">
+            <div class="result-row" style="background:#fff;border-radius:12px;padding:14px 16px;">
+              <div class="row-top">
+                <div class="ingredient-pair" style="font-family:var(--font-serif);color:var(--dark);">Black Pepper</div>
+                <div class="score-split">
+                  <span class="s-score">S 84</span>
+                  <span class="h-score">H 71</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Modal overlay -->
+          <div style="position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;">
+            <div style="background:#fff;border-radius:20px 20px 0 0;padding:28px 24px;width:100%;">
+              <div style="font-family:var(--font-serif);font-size:1.15rem;color:var(--dark);margin-bottom:8px;">Join 234 people who rated<br>Strawberry + Black Pepper</div>
+              <div style="font-size:0.75rem;color:#888;margin-bottom:20px;">Enter your email once. Rate as many pairings as you like — no account required.</div>
+              <div style="border:1px solid #ddd;border-radius:6px;padding:10px 14px;font-size:0.875rem;color:#bbb;margin-bottom:12px;">your@email.com</div>
+              <div style="background:var(--accent);color:#fff;border-radius:6px;padding:12px;text-align:center;font-size:0.875rem;font-weight:500;cursor:pointer;">Send Verification Code</div>
+              <div style="text-align:center;font-size:0.65rem;color:#ccc;margin-top:12px;">We'll send one follow-up email about this pairing. That's it.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ COMPARISON ══ -->
+<section class="direction-section" id="comparison">
+  <div class="section-label">
+    <h2>All Directions — Side by Side</h2>
+    <p>Compare the visual weight and hierarchy of each direction at a glance.</p>
+  </div>
+  <div class="device-grid" style="flex-wrap:wrap;gap:16px;justify-content:center;padding:0 16px;">
+    <div style="text-align:center;">
+      <p style="font-size:0.65rem;color:#666;padding:6px 0;text-transform:uppercase;letter-spacing:0.05em;">D1 · Editorial Dark</p>
+      <div style="width:180px;height:200px;overflow:hidden;border-radius:20px;box-shadow:0 8px 24px rgba(0,0,0,.5);">
+        <div style="transform:scale(0.48);transform-origin:top left;width:375px;">
+          <div class="d1" style="height:416px;overflow:hidden;">
+            <div class="hero" style="padding:20px 20px 16px;">
+              <div class="logo" style="margin-bottom:14px;"><span class="logo-icon">⬡</span> FlavorLab™</div>
+              <div class="search-wrap"><span class="search-icon">⌕</span><span class="search-placeholder">strawberry</span></div>
+            </div>
+            <div class="results-area" style="padding:12px 20px;">
+              <div class="result-row expanded" style="padding:12px 14px;">
+                <div class="row-top"><div class="ingredient-pair" style="font-size:0.9rem;">Black Pepper</div><div class="scores"><span class="score-chip science-chip">84</span></div></div>
+                <div class="science-card"><div class="science-headline" style="font-size:0.85rem;margin-top:8px;">A fruity-spicy bridge.</div></div>
+              </div>
+              <div class="result-row" style="padding:10px 14px;"><div class="row-top"><div class="ingredient-pair" style="font-size:0.85rem;">Balsamic Vinegar</div></div></div>
+              <div class="result-row" style="padding:10px 14px;"><div class="row-top"><div class="ingredient-pair" style="font-size:0.85rem;">Basil</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;">
+      <p style="font-size:0.65rem;color:#666;padding:6px 0;text-transform:uppercase;letter-spacing:0.05em;">D2 · Clean Science</p>
+      <div style="width:180px;height:200px;overflow:hidden;border-radius:20px;box-shadow:0 8px 24px rgba(0,0,0,.5);">
+        <div style="transform:scale(0.48);transform-origin:top left;width:375px;">
+          <div class="d2" style="height:416px;overflow:hidden;">
+            <div class="header" style="padding:16px 20px 0;border-bottom:1px solid #f0f0ee;">
+              <div class="logo" style="margin-bottom:12px;">⬡ FlavorLab™</div>
+              <div class="search-wrap" style="margin-bottom:10px;"><span style="color:#1a1a1a;">⌕</span><span class="search-placeholder">strawberry</span></div>
+            </div>
+            <div class="results-area">
+              <div class="result-row expanded"><div class="row-top"><div class="ingredient-pair">Black Pepper</div><div class="scores"><div class="score-num"><strong>84</strong></div><div class="tier-dot"></div></div></div><div class="science-card"><div class="science-headline" style="margin-top:8px;font-size:0.8rem;">A fruity-spicy bridge.</div></div></div>
+              <div class="result-row"><div class="row-top"><div class="ingredient-pair">Balsamic Vinegar</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;">
+      <p style="font-size:0.65rem;color:#666;padding:6px 0;text-transform:uppercase;letter-spacing:0.05em;">D3 · Warm Lab</p>
+      <div style="width:180px;height:200px;overflow:hidden;border-radius:20px;box-shadow:0 8px 24px rgba(0,0,0,.5);">
+        <div style="transform:scale(0.48);transform-origin:top left;width:375px;">
+          <div class="d3" style="height:416px;overflow:hidden;">
+            <div class="header" style="padding:18px 20px 16px;">
+              <div class="logo" style="margin-bottom:12px;">FlavorLab™</div>
+              <div class="search-wrap"><span style="color:rgba(255,255,255,.4);">⌕</span><span class="search-placeholder">strawberry</span></div>
+            </div>
+            <div class="results-area" style="padding:12px 14px;">
+              <div class="result-row expanded"><div class="row-top"><div class="ingredient-pair">Black Pepper</div><div class="scores"><span class="score-pill s-pill">84</span></div></div><div class="science-card"><div class="science-headline" style="margin-top:8px;font-size:0.85rem;">A fruity-spicy bridge.</div></div></div>
+              <div class="result-row"><div class="row-top"><div class="ingredient-pair">Balsamic Vinegar</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;">
+      <p style="font-size:0.65rem;color:#666;padding:6px 0;text-transform:uppercase;letter-spacing:0.05em;">D4 · Bold Community</p>
+      <div style="width:180px;height:200px;overflow:hidden;border-radius:20px;box-shadow:0 8px 24px rgba(0,0,0,.5);">
+        <div style="transform:scale(0.48);transform-origin:top left;width:375px;">
+          <div class="d4" style="height:416px;overflow:hidden;">
+            <div class="header" style="padding:16px 20px 14px;border-bottom:2px solid var(--accent);">
+              <div class="logo" style="margin-bottom:12px;">Flavor<span>Lab™</span></div>
+              <div class="search-wrap"><span style="color:#bbb;">⌕</span><span class="search-placeholder">strawberry</span></div>
+            </div>
+            <div class="results-area">
+              <div class="result-row expanded"><div class="row-top"><div class="ingredient-pair">Black Pepper</div><div class="hive-prominent"><div class="hive-big">71</div><div class="hive-label">Hive</div></div></div><div class="science-card"><div class="science-headline" style="margin-top:8px;font-size:0.85rem;">A fruity-spicy bridge.</div></div></div>
+              <div class="result-row"><div class="row-top"><div class="ingredient-pair">Balsamic Vinegar</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;">
+      <p style="font-size:0.65rem;color:#666;padding:6px 0;text-transform:uppercase;letter-spacing:0.05em;">D5 · Minimal Trust</p>
+      <div style="width:180px;height:200px;overflow:hidden;border-radius:20px;box-shadow:0 8px 24px rgba(0,0,0,.5);">
+        <div style="transform:scale(0.48);transform-origin:top left;width:375px;">
+          <div class="d5" style="height:416px;overflow:hidden;">
+            <div class="header" style="padding:20px 20px 16px;">
+              <div class="logo" style="margin-bottom:16px;">FLAVORLAB™</div>
+              <div class="search-wrap"><span style="color:#ccc;">⌕</span><span class="search-placeholder">strawberry</span></div>
+            </div>
+            <div class="results-area">
+              <div class="result-row expanded"><div class="row-top"><div class="ingredient-pair">Black Pepper</div><div class="score-block"><div class="score-big">84</div><div class="score-sub">Science</div></div></div><div class="science-card"><div class="science-headline" style="margin-top:8px;">A fruity-spicy bridge.</div></div></div>
+              <div class="result-row"><div class="row-top"><div class="ingredient-pair">Balsamic Vinegar</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;">
+      <p style="font-size:0.65rem;color:#666;padding:6px 0;text-transform:uppercase;letter-spacing:0.05em;">D6 · Contested State</p>
+      <div style="width:180px;height:200px;overflow:hidden;border-radius:20px;box-shadow:0 8px 24px rgba(0,0,0,.5);">
+        <div style="transform:scale(0.48);transform-origin:top left;width:375px;">
+          <div class="d6" style="height:416px;overflow:hidden;">
+            <div class="header" style="padding:16px 20px 14px;">
+              <div class="logo" style="margin-bottom:12px;">FlavorLab™</div>
+              <div class="search-wrap"><span style="color:rgba(255,255,255,.3);">⌕</span><span class="search-placeholder">strawberry + lavender</span></div>
+            </div>
+            <div class="results-area">
+              <div class="contested-banner" style="margin-bottom:10px;"><div><div class="contested-label">Contested</div><div class="contested-title" style="font-size:0.85rem;">Strawberry + Lavender</div></div></div>
+              <div class="result-row expanded"><div class="row-top"><div class="ingredient-pair">Strawberry + Lavender</div><div class="score-split"><span class="s-score">S 82</span><span class="h-score">H 31</span></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+function show(id) {
+  document.querySelectorAll('.direction-section').forEach(s => s.classList.remove('visible'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('visible');
+  const btns = document.querySelectorAll('.nav-btn');
+  const map = {d1:0,d2:1,d3:2,d4:3,d5:4,d6:5,comparison:6};
+  if (map[id] !== undefined) btns[map[id]].classList.add('active');
+}
+</script>
+</body>
+</html>
