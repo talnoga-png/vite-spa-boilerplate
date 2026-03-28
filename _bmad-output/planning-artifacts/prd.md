@@ -684,12 +684,16 @@ FlavorLab's phased data strategy — FlavorGraph → FooDB → community-assiste
 - Ratings under moderation hold display frozen score with subtle "Under review" indicator
 
 ### FR-04: Community Rating System
-- Any visitor (no account required for free tier) can submit a 1–5 star rating on any pairing they have viewed
+- Browsing, searching, and viewing science cards requires no account and no email
+- **Submitting a rating requires email verification** — one-time per browser (stored in localStorage after first verification)
+- Email capture flow: user taps rate → modal: "Your rating helps the community. Enter your email to rate." → OTP sent via email → user enters OTP → verified → rating widget unlocks
+- Verified email stored in localStorage (`flavorlab.rater_email`) — subsequent rating attempts skip the OTP step; email pre-filled
 - Rating form: star selector + "Have you tried this pairing?" friction step (Yes / No / Planning to)
 - "Planning to" ratings recorded but weighted lower in Hive Score; shown as *Untested Opinions* layer
-- Max 20 ratings per session; soft cooldown prompt at limit
+- Max 20 ratings per session per email; soft cooldown prompt at limit
 - Velocity spike detection: > 50 ratings on a single pairing within 2 hours triggers automatic pending hold
 - Ratings quarantined (not deleted) during moderation review
+- **Email follow-up:** 7 days after a user's first rating, send a single "How was your experience?" email. One email only — no drip sequence. Unsubscribe link required.
 
 ### FR-05: Dietary & Allergen Filter
 - Filters: Vegan, Vegetarian, Gluten-Free, Nut-Free, Dairy-Free, Shellfish-Free
