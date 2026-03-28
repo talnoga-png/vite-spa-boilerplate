@@ -817,3 +817,380 @@ Rule: Do not write E2E tests for things covered by integration tests. Do not wri
 - [ ] `confidenceSummary` included in all pairing responses
 - [ ] No `any` types in business logic or DTOs
 
+---
+
+## Project Structure & Boundaries
+
+### Requirements → Architecture Mapping
+
+| FR Domain | NestJS Module | Frontend Feature | Shared Types |
+|---|---|---|---|
+| FR-01 Search + autocomplete | `modules/ingredients/` | `features/ingredients/` | `Ingredient`, `AutocompleteResult` |
+| FR-02 Pairing results + Science Score | `modules/pairings/` + `modules/scoring/` | `features/pairings/` | `Pairing`, `ScienceScore`, `ScienceCard` |
+| FR-03 Community ratings | `modules/ratings/` | `features/ratings/` | `Rating`, `RatingEvent` |
+| FR-04 Hive Score recalc | `modules/ratings/` (BullMQ consumer) | `features/pairings/` (display) | `HiveScore`, `RecalculateScoreJob` |
+| FR-05 Saved ingredients | — (localStorage only) | `features/saved/` (Zustand) | `SavedIngredient` |
+| FR-06 Dietary filters | — (frontend filtering) | `features/ingredients/` (filter panel) | `DietaryFilter` |
+| FR-07 Mobile responsive | — (CSS/Tailwind) | all components | — |
+| FR-08 Provenance tracking | all modules (`confidence_tier` field) | `features/pairings/` (science card) | `ConfidenceTier`, `SourceCitation` |
+| FR-09 Personalised discovery | `modules/ingredients/` (recommendations) | `features/ingredients/` | `DiscoveryCard` |
+| FR-10 Pro chef's notebook | `modules/notebooks/` (post-MVP) | `features/notebooks/` (post-MVP) | `Notebook`, `NotebookEntry` |
+| FR-11 Enterprise API | `enterprise/v1/` controllers | — (B2B consumers) | `PublicPairingResponse` |
+
+**Cross-domain feature rule:** If a feature derives primarily from one domain entity (no new DB table), it lives in that entity's module as a method — e.g. `IngredientsService.findSubstitutes()`. If a feature spans two entities equally AND has its own DB table, it gets its own module.
+
+### Complete Project Directory Structure
+
+```
+flavorlab/
+│
+├── .github/
+│   ├── workflows/
+│   │   └── ci.yml                         # typecheck → lint → test → build → deploy
+│   └── PULL_REQUEST_TEMPLATE.md           # Enforces PR checklist
+│
+├── apps/
+│   │
+│   ├── web/                               # Vite React SPA → flavorlab.io/app
+│   │   ├── index.html
+│   │   ├── vite.config.ts
+│   │   ├── tsconfig.json                  # extends ../../packages/shared-config/tsconfig.base.json
+│   │   ├── tailwind.config.ts             # Tailwind v4 — design tokens
+│   │   ├── .env
+│   │   ├── .env.example
+│   │   └── src/
+│   │       ├── main.tsx                   # React root, TanStack Router + Query providers
+│   │       ├── App.tsx
+│   │       ├── routes/                    # TanStack Router — screens/pages only, no logic
+│   │       │   ├── __root.tsx             # Root layout (nav, footer, error boundary)
+│   │       │   ├── index.tsx              # /app → search-first home (IngredientSearch only; no discovery feed at MVP)
+│   │       │   ├── ingredient/
+│   │       │   │   └── $canonicalName.tsx # /app/ingredient/:canonicalName
+│   │       │   └── pairing/
+│   │       │       └── $pairingId.tsx     # /app/pairing/:pairingId
+│   │       ├── features/                  # Domain-scoped — folder names MUST match Drizzle table names
+│   │       │   ├── ingredients/
+│   │       │   │   ├── components/
+│   │       │   │   │   ├── IngredientSearch.tsx
+│   │       │   │   │   ├── IngredientSearch.skeleton.tsx
+│   │       │   │   │   ├── AutocompleteDropdown.tsx
+│   │       │   │   │   ├── IngredientCard.tsx
+│   │       │   │   │   ├── IngredientCard.skeleton.tsx
+│   │       │   │   │   └── DietaryFilterPanel.tsx
+│   │       │   │   ├── hooks/
+│   │       │   │   │   └── useAutocomplete.ts
+│   │       │   │   ├── ingredients.api.ts # TanStack Query hooks
+│   │       │   │   └── index.ts           # Public exports only
+│   │       │   ├── pairings/
+│   │       │   │   ├── components/
+│   │       │   │   │   ├── PairingList.tsx
+│   │       │   │   │   ├── PairingList.skeleton.tsx
+│   │       │   │   │   ├── PairingCard.tsx
+│   │       │   │   │   ├── PairingCard.skeleton.tsx
+│   │       │   │   │   ├── ScienceCard.tsx
+│   │       │   │   │   ├── ScienceCard.skeleton.tsx
+│   │       │   │   │   ├── ConfidenceBadge.tsx
+│   │       │   │   │   └── ScienceScoreBar.tsx
+│   │       │   │   ├── pairings.api.ts
+│   │       │   │   └── index.ts
+│   │       │   ├── ratings/
+│   │       │   │   ├── components/
+│   │       │   │   │   ├── RatingWidget.tsx
+│   │       │   │   │   └── HiveScoreDisplay.tsx
+│   │       │   │   ├── ratings.api.ts
+│   │       │   │   └── index.ts
+│   │       │   └── saved/                 # localStorage only — no API calls
+│   │       │       ├── components/
+│   │       │       │   └── SavedIngredientsList.tsx
+│   │       │       └── index.ts
+│   │       ├── components/                # Shared UI (used across features)
+│   │       │   ├── ui/                    # shadcn/ui copies live here (not in node_modules)
+│   │       │   │   ├── button.tsx
+│   │       │   │   ├── card.tsx
+│   │       │   │   ├── badge.tsx
+│   │       │   │   └── skeleton.tsx
+│   │       │   ├── layout/
+│   │       │   │   ├── Nav.tsx
+│   │       │   │   └── Footer.tsx
+│   │       │   └── ErrorBoundary.tsx
+│   │       ├── stores/                    # Zustand client state only
+│   │       │   ├── filter.store.ts        # Dietary filters (persisted to localStorage)
+│   │       │   └── saved.store.ts         # Saved ingredients (persisted to localStorage)
+│   │       ├── lib/
+│   │       │   ├── api-client.ts          # fetch/axios wrapper with base URL + auth headers
+│   │       │   ├── query-keys.ts          # TanStack Query key factory (centralised — ESLint enforced)
+│   │       │   └── utils.ts
+│   │       └── hooks/
+│   │           └── useReducedMotion.ts    # prefers-reduced-motion WCAG 2.1 AA hook
+│   │
+│   ├── api/                               # NestJS REST API → /api/v1 + /public/v1
+│   │   ├── nest-cli.json
+│   │   ├── tsconfig.json
+│   │   ├── .env
+│   │   ├── .env.example
+│   │   ├── test/
+│   │   │   ├── integration/               # NestJS test module + test Postgres (port 5433)
+│   │   │   │   ├── ingredients.int-spec.ts
+│   │   │   │   ├── pairings.int-spec.ts
+│   │   │   │   └── ratings.int-spec.ts
+│   │   │   ├── e2e/                       # Playwright — 5 critical user journeys only
+│   │   │   │   ├── search.e2e.ts
+│   │   │   │   ├── pairing-detail.e2e.ts
+│   │   │   │   ├── rate-pairing.e2e.ts
+│   │   │   │   ├── autocomplete.e2e.ts
+│   │   │   │   └── dietary-filter.e2e.ts
+│   │   │   └── fixtures/                  # Shared test seed data (used by all integration tests)
+│   │   │       ├── ingredients.fixture.ts
+│   │   │       ├── pairings.fixture.ts
+│   │   │       └── seed-test-db.ts        # Runs Drizzle migrations + inserts fixtures
+│   │   └── src/
+│   │       ├── main.ts                    # Bootstrap: versioning, helmet, CORS, pino, throttler, global filter
+│   │       ├── app.module.ts              # Root module
+│   │       ├── config/
+│   │       │   ├── env.schema.ts          # Zod validation — app fails fast on missing vars
+│   │       │   └── config.module.ts
+│   │       ├── modules/                   # Internal /api/v1/ feature modules
+│   │       │   ├── ingredients/
+│   │       │   │   ├── ingredients.module.ts
+│   │       │   │   ├── ingredients.controller.ts    # GET /api/v1/ingredients, /search, /autocomplete
+│   │       │   │   ├── ingredients.service.ts       # includes findSubstitutes() for FR-09
+│   │       │   │   ├── ingredients.service.spec.ts  # Unit tests (co-located)
+│   │       │   │   └── dto/
+│   │       │   │       ├── search-ingredients.dto.ts
+│   │       │   │       └── ingredient-response.dto.ts
+│   │       │   ├── pairings/
+│   │       │   │   ├── pairings.module.ts
+│   │       │   │   ├── pairings.controller.ts       # GET /api/v1/pairings, /ingredients/:id/pairings
+│   │       │   │   ├── pairings.service.ts          # computes confidenceSummary per pairing
+│   │       │   │   ├── pairings.service.spec.ts
+│   │       │   │   └── dto/
+│   │       │   │       ├── get-pairings.dto.ts
+│   │       │   │       └── pairing-response.dto.ts  # includes confidenceSummary (required field)
+│   │       │   ├── ratings/
+│   │       │   │   ├── ratings.module.ts
+│   │       │   │   ├── ratings.controller.ts        # POST /api/v1/ratings
+│   │       │   │   ├── ratings.service.ts
+│   │       │   │   ├── ratings.service.spec.ts
+│   │       │   │   ├── ratings.consumer.ts          # BullMQ: hive-score-recalc queue consumer
+│   │       │   │   └── dto/
+│   │       │   │       ├── create-rating.dto.ts
+│   │       │   │       └── rating-response.dto.ts
+│   │       │   ├── scoring/
+│   │       │   │   ├── scoring.module.ts
+│   │       │   │   ├── scoring.service.ts           # Orchestrates engine + caching (imports from engine/ only)
+│   │       │   │   ├── scoring.service.spec.ts
+│   │       │   │   ├── scoring.constants.ts         # COMPOUND_AFFINITY_WEIGHT=0.35, etc.
+│   │       │   │   └── engine/                      # PURE FUNCTIONS — zero NestJS/Drizzle imports
+│   │       │   │       ├── index.ts                 # Composes signals with weights
+│   │       │   │       ├── compound-affinity.ts
+│   │       │   │       ├── graph-similarity.ts
+│   │       │   │       ├── category-affinity.ts
+│   │       │   │       ├── popularity.ts
+│   │       │   │       ├── editorial-boost.ts
+│   │       │   │       └── index.spec.ts            # Unit tests — no DB, no framework
+│   │       │   ├── users/
+│   │       │   │   ├── users.module.ts
+│   │       │   │   ├── users.controller.ts          # Better Auth session endpoints
+│   │       │   │   ├── users.service.ts
+│   │       │   │   └── users.service.spec.ts
+│   │       │   └── etl/
+│   │       │       ├── etl.module.ts
+│   │       │       ├── etl.controller.ts            # POST /api/v1/etl/status (admin only)
+│   │       │       └── etl.service.ts               # ETL status queries only — no pipeline logic
+│   │       ├── enterprise/                          # External /public/v1/ — thin wrappers over modules/
+│   │       │   └── v1/                              # Versioned subdirectory — v2/ added alongside when needed
+│   │       │       ├── enterprise.module.ts
+│   │       │       ├── enterprise-pairings.controller.ts    # GET /public/v1/pairings (same service, different serialisation)
+│   │       │       └── enterprise-ingredients.controller.ts
+│   │       ├── database/
+│   │       │   ├── database.module.ts
+│   │       │   ├── database.client.ts               # Drizzle + node-postgres connection pool
+│   │       │   ├── schema/
+│   │       │   │   ├── index.ts                     # Re-exports all table schemas
+│   │       │   │   ├── enums.ts                     # confidence_tier, user_plan pgEnums
+│   │       │   │   ├── ingredients.schema.ts
+│   │       │   │   ├── compounds.schema.ts
+│   │       │   │   ├── pairing-edges.schema.ts      # includes confidence_tier column
+│   │       │   │   ├── pairing-signals.schema.ts    # 5 signal values stored separately
+│   │       │   │   ├── rating-events.schema.ts
+│   │       │   │   ├── users.schema.ts
+│   │       │   │   └── api-keys.schema.ts           # Enterprise API keys (hashed)
+│   │       │   └── migrations/                      # drizzle-kit generated — committed to git
+│   │       │       └── 0000_initial.sql
+│   │       ├── cache/
+│   │       │   ├── cache.module.ts
+│   │       │   └── cache.service.ts                 # get/set/del/ttl wrappers over ioredis
+│   │       └── common/                              # Framework wiring ONLY — no business/domain logic
+│   │           ├── constants.ts                     # MAX_PAIRINGS_PER_QUERY, CACHE_TTL_SECONDS
+│   │           ├── guards/
+│   │           │   ├── roles.guard.ts               # JWT plan claim check
+│   │           │   └── api-key.guard.ts             # Enterprise API key validation
+│   │           ├── filters/
+│   │           │   └── http-exception.filter.ts     # Global ExceptionFilter — standard error shape
+│   │           ├── interceptors/
+│   │           │   └── request-id.interceptor.ts    # Injects requestId UUID into request context
+│   │           ├── pipes/
+│   │           │   └── zod-validation.pipe.ts       # Generic Zod validation pipe
+│   │           └── decorators/
+│   │               ├── roles.decorator.ts
+│   │               └── current-user.decorator.ts
+│   │
+│   └── etl/                                         # Plain TypeScript scripts — NOT a NestJS app at MVP
+│       ├── tsconfig.json                            # extends ../../packages/shared-config/tsconfig.base.json
+│       ├── .env
+│       ├── .env.example
+│       └── src/
+│           ├── seed.ts                              # Entry point — imports from pipeline/ only
+│           ├── pipeline/                            # Canonical ETL process (called by seed.ts)
+│           │   ├── flavorgraph.loader.ts            # Reads FlavorGraph CSVs (nodes + edges)
+│           │   ├── flavornet.loader.ts              # Reads Flavornet aroma data
+│           │   ├── chemtastesdb.loader.ts           # Reads ChemTastesDB compounds
+│           │   ├── pubchem.enricher.ts              # PubChem API enrichment
+│           │   ├── ontology.service.ts              # Canonical name normalisation across sources
+│           │   └── confidence-tier.assigner.ts      # Assigns GC_MS_EXPERIMENTAL / LITERATURE_CURATED / etc.
+│           ├── transformers/
+│           │   ├── ingredient.transformer.ts        # CSV row → Drizzle insert shape
+│           │   ├── compound.transformer.ts
+│           │   └── pairing.transformer.ts           # Assigns confidence_tier, computes stable edge ID
+│           └── scripts/                             # One-off operations — NEVER imported by pipeline/
+│               └── README.md                        # Rule: filename prefix = YYYY-MM_description.ts
+│
+├── packages/
+│   ├── shared-types/                                # Leaf node — NO imports from apps/ or Node.js builtins
+│   │   ├── package.json
+│   │   ├── tsconfig.json
+│   │   ├── .eslintrc.js                             # Blocks node:*, path, fs imports (enforces browser safety)
+│   │   └── src/
+│   │       ├── index.ts                             # Barrel export
+│   │       ├── ingredient.types.ts
+│   │       ├── pairing.types.ts                     # Includes ConfidenceTier, confidenceSummary
+│   │       ├── rating.types.ts
+│   │       ├── scoring.types.ts                     # SignalWeights, ScienceScore shape
+│   │       ├── user.types.ts
+│   │       ├── job.types.ts                         # BullMQ job payload interfaces
+│   │       ├── api.types.ts                         # Standard success/error response shapes
+│   │       └── query-keys.ts                        # TanStack Query key factory
+│   │
+│   └── shared-config/
+│       ├── tsconfig.base.json                       # strict: true — inherited by all apps + packages
+│       └── eslint.base.js                           # no-console, no-any in biz logic, no inline query keys
+│
+├── docker-compose.yml                               # DATA SERVICES ONLY — do not add NestJS or Vite here
+│                                                    # Postgres + pgvector (port 5432) + Redis (port 6379)
+├── docker-compose.test.yml                          # TEST DATA SERVICES — separate ports (5433, 6380)
+│                                                    # Used by integration tests — never the dev DB
+├── pnpm-workspace.yaml
+├── package.json                                     # Root scripts: dev, build, test:all, lint
+└── .gitignore
+```
+
+### Architectural Boundaries
+
+#### API Routing
+
+```
+External requests
+       │
+       ▼
+[Caddy / Railway routing]
+       │
+       ├── flavorlab.io/*             → Static Vite build (marketing page — vanilla JS, unchanged)
+       ├── flavorlab.io/app/*         → SPA catch-all → web/dist/index.html
+       ├── flavorlab.io/api/v1/*      → NestJS api process — internal API
+       └── flavorlab.io/public/v1/*   → NestJS api process — enterprise API (same process, different router prefix)
+```
+
+**Internal API (`/api/v1/`)** — presentation-optimised, session auth, 60–120 req/min
+**Enterprise API (`/public/v1/`)** — data-contract-stable, API key auth, 1,000 req/min per key, versioned subdirectories (`v1/`, `v2/` alongside)
+
+#### Service Boundaries
+
+```
+NestJS API process
+├── IngredientsService   → reads: Drizzle (ingredients, compounds), Redis (autocomplete cache)
+├── PairingsService      → reads: Drizzle (pairing_edges JOIN compounds), Redis (pairing cache)
+│                          computes: confidenceSummary (MIN confidence_tier in service, not controller)
+├── RatingsService       → writes: Drizzle (rating_events)
+│                          emits: rating.submitted (NestJS EventEmitter)
+│                          enqueues: BullMQ hive-score-recalc job
+├── ScoringService       → calls: engine/index.ts (pure function composition)
+│                          reads/writes: Redis (versioned score cache)
+├── scoring/engine/      → PURE FUNCTIONS ONLY: no NestJS, no Drizzle, no Redis
+│                          Each signal = one file; index.ts composes with weights
+├── CacheService         → wraps ioredis get/set/del/ttl
+└── enterprise/v1/       → wired to SAME service instances as modules/ (different serialisation only)
+
+ETL process (separate Node.js process — not NestJS at MVP)
+└── pipeline/ → OntologyService → transformers → Drizzle upserts (idempotent)
+    scripts/  → one-off data operations (never imported by pipeline/)
+```
+
+#### Data Boundaries
+
+```
+Postgres (source of truth)
+├── ingredients          canonical names, categories, hub status
+├── compounds            flavor molecules, aroma families, PubChem IDs
+├── pairing_edges        35,440 chemical edges; confidence_tier ENUM; hive_score; score_version
+├── pairing_signals      5 signal values stored separately per edge
+├── rating_events        raw community ratings (immutable — never deleted)
+├── users                Better Auth managed
+└── api_keys             Enterprise keys (bcrypt hashed; plaintext shown once at creation)
+
+Redis (hot cache — versioned keys)
+├── pairing:{id}:v{scoreVersion}     computed pairing response (24h)
+├── ingredient:{name}:top50          top pairings per ingredient (6h)
+├── autocomplete:{prefix}            autocomplete results (1h)
+├── session:{token}                  anonymous/auth session (30d)
+└── ratelimit:{ip}:{endpoint}        rolling rate limit window (60s)
+
+Frontend localStorage (client-only — no server sync at MVP)
+├── saved-ingredients                Zustand persist middleware
+└── dietary-filter-prefs             Zustand persist middleware
+```
+
+### Data Flow
+
+```
+User types "gar" → autocomplete
+  IngredientSearch → useAutocomplete → TanStack Query [queryKeys.ingredients.search('gar')]
+  → GET /api/v1/ingredients/autocomplete?q=gar
+  → IngredientsService → Redis HIT → return / MISS → in-memory prefix index → Redis SET → return
+
+User selects "garlic" → pairings load
+  → TanStack Query [queryKeys.pairings.forIngredient('garlic')]
+  → GET /api/v1/ingredients/garlic/pairings
+  → PairingsService → Redis MISS → Drizzle JOIN → confidenceSummary computed
+  → Zod transform snake_case → camelCase → Redis SET → return {data, nextCursor, hasMore}
+
+User submits rating
+  → POST /api/v1/ratings (0 retries — non-idempotent)
+  → RatingsService → Drizzle INSERT → EventEmitter: rating.submitted
+  → BullMQ enqueue: pairing.recalculate-score {pairingId}
+  → Redis DEL versioned cache key → return {data: {id, value, createdAt}}
+
+BullMQ worker (async, ≤5 min debounced)
+  → ScoringService → engine/index.ts (pure fn) → new HiveScore
+  → Drizzle UPDATE pairing_edges SET hive_score, score_version
+  → Redis SET new versioned cache key
+```
+
+### Integration Points
+
+**Internal communication:**
+- `shared-types` — consumed by both apps via pnpm workspace path references
+- `rating.submitted` NestJS event — decouples RatingsService from ScoringService
+- BullMQ `hive-score-recalc` queue (Redis-backed) — decouples API request from scoring computation
+
+**External integrations:**
+- Better Auth — self-hosted on existing Postgres
+- PubChem API — ETL enrichment only (not runtime)
+- Railway — managed Postgres (pgvector extension enabled), Redis, Node.js services, GitHub auto-deploy
+- GitHub Actions — CI/CD on push to `main`
+
+**Test infrastructure:**
+- `docker-compose.test.yml` — Postgres on 5433, Redis on 6380 (never the dev database)
+- `test/fixtures/seed-test-db.ts` — runs Drizzle migrations + inserts shared fixtures before integration tests
+- Integration tests: `apps/api/test/integration/` — NestJS test module against test DB
+- E2E tests: `apps/api/test/e2e/` — Playwright against 5 critical journeys only
+
