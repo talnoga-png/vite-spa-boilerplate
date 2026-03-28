@@ -198,6 +198,24 @@ _Tracked here so nothing falls through the cracks. Each item has a trigger (when
 
 ---
 
+## 6. Data-Driven Tuning
+
+### 6A — Lower Contested Pairing Threshold from 30 → 25 Points
+
+**What:** `CONTESTED_GAP_THRESHOLD` in `apps/api/src/modules/scoring/scoring.constants.ts` is set to 30 at MVP launch. Lowering it to 25 will surface more contested pairing explanations across the product.
+
+**Why it matters:** 30 was chosen conservatively because the Hive Score data quality at launch is unknown. A threshold of 25 would expose more editorial content (contested pairings are high-value UX moments), but only makes sense once the community data is large enough to be statistically meaningful — otherwise low-vote pairings produce false "contested" signals.
+
+**Trigger:** When average Hive Score vote count across pairings reaches ≥ 50 (indicating the community data has matured past the noise floor). Check via admin dashboard query: `SELECT AVG(hive_vote_count) FROM pairing_edges WHERE hive_vote_count > 0`.
+
+**Action:** Change `CONTESTED_GAP_THRESHOLD = 30` → `25` in `scoring.constants.ts`. No migration, no ETL change, no cache flush needed — the frontend reads this constant at build time. Deploy and monitor contested pairing display rate in analytics.
+
+**Effort:** 30 minutes (single constant change + deploy)
+
+**Blocking:** Community data maturity milestone
+
+---
+
 ## Priority Order (Recommended)
 
 | Priority | Task | When |
