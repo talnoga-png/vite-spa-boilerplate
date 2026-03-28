@@ -1,5 +1,5 @@
 ---
-stepsCompleted: ['step-01-init']
+stepsCompleted: ['step-01-init', 'step-02-context']
 inputDocuments:
   - '_bmad-output/planning-artifacts/prd.md'
   - '_bmad-output/planning-artifacts/flavorGraph-research.md'
