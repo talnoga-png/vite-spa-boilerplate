@@ -1435,7 +1435,13 @@ Rationale: HNSW works at any dataset size, no training phase, better recall at M
 - [x] Test pyramid defined (unit / integration / E2E)
 - [x] CI/CD pipeline defined
 - [x] Railway hosting architecture defined
-- [x] Custom Claude Code agents created (code-reviewer, security-auditor, release-notes)
+- [x] Custom Claude Code agents created (code-reviewer, security-auditor, release-notes, qa-architect)
+- [x] Email-verified rater model defined (OTP flow, localStorage persistence, session upgrade)
+- [x] Email service selected: Resend (3,000 emails/month free tier)
+- [x] `feedback_requests` table for one-time follow-up emails
+- [x] `rating_events.rater_email NOT NULL` — no anonymous ratings in DB
+- [x] `email-otp:{email}` Redis key (10 min TTL, single-use)
+- [x] BullMQ `feedback-request` queue for 7-day follow-up job
 
 ---
 
