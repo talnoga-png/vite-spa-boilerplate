@@ -520,3 +520,137 @@ As the product grows (Pro tier, Chef's Notebook, menu analysis), extract the com
 - Runtime CSS-in-JS — no React in the stack; adds overhead with no benefit
 - Tailwind utility classes — conflicts with the semantic custom-property approach; two styling systems = maintenance burden
 - Third-party icon libraries — SVG icons inline, optimized per component; no icon font overhead
+
+---
+
+## Defining Interaction
+
+### Defining Experience
+
+**FlavorLab's defining experience: "Type an ingredient. Discover what it pairs with — and understand exactly why."**
+
+The core interaction that, if perfected, makes everything else follow:
+
+> *A user types "strawberry." In under two seconds, she sees a ranked list of compatible ingredients — black pepper at #3, with a Science Score of 84. She wouldn't have predicted that. She taps the row. The card lifts open. The headline reads: "A fruity-spicy bridge — shared methyl hexanoate creates intensity without competition." Below it, expandable: the compound names. She closes it thinking: "I have to try this." That is FlavorLab working.*
+
+The defining experience is the **search → ranked result → science card reveal** sequence. Everything else in the product — the Confidence Ring, the email gate, the rating widget, the failure card — is infrastructure for this moment or its consequences.
+
+### User Mental Model
+
+**How users currently solve the pairing problem:**
+- Google search: "what goes with strawberry" → recipe blogs, generic flavor guides, AI chatbots
+- Cookbooks and flavor bibles (Niki Segnit's "The Flavor Thesaurus") — slow, requires physical access, no community signal
+- Asking a chef or food-savvy friend — high quality but unavailable on demand
+- Intuition and trial-and-error — the dominant approach, the one FlavorLab replaces
+
+**What mental model users bring:**
+Maya arrives with the "ingredient I have" mental model, not the "cuisine + flavor profile" mental model. She is asking "what do I put with this strawberry?" — not "what flavor families pair with the terpene profile of strawberry?" The product must meet her at her level. She expects search to work like Google: instant, forgiving of partial input, ranked by relevance. She does not expect to understand the scoring system before she can use the product — the visual hierarchy (confidence tier, Science Score, Hive Score) must be immediately legible without prior knowledge.
+
+**What users love about existing approaches:**
+- Flavor bibles: depth, authority, serendipitous discovery
+- AI assistants: conversational, natural language, always available
+- Community forums: real cook experience, emotional validation
+
+**What users hate about existing approaches:**
+- Flavor bibles: slow, no community signal, no confidence level on suggestions
+- AI assistants: no verifiable source, can confidently suggest wrong pairings
+- Community forums: no science backing, hard to distinguish quality opinions from noise
+
+**FlavorLab's position:** takes what users love from each source and eliminates what they hate. The dual-score system is the product's answer to both the AI's verifiability problem and the community forum's noise problem.
+
+### Success Criteria
+
+**The search experience is successful when:**
+- Results appear within 2 seconds (p95 under load)
+- The top result is genuinely surprising but scientifically valid — not the obvious pairing
+- Confidence tier differences are visible in the ranking without requiring explanation
+- The dietary filter context tag reflects the user's standing preference without re-entry
+
+**The science card is successful when:**
+- It expands in under 150ms (perceived — skeleton if needed)
+- The plain-English explanation fits in one sentence at 360px without truncation
+- The user understands the pairing rationale without tapping into compound-level detail
+- The Confidence Ring is legible at first glance (no legend needed for scores; legend appears only on first contested pairing)
+
+**The overall session is successful when:**
+- The user leaves with a decision (yes/no/try it) within 30 seconds of their first search
+- At least one result produced a "I wouldn't have thought of that" reaction
+- Return visit rate ≥ 40% within 7 days
+
+**The email gate is successful when:**
+- Conversion rate ≥ 25% (users who see the gate and complete it)
+- Zero "Why do I need to give my email just to rate?" friction signals in user feedback
+- localStorage persistence means the gate is never seen twice in the same browser
+
+### Novel vs. Established Patterns
+
+**Established patterns — adopt directly:**
+
+| Pattern | Where used | Why established works |
+|---|---|---|
+| Instant search with ranked results | Primary search | Users expect Google-level immediacy; don't reinvent |
+| Card expand in-place | Science card reveal | Mobile standard; no learning curve |
+| Star rating widget | Hive Score submission | Universal; no cognitive overhead |
+| Modal with focus trap | Email OTP gate | Standard accessibility pattern for blocking interactions |
+| Persistent filter tag | Dietary ambient layer | Familiar from Airbnb, Booking.com; no explanation needed |
+
+**Novel patterns — require design investment:**
+
+| Pattern | What makes it novel | Teaching mechanism |
+|---|---|---|
+| Confidence Ring | No competitor visualizes score relationship as a ring gap | Inline legend on first contested pairing; dismissed once to localStorage |
+| Dual-score divergence as content | Gap between scores is surfaced, named, explained — not hidden | Contested pairing template copy + Confidence Ring visual |
+| Confidence tier as ranking signal | Most apps rank by relevance; FlavorLab ranks by data quality | Visible tier badges on ranked results create implicit understanding |
+| Failure card as brand moment | Incompatibility presented as education, not dead end | Same design polish as success state + educational headline copy |
+| Email gate as community entry | Pre-commitment framing before star selection | "Join [N] people" copy + timing (after science card, before stars) |
+
+### Experience Mechanics
+
+**The search → result → science card flow:**
+
+**1. Initiation:**
+- *First visit:* First Pairing Magic fills the screen. Search input visible but not autofocused (keyboard suppressed). User either taps the featured pairing or types into the search input.
+- *Return visits:* Search input autofocused. Dietary filter tag set (if previously set). User types immediately.
+- Any keystroke dismisses First Pairing Magic and surfaces the result list.
+
+**2. Search interaction:**
+- Debounced (300ms), min 2 characters to fire. No search button — results update live.
+- Results ranked: `GC_MS_EXPERIMENTAL` tier ranks above `RECIPE_CO_OCCURRENCE` at equal science scores.
+- Result row anatomy: `[Ingredient name] [Confidence tier badge] [Science Score] [Hive Score ring]`
+- Dietary filter tag persists below the input: "Showing Vegan results ×"
+
+**3. Science card expand:**
+- Tapped row lifts open in-place (150ms, `--easing-reveal`). No page navigation.
+- Card anatomy (top to bottom):
+  - Confidence Ring (SVG, 80px mobile) — outer arc = Science Score, inner fill = Hive Score
+  - Plain-English headline (one sentence, serif, never truncated at 360px)
+  - Aroma family labels ("floral / herbal terpenes") — visible without tapping
+  - "See the chemistry →" — reveals compound names on tap
+  - Cuisine context flag (if applicable)
+  - Confidence tier pill — "Experimentally confirmed (GC-MS)"
+  - Rating widget
+
+**4. Compound depth (optional):**
+- "See the chemistry →" tap reveals compound names, aroma descriptors, shared compound count.
+- At 360px: Venn diagram replaced by compact compound list (max 4, expandable).
+
+**5. Contested pairing (conditional):**
+- Triggers: `|science_score - hive_score| ≥ 30 AND hive_vote_count ≥ 20`
+- Confidence Ring shows a visible gap.
+- First contested pairing this browser: inline legend appears (one tap dismisses permanently).
+- Contested pairing explanation card appears below science card.
+
+**6. Rating flow:**
+- "Rate this pairing" below the science card (not on result row).
+- Not email-verified: email modal fires before stars. Social proof copy + email input + OTP.
+- OTP verified: modal dismisses, email to localStorage. Stars appear: 1–5 + intent/experience toggle.
+
+**7. Rating completion:**
+- Submit: optimistic UI updates Hive Score. Hive ring animates.
+- Confirmation: "You're now part of the science." (brand copy, not toast).
+- 7-day follow-up email queued (one per email address, ever).
+
+**8. Failure card (conditional):**
+- Triggers: Science Score < 30 OR explicit incompatibility flag.
+- Failure card at top of results: "Why [A] + [B] Don't Work" — plain-English explanation + flavor education angle.
+- Same visual polish as success science card.
