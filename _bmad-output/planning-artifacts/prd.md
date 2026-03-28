@@ -441,6 +441,27 @@ FlavorGraph provides ~616 hub ingredients (searchable) and ~8,000 total nodes. T
 
 ---
 
+### DR-11b: Scientific Honesty — Food Pairing Hypothesis Framing
+
+The food pairing hypothesis (ingredients sharing volatile aroma compounds pair well culinarily) is scientifically validated for Western cuisines but contradicted for East Asian cuisines, and has not been robustly tested for most of the world's culinary traditions. Additional limitations: the original research used compound *presence* data, not *concentration-weighted* data; it does not account for non-volatile taste compounds, cooking transformation effects, or compound interactions.
+
+**The correct claim FlavorLab makes:**
+*"These ingredients share key aroma compounds documented in peer-reviewed food science research, with high compatibility in Western culinary traditions. Results reflect molecular compound similarity; cultural context, cooking method, and personal taste also matter."*
+
+**What FlavorLab must never claim:**
+- "Science proves these pair well" (unqualified)
+- "Molecular data predicts this will taste good" (conflates chemistry with palatability)
+- "This pairing works in all culinary traditions" (not supported for non-Western contexts)
+
+**Practical implications:**
+- Every Science Score must include a brief framing statement, not just a number
+- East Asian and non-Western ingredient pairings should carry a caveat noting that the food pairing hypothesis was not validated for these culinary traditions — the compound data is real, but cultural compatibility context differs
+- The dual scoring system (Science Score + Hive Score) is partly designed to surface exactly this gap — when community ratings diverge from molecular scores, the product should explain *why*, including cultural context
+
+**Implication:** UI copy, science card text, and all marketing materials must be reviewed against this framing standard. The architecture must support per-pairing context flags (cuisine context, confidence level, limitation notes) alongside the numeric score.
+
+---
+
 ### DR-12: Infrastructure Stack — Required Layers
 
 Based on the production architecture requirements, the backend stack must include the following layers. These are not optional enhancements — they are structural requirements for the product to be reliable, scalable, and legally defensible.
