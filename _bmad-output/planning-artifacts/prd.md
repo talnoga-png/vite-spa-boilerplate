@@ -374,6 +374,26 @@ Community ratings held in "pending" state during moderation are not deleted — 
 
 ---
 
+### DR-10b: Science Score — Multi-Signal Scoring Formula
+
+The Science Score displayed to users must not be a direct pass-through of raw FlavorGraph edge weights. The raw scores are a single chemical-similarity signal and insufficient alone for a trustworthy product. The scoring formula must combine multiple evidence layers:
+
+```
+science_score =
+  0.35 × compound_affinity_score     (shared compound overlap from FlavorGraph)
+  + 0.25 × graph_similarity_score    (embedding similarity from graph structure)
+  + 0.20 × category_affinity_score   (ingredient family / cuisine compatibility)
+  + 0.15 × popularity_score          (how often this pair appears in curated sources)
+  + 0.05 × editorial_boost           (manual overrides by data team)
+  − penalties                        (allergen conflicts, dietary violations, low confidence, culturally inappropriate)
+```
+
+Each signal is stored separately in the `pairing_edges` record so the formula weights can be adjusted without re-ETL. Score version is tracked — a formula change invalidates the Redis cache (versioned cache keys).
+
+**Implication:** The ETL pipeline must compute and store all five signals per pairing edge, not just the raw FlavorGraph score. The API must return both the composite `science_score` and the individual signal breakdown for Pro/API tier transparency.
+
+---
+
 ### DR-11: Ingredient Coverage Gap — Multi-Source Data Strategy
 
 FlavorGraph provides ~616 hub ingredients (searchable) and ~8,000 total nodes. This coverage is heavily weighted toward Western, commercially common ingredients. Regional and heritage ingredients (e.g. sumac, yuzu, berbere, moringa, tamarind) are absent or incomplete. Critically, adding an ingredient without its compound profile produces a dead node — it appears in search but cannot generate a Science Score pairing. Compound data and ingredient coverage must be solved together.
