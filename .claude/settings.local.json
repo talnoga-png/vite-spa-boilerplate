@@ -33,7 +33,8 @@
       "WebFetch(domain:flavonomics.com)",
       "WebFetch(domain:www.flavorfox.app)",
       "WebFetch(domain:tastematch.app)",
-      "WebFetch(domain:inspire.foodpairing.com)"
+      "WebFetch(domain:inspire.foodpairing.com)",
+      "WebFetch(domain:chatgpt.com)"
     ]
   },
   "hooks": {

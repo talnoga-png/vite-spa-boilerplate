@@ -337,11 +337,24 @@ Free-tier preferences (dietary filters, recently viewed, First Pairing Magic fla
 
 ---
 
-### DR-08: Legal — FlavorGraph Dataset Licensing
+### DR-08: Legal — FlavorGraph Apache 2.0 Compliance
 
-The FlavorGraph dataset has no explicit open-source licence in the public repository. Commercial use has not been formally cleared.
+The FlavorGraph repository is licensed under **Apache License 2.0** — commercial use is permitted without consent from the authors. This is confirmed. The licence is permissive and business-friendly.
 
-**Implication:** Legal review is a **blocking pre-condition** for public launch. ETL and development work can proceed, but production deployment to users is blocked until licence status is confirmed or an alternative dataset is identified.
+**What Apache 2.0 requires (mandatory obligations):**
+1. Preserve all copyright notices from the original repository
+2. Include the Apache 2.0 licence text in the product
+3. Document any modifications made to the original code
+4. Do not imply endorsement by the original authors
+
+**In-app implementation:** A `/legal/open-source-notices` page (linked from the footer) must include: project name (FlavorGraph), repository owner, licence (Apache 2.0), copyright attribution, a statement of modifications, and a link to the full Apache 2.0 licence text.
+
+**Suggested notice text:**
+> *This product includes software derived from FlavorGraph (https://github.com/lamypark/FlavorGraph), licensed under the Apache License, Version 2.0. Copyright © the original authors. We have modified and extended the original work. A copy of the Apache License 2.0 is available on our Open Source Notices page.*
+
+**Remaining risk — data provenance (not the code licence):** Apache 2.0 covers the FlavorGraph code. It does not automatically cover the underlying datasets used to train it (recipe corpus, compound databases, downloadable training artifacts hosted externally on Google Drive). These external assets require separate provenance and licence review before production use. This is the actual outstanding legal task.
+
+**Implication:** Code and ETL development can proceed immediately. The outstanding action is a data provenance audit of the non-code assets (training data, downloadable artifacts) before public launch.
 
 ---
 
