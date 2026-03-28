@@ -1161,20 +1161,23 @@ Postgres (source of truth)
 ├── compounds            flavor molecules, aroma families, PubChem IDs
 ├── pairing_edges        35,440 chemical edges; confidence_tier ENUM; hive_score; score_version
 ├── pairing_signals      5 signal values stored separately per edge
-├── rating_events        raw community ratings (immutable — never deleted)
-├── users                Better Auth managed
+├── rating_events        raw community ratings; rater_email (NOT NULL); immutable — never deleted
+├── feedback_requests    tracks which emails have received follow-up (sent_at, unsubscribed_at)
+├── users                Better Auth managed (full accounts — Pro+ only at MVP)
 └── api_keys             Enterprise keys (bcrypt hashed; plaintext shown once at creation)
 
 Redis (hot cache — versioned keys)
 ├── pairing:{id}:v{scoreVersion}     computed pairing response (24h)
 ├── ingredient:{name}:top50          top pairings per ingredient (6h)
 ├── autocomplete:{prefix}            autocomplete results (1h)
-├── session:{token}                  anonymous/auth session (30d)
+├── session:{token}                  anonymous/auth session — gains raterEmail field post-verification (30d)
+├── email-otp:{email}                OTP for email verification (10 min TTL, single-use)
 └── ratelimit:{ip}:{endpoint}        rolling rate limit window (60s)
 
 Frontend localStorage (client-only — no server sync at MVP)
 ├── saved-ingredients                Zustand persist middleware
-└── dietary-filter-prefs             Zustand persist middleware
+├── dietary-filter-prefs             Zustand persist middleware
+└── flavorlab.rater_email            Verified rater email — skips OTP on return visits
 ```
 
 ### Data Flow
